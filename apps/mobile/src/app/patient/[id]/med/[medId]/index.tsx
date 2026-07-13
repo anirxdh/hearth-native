@@ -90,7 +90,7 @@ export default function MedicationDetail() {
 
   return (
     <Screen>
-      <Pressable onPress={() => router.back()} hitSlop={10} style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+      <Pressable onPress={() => router.back()} hitSlop={10} accessibilityRole="button" accessibilityLabel="Back" style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
         <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
         <Text style={type.mini}>{displayName}</Text>
       </Pressable>

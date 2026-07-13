@@ -8,6 +8,7 @@ import * as Notifications from 'expo-notifications';
 import { bootDatabase, destroyAllData, type BootState } from '../db/client';
 import { syncNotifications } from '../lib/notifications';
 import { PillButton, Screen, color, space, type } from '../ds';
+import { ErrorBoundary, Shields } from '../components/Shields';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -100,14 +101,16 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: color.paper },
-        }}
-      />
-    </>
+    <ErrorBoundary>
+      <Shields>
+        <StatusBar style="dark" />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: color.paper },
+          }}
+        />
+      </Shields>
+    </ErrorBoundary>
   );
 }

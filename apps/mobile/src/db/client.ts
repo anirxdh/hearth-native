@@ -117,12 +117,39 @@ export function getDb(): HearthDb {
   return cached.db;
 }
 
-/** Full local wipe: DB file + key. Used by the P19 "delete everything" path. */
+/** Raw SQLCipher handle for maintenance paths (backup export/import). */
+export function getRawDb(): SQLiteDatabase {
+  if (!cached) throw new Error('Database accessed before bootDatabase() completed');
+  return cached.raw;
+}
+
+/** Absolute path of the live database file. */
+export function liveDbPath(): string {
+  return dbPath();
+}
+
+/** Hex key from the keychain; null if missing. Maintenance paths only. */
+export async function getDbKeyHex(): Promise<string | null> {
+  return SecureStore.getItemAsync(KEY_NAME);
+}
+
+/** Close the live connection (before an import replaces the file). */
+export function closeDb(): void {
+  if (cached) {
+    cached.raw.closeSync();
+    cached = null;
+  }
+}
+
+/** Full local wipe: DB file + key + document vault. The P19 "delete everything" path. */
 export async function destroyAllData(): Promise<void> {
   if (cached) {
     cached.raw.closeSync();
     cached = null;
   }
   await FileSystem.deleteAsync(dbPath(), { idempotent: true });
+  await FileSystem.deleteAsync(`${dbPath()}-wal`, { idempotent: true });
+  await FileSystem.deleteAsync(`${dbPath()}-shm`, { idempotent: true });
+  await FileSystem.deleteAsync(`${FileSystem.documentDirectory}vault`, { idempotent: true });
   await SecureStore.deleteItemAsync(KEY_NAME);
 }

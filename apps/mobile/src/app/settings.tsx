@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Pressable, Switch, Text, View } from 'react-native';
+import { Alert, Platform, Pressable, Switch, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import { ChevronLeft } from 'lucide-react-native';
@@ -15,12 +15,13 @@ import {
   space,
   type,
 } from '../ds';
-import { getNotificationPrefs, listPatients, setNotificationPrefs } from '../db/repo';
+import { getNotificationPrefs, getSetting, listPatients, setNotificationPrefs, setSetting } from '../db/repo';
 import { destroyAllData, getDb } from '../db/client';
 import { syncNotifications } from '../lib/notifications';
 import { useData } from '../lib/useData';
 import { ONBOARDING_DISCLAIMER } from '../lib/copy';
 import { seedDemoFamily } from '@hearth/schema';
+import { exportBackup, importBackup, validPassphrase } from '../lib/backup';
 import { today } from '../lib/clock';
 import { bumpDataVersion } from '../lib/events';
 
@@ -29,6 +30,7 @@ export default function Settings() {
   const patients = useData(listPatients);
   const [prefs, setPrefs] = useState(getNotificationPrefs);
   const [pending, setPending] = useState<number | null>(null);
+  const [appLock, setAppLock] = useState(() => getSetting<boolean>('appLock', false));
   const [leadDays, setLeadDays] = useState(String(prefs.leadDays));
   const [hour, setHour] = useState(String(prefs.hour));
 
@@ -94,9 +96,60 @@ export default function Settings() {
     );
   }
 
+  function askPassphrase(title: string, message: string, onOk: (p: string) => void) {
+    if (Platform.OS !== 'ios') return;
+    Alert.prompt(title, message, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Continue',
+        onPress: (p?: string) => {
+          const err = validPassphrase(p ?? '');
+          if (err) Alert.alert('Passphrase too short', err);
+          else onOk(p!);
+        },
+      },
+    ], 'secure-text');
+  }
+
+  function doExport() {
+    askPassphrase(
+      'Choose a backup passphrase',
+      'The backup file is encrypted with this passphrase. Without it, the file is unreadable; store it somewhere safe.',
+      (p) => {
+        exportBackup(p).catch((e) => Alert.alert('Backup failed', String(e)));
+      },
+    );
+  }
+
+  function doImport() {
+    Alert.alert(
+      'Restore from a backup?',
+      'This REPLACES everything currently in Hearth on this phone with the backup contents.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Choose file',
+          style: 'destructive',
+          onPress: () =>
+            askPassphrase('Backup passphrase', 'The passphrase chosen when this backup was exported.', (p) => {
+              importBackup(p)
+                .then((r) => {
+                  if (r === 'done') {
+                    bumpDataVersion();
+                    syncNotifications().catch(() => {});
+                    Alert.alert('Restored', 'The backup has been loaded.');
+                  }
+                })
+                .catch((e) => Alert.alert('Restore failed', String(e)));
+            }),
+        },
+      ],
+    );
+  }
+
   return (
     <Screen>
-      <Pressable onPress={() => router.back()} hitSlop={10} style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+      <Pressable onPress={() => router.back()} hitSlop={10} accessibilityRole="button" accessibilityLabel="Back" style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
         <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
         <Text style={type.mini}>Home</Text>
       </Pressable>
@@ -153,6 +206,40 @@ export default function Settings() {
           })}
         </>
       ) : null}
+
+      <SectionHeader label="Privacy" />
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={type.body}>Require Face ID to open Hearth</Text>
+          <Text style={[type.mini, { marginTop: 2 }]}>Also asks after the app has been in the background</Text>
+        </View>
+        <Switch
+          value={appLock}
+          onValueChange={(on) => {
+            setAppLock(on);
+            setSetting('appLock', on);
+          }}
+          trackColor={{ true: color.ink, false: color.line }}
+          thumbColor={color.paper}
+        />
+      </View>
+      <Hairline />
+      <ListRow
+        title="Access log"
+        detail="Every print, share, export, and sensitive read, newest first"
+        onPress={() => router.push('/access-log' as never)}
+      />
+      <ListRow
+        title="Export encrypted backup"
+        detail="One file, locked with a passphrase you choose"
+        onPress={doExport}
+      />
+      <ListRow
+        title="Restore from backup"
+        detail="Replaces what is on this phone"
+        onPress={doImport}
+        last
+      />
 
       <SectionHeader label="Data" />
       <ListRow title="Load the demo family" detail="Three fictional people to explore with" onPress={seed} />

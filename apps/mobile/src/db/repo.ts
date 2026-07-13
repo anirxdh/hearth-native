@@ -444,3 +444,25 @@ export function logAccess(what: string, patientId?: string | null): void {
 export function listAccessLog(limit = 200): { id: string; at: string; actor: string; what: string; patientId: string | null }[] {
   return getDb().select().from(accessLog).orderBy(desc(accessLog.at)).limit(limit).all();
 }
+
+/* ---------- generic settings (app lock etc.) ---------- */
+
+export function getSetting<T>(key: string, fallback: T): T {
+  try {
+    const row = getDb().select().from(settings).where(eq(settings.key, key)).get();
+    return row ? (row.value as T) : fallback;
+  } catch {
+    // Reading a setting must never crash a shield; fall back quietly.
+    return fallback;
+  }
+}
+
+export function setSetting(key: string, value: unknown): void {
+  const db = getDb();
+  const now = nowIso();
+  db.insert(settings)
+    .values({ key, value, updatedAt: now })
+    .onConflictDoUpdate({ target: settings.key, set: { value, updatedAt: now } })
+    .run();
+  logChange('settings', key, null, 'update', { key });
+}
