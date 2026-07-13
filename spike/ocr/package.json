@@ -1,0 +1,14 @@
+{
+  "name": "hearth-ocr-spike",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "corpus": "node corpus-gen.mjs",
+    "ocr:build": "swiftc -O -framework Vision -framework AppKit -o visionocr VisionOCR.swift",
+    "spike": "node --import tsx run-spike.mjs"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3"
+  }
+}

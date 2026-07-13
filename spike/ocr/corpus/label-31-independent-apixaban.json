@@ -1,0 +1,17 @@
+{
+  "file": "label-31-independent-apixaban.png",
+  "layout": "independent",
+  "variant": "sticker",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "APIXABAN",
+    "strength": "5 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+    "fillDate": "2026-04-14",
+    "daySupply": 30,
+    "quantity": 60,
+    "refills": 5,
+    "rxNumber": "773481",
+    "pharmacyPhone": "2175550163"
+  }
+}

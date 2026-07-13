@@ -1,0 +1,17 @@
+{
+  "file": "label-01-cvs-apixaban.png",
+  "layout": "cvs",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "APIXABAN",
+    "strength": "5 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+    "fillDate": "2026-04-05",
+    "daySupply": 30,
+    "quantity": 60,
+    "refills": 5,
+    "rxNumber": "0446231",
+    "pharmacyPhone": "2175550134"
+  }
+}

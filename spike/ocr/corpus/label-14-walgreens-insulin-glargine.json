@@ -1,0 +1,17 @@
+{
+  "file": "label-14-walgreens-insulin-glargine.png",
+  "layout": "walgreens",
+  "variant": "rotated",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "INSULIN GLARGINE",
+    "strength": "100 UNITS/ML",
+    "sig": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+    "fillDate": "2026-07-14",
+    "daySupply": 30,
+    "quantity": 15,
+    "refills": 2,
+    "rxNumber": "1298764-06012",
+    "pharmacyPhone": "2175550188"
+  }
+}

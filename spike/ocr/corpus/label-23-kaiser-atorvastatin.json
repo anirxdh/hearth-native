@@ -1,0 +1,17 @@
+{
+  "file": "label-23-kaiser-atorvastatin.png",
+  "layout": "kaiser",
+  "variant": "rotated",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "ATORVASTATIN",
+    "strength": "20 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+    "fillDate": "2026-06-15",
+    "daySupply": 90,
+    "quantity": 90,
+    "refills": 1,
+    "rxNumber": "20-5573913",
+    "pharmacyPhone": "8665550119"
+  }
+}

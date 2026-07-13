@@ -1,0 +1,17 @@
+{
+  "file": "label-24-kaiser-insulin-glargine.png",
+  "layout": "kaiser",
+  "variant": "smallFont",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "INSULIN GLARGINE",
+    "strength": "100 UNITS/ML",
+    "sig": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+    "fillDate": "2026-07-17",
+    "daySupply": 30,
+    "quantity": 15,
+    "refills": 2,
+    "rxNumber": "20-5573914",
+    "pharmacyPhone": "8665550119"
+  }
+}

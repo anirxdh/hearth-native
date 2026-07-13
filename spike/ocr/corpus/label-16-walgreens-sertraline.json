@@ -1,0 +1,17 @@
+{
+  "file": "label-16-walgreens-sertraline.png",
+  "layout": "walgreens",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ELEANOR ALVAREZ",
+    "drugName": "SERTRALINE",
+    "strength": "50 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+    "fillDate": "2026-04-18",
+    "daySupply": 30,
+    "quantity": 30,
+    "refills": 3,
+    "rxNumber": "1298766-06012",
+    "pharmacyPhone": "2175550188"
+  }
+}

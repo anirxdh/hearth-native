@@ -1,0 +1,17 @@
+{
+  "file": "label-30-independent-metformin.png",
+  "layout": "independent",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "METFORMIN",
+    "strength": "500 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+    "fillDate": "2026-03-12",
+    "daySupply": 30,
+    "quantity": 60,
+    "refills": 3,
+    "rxNumber": "773480",
+    "pharmacyPhone": "2175550163"
+  }
+}

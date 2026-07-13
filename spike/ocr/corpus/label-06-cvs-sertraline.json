@@ -1,0 +1,17 @@
+{
+  "file": "label-06-cvs-sertraline.png",
+  "layout": "cvs",
+  "variant": "smallFont",
+  "truth": {
+    "patientName": "ELEANOR ALVAREZ",
+    "drugName": "SERTRALINE",
+    "strength": "50 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+    "fillDate": "2026-04-15",
+    "daySupply": 30,
+    "quantity": 30,
+    "refills": 3,
+    "rxNumber": "0446236",
+    "pharmacyPhone": "2175550134"
+  }
+}

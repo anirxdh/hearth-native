@@ -1,0 +1,17 @@
+{
+  "file": "label-15-walgreens-donepezil.png",
+  "layout": "walgreens",
+  "variant": "smallFont",
+  "truth": {
+    "patientName": "ELEANOR ALVAREZ",
+    "drugName": "DONEPEZIL",
+    "strength": "10 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+    "fillDate": "2026-03-16",
+    "daySupply": 30,
+    "quantity": 30,
+    "refills": 4,
+    "rxNumber": "1298765-06012",
+    "pharmacyPhone": "2175550188"
+  }
+}

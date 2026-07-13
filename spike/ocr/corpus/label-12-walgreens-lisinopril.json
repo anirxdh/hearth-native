@@ -1,0 +1,17 @@
+{
+  "file": "label-12-walgreens-lisinopril.png",
+  "layout": "walgreens",
+  "variant": "lowContrast",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "LISINOPRIL",
+    "strength": "10 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+    "fillDate": "2026-05-10",
+    "daySupply": 90,
+    "quantity": 90,
+    "refills": 2,
+    "rxNumber": "1298762-06012",
+    "pharmacyPhone": "2175550188"
+  }
+}

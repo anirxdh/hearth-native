@@ -1,0 +1,17 @@
+{
+  "file": "label-29-kaiser-ibuprofen.png",
+  "layout": "kaiser",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ROSA MARQUEZ",
+    "drugName": "IBUPROFEN",
+    "strength": "600 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+    "fillDate": "2026-07-27",
+    "daySupply": 30,
+    "quantity": 60,
+    "refills": 1,
+    "rxNumber": "20-5573919",
+    "pharmacyPhone": "8665550119"
+  }
+}

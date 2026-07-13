@@ -1,0 +1,17 @@
+{
+  "file": "label-11-walgreens-apixaban.png",
+  "layout": "walgreens",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "APIXABAN",
+    "strength": "5 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+    "fillDate": "2026-04-08",
+    "daySupply": 30,
+    "quantity": 60,
+    "refills": 5,
+    "rxNumber": "1298761-06012",
+    "pharmacyPhone": "2175550188"
+  }
+}

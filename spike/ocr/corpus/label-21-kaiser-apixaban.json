@@ -1,0 +1,17 @@
+{
+  "file": "label-21-kaiser-apixaban.png",
+  "layout": "kaiser",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "APIXABAN",
+    "strength": "5 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+    "fillDate": "2026-04-11",
+    "daySupply": 30,
+    "quantity": 60,
+    "refills": 5,
+    "rxNumber": "20-5573911",
+    "pharmacyPhone": "8665550119"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "file": "label-20-kaiser-metformin.png",
+  "layout": "kaiser",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "METFORMIN",
+    "strength": "500 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+    "fillDate": "2026-03-09",
+    "daySupply": 30,
+    "quantity": 60,
+    "refills": 3,
+    "rxNumber": "20-5573910",
+    "pharmacyPhone": "8665550119"
+  }
+}

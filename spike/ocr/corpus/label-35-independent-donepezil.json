@@ -1,0 +1,17 @@
+{
+  "file": "label-35-independent-donepezil.png",
+  "layout": "independent",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ELEANOR ALVAREZ",
+    "drugName": "DONEPEZIL",
+    "strength": "10 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+    "fillDate": "2026-03-22",
+    "daySupply": 30,
+    "quantity": 30,
+    "refills": 4,
+    "rxNumber": "773485",
+    "pharmacyPhone": "2175550163"
+  }
+}

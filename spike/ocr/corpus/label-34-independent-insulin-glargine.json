@@ -1,0 +1,17 @@
+{
+  "file": "label-34-independent-insulin-glargine.png",
+  "layout": "independent",
+  "variant": "smallFont",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "INSULIN GLARGINE",
+    "strength": "100 UNITS/ML",
+    "sig": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+    "fillDate": "2026-07-20",
+    "daySupply": 30,
+    "quantity": 15,
+    "refills": 2,
+    "rxNumber": "773484",
+    "pharmacyPhone": "2175550163"
+  }
+}

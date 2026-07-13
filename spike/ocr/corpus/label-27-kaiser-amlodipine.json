@@ -1,0 +1,17 @@
+{
+  "file": "label-27-kaiser-amlodipine.png",
+  "layout": "kaiser",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ELEANOR ALVAREZ",
+    "drugName": "AMLODIPINE",
+    "strength": "5 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+    "fillDate": "2026-05-23",
+    "daySupply": 90,
+    "quantity": 90,
+    "refills": 0,
+    "rxNumber": "20-5573917",
+    "pharmacyPhone": "8665550119"
+  }
+}

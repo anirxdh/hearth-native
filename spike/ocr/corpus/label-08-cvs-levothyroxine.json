@@ -1,0 +1,17 @@
+{
+  "file": "label-08-cvs-levothyroxine.png",
+  "layout": "cvs",
+  "variant": "sticker",
+  "truth": {
+    "patientName": "ROSA MARQUEZ",
+    "drugName": "LEVOTHYROXINE",
+    "strength": "75 MCG",
+    "sig": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+    "fillDate": "2026-06-19",
+    "daySupply": 90,
+    "quantity": 90,
+    "refills": 3,
+    "rxNumber": "0446238",
+    "pharmacyPhone": "2175550134"
+  }
+}

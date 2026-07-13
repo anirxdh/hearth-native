@@ -1,0 +1,17 @@
+{
+  "file": "label-10-walgreens-metformin.png",
+  "layout": "walgreens",
+  "variant": "clean",
+  "truth": {
+    "patientName": "ROBERT ALVAREZ",
+    "drugName": "METFORMIN",
+    "strength": "500 MG",
+    "sig": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+    "fillDate": "2026-03-06",
+    "daySupply": 30,
+    "quantity": 60,
+    "refills": 3,
+    "rxNumber": "1298760-06012",
+    "pharmacyPhone": "2175550188"
+  }
+}

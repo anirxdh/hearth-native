@@ -1,0 +1,2929 @@
+{
+  "generatedAt": "2026-07-13T05:51:30.565Z",
+  "corpusSize": 40,
+  "lowConfidenceThreshold": 0.8,
+  "goGate": {
+    "fields": [
+      "drugName",
+      "fillDate",
+      "daySupply"
+    ],
+    "cleanFloor": 85,
+    "overallFloor": 70,
+    "decision": "GO"
+  },
+  "summary": {
+    "patientName": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 100,
+      "missing": 0,
+      "wrong": 0,
+      "meanConfRight": 0.7,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "30/40"
+    },
+    "drugName": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 100,
+      "missing": 0,
+      "wrong": 0,
+      "meanConfRight": 0.988,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "1/40"
+    },
+    "strength": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 100,
+      "missing": 0,
+      "wrong": 0,
+      "meanConfRight": 0.988,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "1/40"
+    },
+    "sig": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 100,
+      "missing": 0,
+      "wrong": 0,
+      "meanConfRight": 0.925,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "6/40"
+    },
+    "fillDate": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 100,
+      "missing": 0,
+      "wrong": 0,
+      "meanConfRight": 0.938,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "5/40"
+    },
+    "daySupply": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 85,
+      "missing": 6,
+      "wrong": 0,
+      "meanConfRight": 0.853,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "10/34"
+    },
+    "quantity": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 95,
+      "missing": 2,
+      "wrong": 0,
+      "meanConfRight": 0.75,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "19/38"
+    },
+    "refills": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 100,
+      "missing": 0,
+      "wrong": 0,
+      "meanConfRight": 0.988,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "1/40"
+    },
+    "rxNumber": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 100,
+      "missing": 0,
+      "wrong": 0,
+      "meanConfRight": 0.988,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "1/40"
+    },
+    "pharmacyPhone": {
+      "n": 40,
+      "cleanN": 19,
+      "cleanPct": 100,
+      "overallPct": 100,
+      "missing": 0,
+      "wrong": 0,
+      "meanConfRight": 0.988,
+      "meanConfWrong": null,
+      "wrongFlaggedAtThreshold": "0/0",
+      "rightFlaggedAtThreshold": "1/40"
+    }
+  },
+  "failures": {
+    "patientName": [],
+    "drugName": [],
+    "strength": [],
+    "sig": [],
+    "fillDate": [],
+    "daySupply": [
+      {
+        "file": "label-03-cvs-atorvastatin.png",
+        "variant": "sticker",
+        "expected": 90,
+        "got": null,
+        "confidence": null
+      },
+      {
+        "file": "label-08-cvs-levothyroxine.png",
+        "variant": "sticker",
+        "expected": 90,
+        "got": null,
+        "confidence": null
+      },
+      {
+        "file": "label-17-walgreens-amlodipine.png",
+        "variant": "sticker",
+        "expected": 90,
+        "got": null,
+        "confidence": null
+      },
+      {
+        "file": "label-22-kaiser-lisinopril.png",
+        "variant": "sticker",
+        "expected": 90,
+        "got": null,
+        "confidence": null
+      },
+      {
+        "file": "label-31-independent-apixaban.png",
+        "variant": "sticker",
+        "expected": 30,
+        "got": null,
+        "confidence": null
+      },
+      {
+        "file": "label-36-independent-sertraline.png",
+        "variant": "sticker",
+        "expected": 30,
+        "got": null,
+        "confidence": null
+      }
+    ],
+    "quantity": [
+      {
+        "file": "label-31-independent-apixaban.png",
+        "variant": "sticker",
+        "expected": 60,
+        "got": null,
+        "confidence": null
+      },
+      {
+        "file": "label-36-independent-sertraline.png",
+        "variant": "sticker",
+        "expected": 30,
+        "got": null,
+        "confidence": null
+      }
+    ],
+    "refills": [],
+    "rxNumber": [],
+    "pharmacyPhone": []
+  },
+  "perImage": [
+    {
+      "file": "label-00-cvs-metformin.png",
+      "layout": "cvs",
+      "variant": "clean",
+      "ocrLineCount": 16,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "METFORMIN",
+          "got": "METFORMIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "500 MG",
+          "got": "500 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+          "got": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-03-03",
+          "got": "2026-03-03",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446230",
+          "got": "0446230",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-01-cvs-apixaban.png",
+      "layout": "cvs",
+      "variant": "clean",
+      "ocrLineCount": 15,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "APIXABAN",
+          "got": "APIXABAN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "5 MG",
+          "got": "5 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+          "got": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-04-05",
+          "got": "2026-04-05",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 5,
+          "got": 5,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446231",
+          "got": "0446231",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-02-cvs-lisinopril.png",
+      "layout": "cvs",
+      "variant": "rotated",
+      "ocrLineCount": 15,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "LISINOPRIL",
+          "got": "LISINOPRIL",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "10 MG",
+          "got": "10 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-05-07",
+          "got": "2026-05-07",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 2,
+          "got": 2,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446232",
+          "got": "0446232",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-03-cvs-atorvastatin.png",
+      "layout": "cvs",
+      "variant": "sticker",
+      "ocrLineCount": 16,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "ATORVASTATIN",
+          "got": "ATORVASTATIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "20 MG",
+          "got": "20 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "got": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-06-09",
+          "got": "2026-06-09",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": null,
+          "confidence": null,
+          "ok": false
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 1,
+          "got": 1,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446233",
+          "got": "0446233",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-04-cvs-insulin-glargine.png",
+      "layout": "cvs",
+      "variant": "clean",
+      "ocrLineCount": 16,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "INSULIN GLARGINE",
+          "got": "INSULIN GLARGINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "100 UNITS/ML",
+          "got": "100 UNITS/ML",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+          "got": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-07-11",
+          "got": "2026-07-11",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 15,
+          "got": 15,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 2,
+          "got": 2,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446234",
+          "got": "0446234",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-05-cvs-donepezil.png",
+      "layout": "cvs",
+      "variant": "lowContrast",
+      "ocrLineCount": 15,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "DONEPEZIL",
+          "got": "DONEPEZIL",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "10 MG",
+          "got": "10 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "got": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-03-13",
+          "got": "2026-03-13",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 4,
+          "got": 4,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446235",
+          "got": "0446235",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-06-cvs-sertraline.png",
+      "layout": "cvs",
+      "variant": "smallFont",
+      "ocrLineCount": 15,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "SERTRALINE",
+          "got": "SERTRALINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "50 MG",
+          "got": "50 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-04-15",
+          "got": "2026-04-15",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446236",
+          "got": "0446236",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-07-cvs-amlodipine.png",
+      "layout": "cvs",
+      "variant": "clean",
+      "ocrLineCount": 16,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "AMLODIPINE",
+          "got": "AMLODIPINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "5 MG",
+          "got": "5 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+          "got": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-05-17",
+          "got": "2026-05-17",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 0,
+          "got": 0,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446237",
+          "got": "0446237",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-08-cvs-levothyroxine.png",
+      "layout": "cvs",
+      "variant": "sticker",
+      "ocrLineCount": 16,
+      "fields": {
+        "patientName": {
+          "expected": "ROSA MARQUEZ",
+          "got": "ROSA MARQUEZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "LEVOTHYROXINE",
+          "got": "LEVOTHYROXINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "75 MCG",
+          "got": "75 MCG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-06-19",
+          "got": "2026-06-19",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": null,
+          "confidence": null,
+          "ok": false
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446238",
+          "got": "0446238",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-09-cvs-ibuprofen.png",
+      "layout": "cvs",
+      "variant": "rotated",
+      "ocrLineCount": 15,
+      "fields": {
+        "patientName": {
+          "expected": "ROSA MARQUEZ",
+          "got": "ROSA MARQUEZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "IBUPROFEN",
+          "got": "IBUPROFEN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "600 MG",
+          "got": "600 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-07-21",
+          "got": "2026-07-21",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 1,
+          "got": 1,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "0446239",
+          "got": "0446239",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550134",
+          "got": "2175550134",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-10-walgreens-metformin.png",
+      "layout": "walgreens",
+      "variant": "clean",
+      "ocrLineCount": 14,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ALVAREZ, ROBERT",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "METFORMIN",
+          "got": "METFORMIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "500 MG",
+          "got": "500 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+          "got": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-03-06",
+          "got": "2026-03-06",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298760-06012",
+          "got": "1298760-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-11-walgreens-apixaban.png",
+      "layout": "walgreens",
+      "variant": "clean",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ALVAREZ, ROBERT",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "APIXABAN",
+          "got": "APIXABAN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "5 MG",
+          "got": "5 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+          "got": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-04-08",
+          "got": "2026-04-08",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 5,
+          "got": 5,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298761-06012",
+          "got": "1298761-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-12-walgreens-lisinopril.png",
+      "layout": "walgreens",
+      "variant": "lowContrast",
+      "ocrLineCount": 14,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ALVAREZ, ROBERT",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "LISINOPRIL",
+          "got": "LISINOPRIL",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "10 MG",
+          "got": "10 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-05-10",
+          "got": "2026-05-10",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 2,
+          "got": 2,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298762-06012",
+          "got": "1298762-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-13-walgreens-atorvastatin.png",
+      "layout": "walgreens",
+      "variant": "clean",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ALVAREZ, ROBERT",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "ATORVASTATIN",
+          "got": "ATORVASTATIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "20 MG",
+          "got": "20 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "got": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-06-12",
+          "got": "2026-06-12",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 1,
+          "got": 1,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298763-06012",
+          "got": "1298763-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-14-walgreens-insulin-glargine.png",
+      "layout": "walgreens",
+      "variant": "rotated",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ALVAREZ, ROBERT",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "INSULIN GLARGINE",
+          "got": "INSULIN GLARGINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "100 UNITS/ML",
+          "got": "100 UNITS/ML",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+          "got": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-07-14",
+          "got": "2026-07-14",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 15,
+          "got": 15,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 2,
+          "got": 2,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298764-06012",
+          "got": "1298764-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-15-walgreens-donepezil.png",
+      "layout": "walgreens",
+      "variant": "smallFont",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ALVAREZ, ELEANOR",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "DONEPEZIL",
+          "got": "DONEPEZIL",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "10 MG",
+          "got": "10 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "got": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-03-16",
+          "got": "2026-03-16",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 4,
+          "got": 4,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298765-06012",
+          "got": "1298765-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-16-walgreens-sertraline.png",
+      "layout": "walgreens",
+      "variant": "clean",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ALVAREZ, ELEANOR",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "SERTRALINE",
+          "got": "SERTRALINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "50 MG",
+          "got": "50 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-04-18",
+          "got": "2026-04-18",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298766-06012",
+          "got": "1298766-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-17-walgreens-amlodipine.png",
+      "layout": "walgreens",
+      "variant": "sticker",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ALVAREZ, ELEANOR",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "AMLODIPINE",
+          "got": "AMLODIPINE",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "strength": {
+          "expected": "5 MG",
+          "got": "5 MG",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+          "got": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-05-20",
+          "got": "2026-05-20",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": null,
+          "confidence": null,
+          "ok": false
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 0,
+          "got": 0,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298767-06012",
+          "got": "1298767-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-18-walgreens-levothyroxine.png",
+      "layout": "walgreens",
+      "variant": "clean",
+      "ocrLineCount": 16,
+      "fields": {
+        "patientName": {
+          "expected": "ROSA MARQUEZ",
+          "got": "MARQUEZ, ROSA",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "LEVOTHYROXINE",
+          "got": "LEVOTHYROXINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "75 MCG",
+          "got": "75 MCG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-06-22",
+          "got": "2026-06-22",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298768-06012",
+          "got": "1298768-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-19-walgreens-ibuprofen.png",
+      "layout": "walgreens",
+      "variant": "lowContrast",
+      "ocrLineCount": 16,
+      "fields": {
+        "patientName": {
+          "expected": "ROSA MARQUEZ",
+          "got": "MARQUEZ, ROSA",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "IBUPROFEN",
+          "got": "IBUPROFEN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "600 MG",
+          "got": "600 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-07-24",
+          "got": "2026-07-24",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 1,
+          "got": 1,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "1298769-06012",
+          "got": "1298769-06012",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550188",
+          "got": "2175550188",
+          "confidence": 0.5,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-20-kaiser-metformin.png",
+      "layout": "kaiser",
+      "variant": "clean",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "METFORMIN",
+          "got": "METFORMIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "500 MG",
+          "got": "500 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+          "got": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-03-09",
+          "got": "2026-03-09",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573910",
+          "got": "20-5573910",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-21-kaiser-apixaban.png",
+      "layout": "kaiser",
+      "variant": "clean",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "APIXABAN",
+          "got": "APIXABAN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "5 MG",
+          "got": "5 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+          "got": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-04-11",
+          "got": "2026-04-11",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 5,
+          "got": 5,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573911",
+          "got": "20-5573911",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-22-kaiser-lisinopril.png",
+      "layout": "kaiser",
+      "variant": "sticker",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "LISINOPRIL",
+          "got": "LISINOPRIL",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "10 MG",
+          "got": "10 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-05-13",
+          "got": "2026-05-13",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": null,
+          "confidence": null,
+          "ok": false
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 2,
+          "got": 2,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573912",
+          "got": "20-5573912",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-23-kaiser-atorvastatin.png",
+      "layout": "kaiser",
+      "variant": "rotated",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "ATORVASTATIN",
+          "got": "ATORVASTATIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "20 MG",
+          "got": "20 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "got": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-06-15",
+          "got": "2026-06-15",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 1,
+          "got": 1,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573913",
+          "got": "20-5573913",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-24-kaiser-insulin-glargine.png",
+      "layout": "kaiser",
+      "variant": "smallFont",
+      "ocrLineCount": 14,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "INSULIN GLARGINE",
+          "got": "INSULIN GLARGINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "100 UNITS/ML",
+          "got": "100 UNITS/ML",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+          "got": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-07-17",
+          "got": "2026-07-17",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 15,
+          "got": 15,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 2,
+          "got": 2,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573914",
+          "got": "20-5573914",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-25-kaiser-donepezil.png",
+      "layout": "kaiser",
+      "variant": "clean",
+      "ocrLineCount": 14,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "DONEPEZIL",
+          "got": "DONEPEZIL",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "10 MG",
+          "got": "10 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "got": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-03-19",
+          "got": "2026-03-19",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 4,
+          "got": 4,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573915",
+          "got": "20-5573915",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-26-kaiser-sertraline.png",
+      "layout": "kaiser",
+      "variant": "lowContrast",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "SERTRALINE",
+          "got": "SERTRALINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "50 MG",
+          "got": "50 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-04-21",
+          "got": "2026-04-21",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573916",
+          "got": "20-5573916",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-27-kaiser-amlodipine.png",
+      "layout": "kaiser",
+      "variant": "clean",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "AMLODIPINE",
+          "got": "AMLODIPINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "5 MG",
+          "got": "5 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+          "got": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-05-23",
+          "got": "2026-05-23",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 0,
+          "got": 0,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573917",
+          "got": "20-5573917",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-28-kaiser-levothyroxine.png",
+      "layout": "kaiser",
+      "variant": "rotated",
+      "ocrLineCount": 14,
+      "fields": {
+        "patientName": {
+          "expected": "ROSA MARQUEZ",
+          "got": "ROSA MARQUEZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "LEVOTHYROXINE",
+          "got": "LEVOTHYROXINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "75 MCG",
+          "got": "75 MCG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-06-25",
+          "got": "2026-06-25",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573918",
+          "got": "20-5573918",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-29-kaiser-ibuprofen.png",
+      "layout": "kaiser",
+      "variant": "clean",
+      "ocrLineCount": 13,
+      "fields": {
+        "patientName": {
+          "expected": "ROSA MARQUEZ",
+          "got": "ROSA MARQUEZ",
+          "confidence": 1,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "IBUPROFEN",
+          "got": "IBUPROFEN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "600 MG",
+          "got": "600 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-07-27",
+          "got": "2026-07-27",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 1,
+          "got": 1,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "20-5573919",
+          "got": "20-5573919",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "8665550119",
+          "got": "8665550119",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-30-independent-metformin.png",
+      "layout": "independent",
+      "variant": "clean",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "METFORMIN",
+          "got": "METFORMIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "500 MG",
+          "got": "500 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+          "got": "TAKE 1 TABLET BY MOUTH TWICE DAILY WITH MEALS",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-03-12",
+          "got": "2026-03-12",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773480",
+          "got": "773480",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-31-independent-apixaban.png",
+      "layout": "independent",
+      "variant": "sticker",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "APIXABAN",
+          "got": "APIXABAN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "5 MG",
+          "got": "5 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+          "got": "TAKE 1 TABLET BY MOUTH TWICE DAILY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-04-14",
+          "got": "2026-04-14",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": null,
+          "confidence": null,
+          "ok": false
+        },
+        "quantity": {
+          "expected": 60,
+          "got": null,
+          "confidence": null,
+          "ok": false
+        },
+        "refills": {
+          "expected": 5,
+          "got": 5,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773481",
+          "got": "773481",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-32-independent-lisinopril.png",
+      "layout": "independent",
+      "variant": "clean",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "LISINOPRIL",
+          "got": "LISINOPRIL",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "10 MG",
+          "got": "10 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY DAY",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-05-16",
+          "got": "2026-05-16",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 2,
+          "got": 2,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773482",
+          "got": "773482",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-33-independent-atorvastatin.png",
+      "layout": "independent",
+      "variant": "lowContrast",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "ATORVASTATIN",
+          "got": "ATORVASTATIN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "20 MG",
+          "got": "20 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "got": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-06-18",
+          "got": "2026-06-18",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 1,
+          "got": 1,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773483",
+          "got": "773483",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-34-independent-insulin-glargine.png",
+      "layout": "independent",
+      "variant": "smallFont",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ROBERT ALVAREZ",
+          "got": "ROBERT ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "INSULIN GLARGINE",
+          "got": "INSULIN GLARGINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "100 UNITS/ML",
+          "got": "100 UNITS/ML",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+          "got": "INJECT 20 UNITS UNDER THE SKIN AT BEDTIME",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-07-20",
+          "got": "2026-07-20",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 15,
+          "got": 15,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 2,
+          "got": 2,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773484",
+          "got": "773484",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-35-independent-donepezil.png",
+      "layout": "independent",
+      "variant": "clean",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "DONEPEZIL",
+          "got": "DONEPEZIL",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "10 MG",
+          "got": "10 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "got": "TAKE 1 TABLET BY MOUTH AT BEDTIME",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-03-22",
+          "got": "2026-03-22",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 4,
+          "got": 4,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773485",
+          "got": "773485",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-36-independent-sertraline.png",
+      "layout": "independent",
+      "variant": "sticker",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "SERTRALINE",
+          "got": "SERTRALINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "50 MG",
+          "got": "50 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY MORNING",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-04-24",
+          "got": "2026-04-24",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": null,
+          "confidence": null,
+          "ok": false
+        },
+        "quantity": {
+          "expected": 30,
+          "got": null,
+          "confidence": null,
+          "ok": false
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773486",
+          "got": "773486",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-37-independent-amlodipine.png",
+      "layout": "independent",
+      "variant": "rotated",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ELEANOR ALVAREZ",
+          "got": "ELEANOR ALVAREZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "AMLODIPINE",
+          "got": "AMLODIPINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "5 MG",
+          "got": "5 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+          "got": "TAKE 1 TABLET BY MOUTH ONCE DAILY",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-05-26",
+          "got": "2026-05-26",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 1,
+          "ok": true
+        },
+        "refills": {
+          "expected": 0,
+          "got": 0,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773487",
+          "got": "773487",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-38-independent-levothyroxine.png",
+      "layout": "independent",
+      "variant": "clean",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ROSA MARQUEZ",
+          "got": "ROSA MARQUEZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "LEVOTHYROXINE",
+          "got": "LEVOTHYROXINE",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "75 MCG",
+          "got": "75 MCG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY MORNING ON AN EMPTY STOMACH",
+          "confidence": 1,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-06-28",
+          "got": "2026-06-28",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 90,
+          "got": 90,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 3,
+          "got": 3,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773488",
+          "got": "773488",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    },
+    {
+      "file": "label-39-independent-ibuprofen.png",
+      "layout": "independent",
+      "variant": "clean",
+      "ocrLineCount": 12,
+      "fields": {
+        "patientName": {
+          "expected": "ROSA MARQUEZ",
+          "got": "ROSA MARQUEZ",
+          "confidence": 0.6,
+          "ok": true
+        },
+        "drugName": {
+          "expected": "IBUPROFEN",
+          "got": "IBUPROFEN",
+          "confidence": 1,
+          "ok": true
+        },
+        "strength": {
+          "expected": "600 MG",
+          "got": "600 MG",
+          "confidence": 1,
+          "ok": true
+        },
+        "sig": {
+          "expected": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+          "got": "TAKE 1 TABLET BY MOUTH EVERY 8 HOURS AS NEEDED FOR PAIN",
+          "confidence": 0.5,
+          "ok": true
+        },
+        "fillDate": {
+          "expected": "2026-07-30",
+          "got": "2026-07-30",
+          "confidence": 1,
+          "ok": true
+        },
+        "daySupply": {
+          "expected": 30,
+          "got": 30,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "quantity": {
+          "expected": 60,
+          "got": 60,
+          "confidence": 0.5,
+          "ok": true
+        },
+        "refills": {
+          "expected": 1,
+          "got": 1,
+          "confidence": 1,
+          "ok": true
+        },
+        "rxNumber": {
+          "expected": "773489",
+          "got": "773489",
+          "confidence": 1,
+          "ok": true
+        },
+        "pharmacyPhone": {
+          "expected": "2175550163",
+          "got": "2175550163",
+          "confidence": 1,
+          "ok": true
+        }
+      }
+    }
+  ]
+}
