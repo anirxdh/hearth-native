@@ -98,18 +98,43 @@ label facts (fill date + day supply)
 **Decision.** `seedDemoFamily(db, today)` (`packages/schema/src/seed.ts`) computes all fill dates relative to the passed `today`, so Robert's metformin is always ~3 days from empty — the demo digest always has a story. Every seed write goes through the same audit path as real writes.
 **Why.** A demo that decays into "everything is fine" after a week is useless for TestFlight reviewers and App Review; ACL/App Store reviewers see the product exactly as designed.
 
+
+### ADR-16 · Charts are custom SVG, not a chart library
+**Decision.** `HearthChart` renders through `react-native-svg` (already present for Lucide icons): hairline grid, ink line, first/last labels, optional reference band. All bucketing lives in `packages/core/src/series.ts` (7d/30d daily, 90d weekly means, 1y monthly means; same-day readings averaged first), pinned by 9 tests.
+**Why.** The roadmap suggested victory-native (Skia), but vitals trends need exactly one mark type (a line), and Skia would add a heavyweight dependency purely for styling we would then fight to make editorial. Deviation recorded here on purpose: Skia enters in P27 for the workflow canvas, which genuinely needs gestures and a scene graph; if charts ever need pan/scrub, they can ride that dependency then.
+**The invariant that matters.** What you see is what the data says: rendering is pure presentation and every transformation is a tested pure function.
+
+### ADR-17 · The paper layer is a pure package with two enforced rules
+**Decision.** `packages/print` produces complete US-Letter HTML documents (one-pager, ER sheet, portfolio, guide) as pure TypeScript string functions with zero react-native imports, snapshot-tested, XSS-escaped (`esc()` tested against a `<script>` payload in a patient name). The app-side `lib/print.ts` is the only place PDFs are made, and it enforces: (1) every print/share writes to the access log; (2) PHI PDFs exist only in cache and are deleted after the share sheet closes.
+**Why.** Printouts are the product's emergency interface: they must render identically forever (snapshots), survive hostile input (escaping), and never silently leak (one chokepoint for logging and cleanup). Severe allergies render as a black band leading every page, above medications, asserted by test.
+
+### ADR-18 · Backup is SQLCipher re-keying, not hand-rolled crypto
+**Decision.** Export attaches a new database keyed to a caregiver-chosen passphrase and runs `sqlcipher_export` (the canonical SQLCipher copy path); import verifies the passphrase, replaces the live file, re-exports into a fresh database keyed with this device's Keychain key, and rolls forward through any newer migrations via the normal boot path.
+**Why.** No new cryptography code, no new dependencies: the same audited engine that encrypts at rest encrypts in transit. This is also the deliberate answer to the by-design key-loss case from ADR-2: a backup plus its passphrase rebuilds the record on a new phone.
+
+### ADR-19 · Shields: privacy overlay always, Face ID opt-in
+**Decision.** One component (`Shields`) covers the UI with plain paper whenever the app is not active (so iOS app-switcher snapshots never show care data) and, when the caregiver opts in, demands Face ID/passcode on open and on return from background. A root `ErrorBoundary` guarantees no crash ever strands a caregiver on a white screen.
+**Why.** The overlay is free privacy with zero friction, so it is always on. The lock adds friction at exactly the wrong moments (an emergency), so it is a choice, not a default; the settings copy says what it does and when it asks.
+
+### ADR-20 · Guides are bundled data, stamped for review
+**Decision.** The six emergency guides live in the binary as typed data (24 SVG pictogram components, four steps each), with a version + reviewer + date stamp rendered on every card and printout. They currently ship stamped "Pending clinician review v0.9" — visibly, not in a changelog.
+**Why.** Emergency content must work offline, never vary by network state, and never be generated. Content updates are data changes reviewed like code (guideline 2.5.2-safe). Wearing the review status on the surface is the honest version of "clinician-reviewed": the stamp is real, so its absence is visible until a licensed reviewer signs.
+
 ---
 
 ## 3. Testing strategy
 
 | Layer | Harness | What is pinned |
 |---|---|---|
-| `packages/core` | Jest (ts-jest), 135 tests | Golden runway tables across DST/leap/boundaries; full digest ranking order; notification trigger sets, quiet-hours wrap, 64-cap, PHI-free payloads; UUIDv7 bits and ordering; high-alert matches |
-| `packages/schema` | Jest + better-sqlite3, 22 tests | Migrations apply in journal order onto a fresh DB; seed round-trips field-for-field; audit helpers append; copy-restore durability under a failing migration |
+| `packages/core` | Jest (ts-jest), 155 tests | Golden runway tables across DST/leap/boundaries; full digest ranking order; notification trigger sets, quiet-hours wrap, 64-cap, PHI-free payloads; UUIDv7 bits and ordering; high-alert matches |
+| `packages/schema` | Jest + better-sqlite3, 22 tests (now over migrations 0000+0001) | Migrations apply in journal order onto a fresh DB; seed round-trips field-for-field; audit helpers append; copy-restore durability under a failing migration |
 | `apps/mobile` | `tsc --noEmit` strict + simulator build | Type-level integration of core/schema/screens; the P9-era on-device checks (force-quit persistence, notification soak) are user-run per the roadmap |
 | CI | GitHub Actions (macOS) | `pnpm typecheck && pnpm test` on every push |
 
-**The rule that generated the tests:** every number a caregiver might act on must be computed in exactly one place, in pure code, with a test pinning it.
+| `packages/print` | Jest snapshots, 11 tests | Template output stability; escaping; severe-allergy-before-meds ordering |
+| `packages/label-parser` | Jest, 29 tests | Deterministic label parsing against the P3 corpus |
+
+**The rule that generated the tests:** every number a caregiver might act on must be computed in exactly one place, in pure code, with a test pinning it. Total: 217.
 
 ---
 

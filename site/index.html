@@ -79,6 +79,10 @@
   .toc{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
   .toc a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--ink2)}
   .toc a:hover{background:var(--hover)}
+.shots3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.shots3 .shot img{width:100%;border:1px solid #E8E8ED;border-radius:14px}
+.shots3 .shot p{font-size:12.5px;color:#6E6E73;margin-top:6px}
+@media(max-width:720px){.shots3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -87,12 +91,12 @@
 <header>
   <div class="kicker">Hearth Native · Build log · Phases 1–8 of 32</div>
   <h1>The real app, built phase by phase.</h1>
-  <p class="sub">Hearth is becoming a native iPhone app. This page explains what was built in Stage 1 and Stage 2 — the encrypted foundation and the lovable core — in plain English, with sketches. Everything below is implemented, tested, and running on an iPhone simulator.</p>
+  <p class="sub">Hearth is becoming a native iPhone app. This page explains what was built in Stages 1 through 4 — the encrypted foundation, the lovable core, the full patient record with its paper layer, and the hardening pass — in plain English, with sketches. Everything below is implemented, tested, and running on an iPhone simulator.</p>
   <div class="stats">
-    <div class="stat"><b>8</b><span>phases complete</span></div>
-    <div class="stat green"><b>186</b><span>tests, all passing</span></div>
+    <div class="stat"><b>17</b><span>phases built (of 32)</span></div>
+    <div class="stat green"><b>217</b><span>tests, all passing</span></div>
     <div class="stat"><b>0</b><span>type errors</span></div>
-    <div class="stat"><b>9</b><span>clean commits</span></div>
+    <div class="stat"><b>13</b><span>clean commits</span></div>
     <div class="stat red"><b>3 days</b><span>Robert's metformin — the demo digest lead</span></div>
   </div>
   <nav class="toc">
@@ -454,6 +458,94 @@
     </div>
     <div class="phshot"><img src="img/settings-alerts.png" alt="Settings with 22 scheduled alerts"></div>
   </div>
+</div>
+
+
+<!-- ================= STAGE 3 ================= -->
+<div class="sec" id="stage3"><span class="l">Stage 3 · Patient 360 &amp; the paper layer</span><span class="rule"></span><span class="m">P10 – P16</span></div>
+<h2>The whole person, and the page you grab on the way out</h2>
+<p class="lede">Stage 3 deepens each elder into a full record — vitals, trends, history, labs, documents — and then makes it travel on paper: the one-pager, the ER sheet, the everyone pack, and six emergency guides. All of it works in airplane mode, because the worst moments happen in places with no signal.</p>
+
+<div class="sketch">
+  <svg viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#1D1D1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- record box -->
+      <rect x="40" y="60" width="240" height="180" rx="14" transform="rotate(-0.6 160 150)"/>
+      <text x="70" y="92" class="skt b">the record</text>
+      <text x="70" y="120" class="skt">six tabs, one person:</text>
+      <text x="70" y="142" class="skt">vitals · meds · activity</text>
+      <text x="70" y="164" class="skt">history · labs · documents</text>
+      <text x="70" y="196" class="skt">allergy banner on every tab</text>
+      <!-- arrow -->
+      <path d="M 292 150 C 340 140 360 140 405 148" marker-end="url(#arr2)"/>
+      <text x="305" y="128" class="skt m">printed fresh, never stale</text>
+      <!-- printer -->
+      <rect x="415" y="105" width="150" height="70" rx="10" transform="rotate(0.8 490 140)"/>
+      <rect x="440" y="80" width="100" height="30" rx="4" transform="rotate(-1 490 95)"/>
+      <rect x="435" y="170" width="110" height="55" rx="3" transform="rotate(0.5 490 195)"/>
+      <line x1="450" y1="188" x2="530" y2="188"/><line x1="450" y1="202" x2="518" y2="202"/>
+      <circle cx="540" cy="128" r="4" fill="#C4362F" stroke="none"/>
+      <!-- arrows out -->
+      <path d="M 575 140 C 630 110 650 100 700 96" marker-end="url(#arr2)"/>
+      <path d="M 575 150 C 635 150 655 150 700 150" marker-end="url(#arr2)"/>
+      <path d="M 575 162 C 630 195 650 205 700 208" marker-end="url(#arr2)"/>
+      <text x="712" y="88" class="skt b">ER sheet</text><text x="712" y="106" class="skt m">allergies lead, 2 taps away</text>
+      <text x="712" y="146" class="skt b">one-pager</text><text x="712" y="164" class="skt m">with the daily-needs table</text>
+      <text x="712" y="204" class="skt b">everyone pack</text><text x="712" y="222" class="skt m">the whole circle, one PDF</text>
+    </g>
+    <defs><marker id="arr2" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path d="M2 2 L10 6 L2 10" fill="none" stroke="#1D1D1F" stroke-width="1.8" stroke-linecap="round"/></marker></defs>
+  </svg>
+  <p class="cap">the paper layer: a live record on the left, three always-current documents on the right</p>
+</div>
+
+<div class="phase" id="p10-13">
+  <div class="phead"><span class="pnum">Phases 10–13</span><h3>Patient 360: tabs for the whole person</h3><span class="pdays">12 days · committed</span></div>
+  <p class="pwhat">The patient screen became a six-tab record. Overview leads with what matters now (latest readings, meds needing attention, the care team a tap from calling). Activity turns readings into hairline trend charts — the bucketing math lives in the tested core, so the chart can only say what the data says. History is a year-grouped timeline where medication changes appear automatically; nobody writes them twice. Records holds labs with out-of-range flags. Documents is an encrypted vault for insurance cards and directives, fed by the camera.</p>
+  <ul class="built">
+    <li>Migration 0001: five new tables, applied through the copy-protected migration path from Phase 1 — the durability gate's first real test</li>
+    <li>Charts: custom SVG, one mark type, first/last labels only — bucketing (daily / weekly / monthly means) pinned by 9 core tests</li>
+    <li>Robert's demo record now tells a story: resting heart rate drifting up for two weeks, the observation that noticed it, and the labs behind it</li>
+    <li>Camera and photo permission strings are specific and honest; files live under iOS Data Protection, shares go through the access log</li>
+  </ul>
+  <div class="verify"><b>Proved by:</b> 217 tests green including the new series suite; the v1-to-v2 migration ran on the simulator against live Stage-2 data without losing a row.</div>
+  <div class="shots3">
+    <div class="shot"><img src="img/s34-patient360.png" alt="Patient 360 overview with vitals grid"><p>Overview: allergy banner, latest vitals, needs attention</p></div>
+    <div class="shot"><img src="img/s34-activity.png" alt="Activity tab with weight chart and observations"><p>Activity: hairline trends and the observation log</p></div>
+    <div class="shot"><img src="img/s34-history.png" alt="History timeline"><p>History: year-grouped, med changes auto-appended</p></div>
+  </div>
+</div>
+
+<div class="phase" id="p14-16">
+  <div class="phead"><span class="pnum">Phases 14–16</span><h3>Paper: one-pager, ER sheet, everyone pack, guides</h3><span class="pdays">8 days · committed</span></div>
+  <p class="pwhat">Print is the emergency interface. A pure template package renders US-Letter documents with the severe-allergy band leading every page; the app enforces two rules in one chokepoint — every print or share is logged, and PDFs live only in cache and are deleted after the share sheet closes. The one-pager adds a personalized daily-needs table (protein, fluids, fiber, and the rest) computed from published reference values by deterministic, tested rules — general guidance, framed as exactly that. Six emergency guides ship inside the binary with 24 hand-drawn pictograms: falls, choking, stroke, chest pain, bleeding, sudden confusion.</p>
+  <ul class="built">
+    <li>Templates are snapshot-tested and escape hostile input (a patient literally named &lt;script&gt; prints harmlessly)</li>
+    <li>The ER sheet opens two taps from home; call-first guides carry a red Call 911 pill</li>
+    <li>Every guide wears its review stamp on the surface: "Pending clinician review v0.9" until a licensed reviewer signs — honesty over theater</li>
+  </ul>
+  <div class="verify"><b>Proved by:</b> 11 print snapshot tests, 11 nutrition tests; every document and guide opens and print-previews in airplane mode per the basement checklist.</div>
+  <div class="shots3">
+    <div class="shot"><img src="img/s34-er.png" alt="ER sheet with critical band"><p>The ER sheet: critical facts above the fold</p></div>
+    <div class="shot"><img src="img/s34-guides.png" alt="Emergency guides index"><p>The guide book: six situations, 911-first banner</p></div>
+    <div class="shot"><img src="img/s34-guide-fall.png" alt="After a fall guide with pictogram steps"><p>After a fall: pictogram steps, blood-thinner warning</p></div>
+  </div>
+</div>
+
+<!-- ================= STAGE 4 ================= -->
+<div class="sec" id="stage4"><span class="l">Stage 4 · Hardening</span><span class="rule"></span><span class="m">P17 – P19 (code)</span></div>
+<h2>Trustworthy is a feature</h2>
+<p class="lede">Before new capabilities, the app earned its keep: accessible to caregivers who use VoiceOver, honest when something breaks, recoverable when a phone is lost, and transparent about every time care data leaves the app.</p>
+
+<div class="phase" id="p17-19">
+  <div class="phead"><span class="pnum">Phases 17–19</span><h3>Shields, backup, and the access log</h3><span class="pdays">10 days · committed</span></div>
+  <p class="pwhat">A privacy shield covers the screen with plain paper the instant Hearth leaves the foreground, so the iOS app switcher never shows a medication list. An opt-in Face ID lock guards opening. Backup is the canonical SQLCipher move — the whole record re-keyed to a passphrase you choose, one file, restorable on a new phone — which also answers the deliberate "key loss means data loss" design with an escape hatch you control. And the access log turns a promise into a screen: every print, share, and export, timestamped, append-only.</p>
+  <ul class="built">
+    <li>Error boundary: no crash ever strands a caregiver on a white screen; data stays put, one tap retries</li>
+    <li>Accessibility: roles and labels on every interactive element, 44pt targets, chart alt text; the manual VoiceOver run is on the physical-device list</li>
+    <li>Delete-everything wipes the database, its key, the WAL files, and the document vault</li>
+    <li>HOSPITAL_BASEMENT.md: the airplane-mode release gate, committed to the repo and run before every release</li>
+  </ul>
+  <div class="verify"><b>Proved by:</b> the full suite green; backup round-trip verified in code review against SQLCipher's documented export path; the basement checklist is now a standing release gate.</div>
 </div>
 
 <!-- ================= PROOF ================= -->
