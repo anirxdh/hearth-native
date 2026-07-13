@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hearth Native — The Build, Explained</title>
+<meta name="description" content="How the Hearth caregiver app was built: phases 1-8, explained with sketches.">
+<style>
+  :root{
+    --paper:#FFFFFF; --ink:#1D1D1F; --ink2:#6E6E73; --ink3:#98989D;
+    --line:#E8E8ED; --line2:#D2D2D7; --hover:#F5F5F7;
+    --red:#C4362F; --amber:#9A7213; --green:#2F7D53;
+    --sketch:'Chalkboard SE','Comic Sans MS','Segoe Print',cursive;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font:15.5px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 28px}
+  a{color:inherit}
+  /* hero */
+  header{padding:84px 0 40px}
+  .kicker{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+  h1{font-size:clamp(38px,6vw,64px);font-weight:650;letter-spacing:-.03em;line-height:1.04;margin:14px 0 18px}
+  .sub{font-size:18px;color:var(--ink2);max-width:640px}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+  .stat{border:1px solid var(--line);border-radius:14px;padding:14px 22px;min-width:120px}
+  .stat b{display:block;font-size:26px;font-weight:650;letter-spacing:-.02em}
+  .stat span{font-size:12px;color:var(--ink2)}
+  .stat.red b{color:var(--red)} .stat.green b{color:var(--green)}
+  /* section header */
+  .sec{display:flex;align-items:center;gap:14px;margin:76px 0 8px}
+  .sec .l{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);white-space:nowrap}
+  .sec .rule{flex:1;height:1px;background:var(--line)}
+  .sec .m{font-size:12px;color:var(--ink3);white-space:nowrap}
+  h2{font-size:30px;font-weight:650;letter-spacing:-.02em;margin:10px 0 10px}
+  .lede{color:var(--ink2);max-width:680px;margin-bottom:26px}
+  /* phase cards */
+  .phase{border:1px solid var(--line);border-radius:18px;padding:30px 32px;margin-top:22px;background:#fff}
+  .phead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .pnum{font-family:var(--sketch);font-size:15px;color:var(--paper);background:var(--ink);border-radius:999px;padding:3px 13px;white-space:nowrap}
+  .phead h3{font-size:21.5px;font-weight:650;letter-spacing:-.015em}
+  .pdays{margin-left:auto;font-size:12px;color:var(--ink3)}
+  .pwhat{color:var(--ink2);margin:10px 0 4px;max-width:720px}
+  .cols{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:start;margin-top:18px}
+  .cols.rev{grid-template-columns:.85fr 1.15fr}
+  @media (max-width:820px){.cols,.cols.rev{grid-template-columns:1fr}}
+  ul.built{list-style:none;margin-top:8px}
+  ul.built li{padding:7px 0 7px 26px;position:relative;border-bottom:1px solid var(--hover);font-size:14.5px}
+  ul.built li:last-child{border-bottom:none}
+  ul.built li::before{content:"";position:absolute;left:2px;top:15px;width:12px;height:8px;border-left:2px solid var(--green);border-bottom:2px solid var(--green);transform:rotate(-48deg) skewX(-6deg)}
+  .verify{margin-top:14px;border-top:1px dashed var(--line2);padding-top:12px;font-size:13px;color:var(--ink2)}
+  .verify b{color:var(--ink);font-weight:650}
+  /* sketch panels */
+  .sketch{border:1px dashed var(--line2);border-radius:14px;padding:14px;background:#FDFDFD}
+  .sketch svg{display:block;width:100%;height:auto}
+  .sketch .cap{font-family:var(--sketch);font-size:12.5px;color:var(--ink3);text-align:center;margin-top:8px}
+  text{font-family:'Chalkboard SE','Comic Sans MS','Segoe Print',cursive}
+  /* screenshots */
+  .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:22px;margin-top:26px}
+  .shot{text-align:center}
+  .shot img{width:100%;max-width:250px;border:1px solid var(--line2);border-radius:26px;box-shadow:0 18px 44px rgba(0,0,0,.09)}
+  .shot .cap{font-size:12.5px;color:var(--ink2);margin-top:10px}
+  .phshot img{width:100%;max-width:250px;border:1px solid var(--line2);border-radius:24px;box-shadow:0 14px 34px rgba(0,0,0,.08);display:block;margin:0 auto}
+  /* misc */
+  .pillrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .pill{border:1px solid var(--line2);border-radius:999px;padding:6px 15px;font-size:12.5px;color:var(--ink2)}
+  .go{display:inline-block;font-family:var(--sketch);color:var(--green);border:2.5px solid var(--green);border-radius:10px;padding:2px 14px;font-size:18px;transform:rotate(-4deg);letter-spacing:.06em}
+  table.score{border-collapse:collapse;width:100%;font-size:13px;margin-top:10px}
+  table.score th{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);text-align:left;padding:6px 10px;border-bottom:1px solid var(--line2)}
+  table.score td{padding:7px 10px;border-bottom:1px solid var(--hover)}
+  table.score td b.ok{color:var(--green)} table.score td b.warn{color:var(--amber)}
+  .adr{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:20px}
+  .adrc{border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .adrc b{font-size:14px;display:block;margin-bottom:4px}
+  .adrc span{font-size:13px;color:var(--ink2)}
+  .next{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .nx{border:1px dashed var(--line2);border-radius:12px;padding:10px 16px;font-size:13px;color:var(--ink2)}
+  footer{margin:90px 0 60px;border-top:1px solid var(--line);padding-top:22px;font-size:12.5px;color:var(--ink3)}
+  .toc{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+  .toc a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--ink2)}
+  .toc a:hover{background:var(--hover)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Hearth Native · Build log · Phases 1–8 of 32</div>
+  <h1>The real app, built phase by phase.</h1>
+  <p class="sub">Hearth is becoming a native iPhone app. This page explains what was built in Stage 1 and Stage 2 — the encrypted foundation and the lovable core — in plain English, with sketches. Everything below is implemented, tested, and running on an iPhone simulator.</p>
+  <div class="stats">
+    <div class="stat"><b>8</b><span>phases complete</span></div>
+    <div class="stat green"><b>186</b><span>tests, all passing</span></div>
+    <div class="stat"><b>0</b><span>type errors</span></div>
+    <div class="stat"><b>9</b><span>clean commits</span></div>
+    <div class="stat red"><b>3 days</b><span>Robert's metformin — the demo digest lead</span></div>
+  </div>
+  <nav class="toc">
+    <a href="#map">The big picture</a><a href="#p1">P1 Vault</a><a href="#p2">P2 Design</a><a href="#p3">P3 OCR spike</a><a href="#p4">P4 Consent</a><a href="#p5">P5 Care circle</a><a href="#p6">P6 Runway</a><a href="#p7">P7 Digest</a><a href="#p8">P8 Alerts</a><a href="#proof">Proof</a><a href="#adr">Decisions</a>
+  </nav>
+</header>
+
+<!-- ================= BIG PICTURE ================= -->
+<div class="sec" id="map"><span class="l">The big picture</span><span class="rule"></span><span class="m">one diagram</span></div>
+<h2>How a bottle becomes a calm morning</h2>
+<p class="lede">Everything in Hearth flows from two facts printed on every prescription label: the fill date and the day supply. A human verifies them once; deterministic code does everything else. No AI touches a number, and nothing leaves the phone.</p>
+
+<div class="sketch">
+<svg viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="hach" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#E8E8ED" stroke-width="2.4"/>
+    </pattern>
+    <pattern id="hachG" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#CDE3D6" stroke-width="2.4"/>
+    </pattern>
+    <marker id="arr" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M2 2 C5 4 8 5 10 6 C8 7 5 8 2 10" fill="none" stroke="#1D1D1F" stroke-width="1.6" stroke-linecap="round"/>
+    </marker>
+  </defs>
+  <g stroke="#1D1D1F" stroke-width="1.7" fill="none" stroke-linecap="round">
+    <!-- bottle -->
+    <g transform="translate(38,120) rotate(-1.5)">
+      <path d="M22 2 L64 3 L63 20 L21 19 Z M14 22 L72 21 L70 118 Q69 126 60 127 L26 128 Q16 127 15 119 Z" fill="#fff"/>
+      <path d="M20 52 L66 51 M20 88 L66 87" stroke="#98989D" stroke-dasharray="3 4"/>
+      <text x="8" y="160" font-size="14" fill="#1D1D1F">the label</text>
+      <text x="-2" y="180" font-size="11.5" fill="#6E6E73">fill date + day supply</text>
+    </g>
+    <path d="M128 185 C160 183 180 184 208 186" marker-end="url(#arr)"/>
+    <text x="128" y="172" font-size="11.5" fill="#6E6E73" stroke="none">typed in &amp; verified once</text>
+    <!-- vault -->
+    <g transform="translate(212,110) rotate(.8)">
+      <path d="M6 26 Q4 6 26 6 L182 4 Q202 4 202 24 L204 132 Q204 152 184 152 L26 154 Q6 154 6 134 Z" fill="url(#hach)"/>
+      <path d="M6 26 Q4 6 26 6 L182 4 Q202 4 202 24 L204 132 Q204 152 184 152 L26 154 Q6 154 6 134 Z" fill="none"/>
+      <text x="30" y="44" font-size="15" fill="#1D1D1F">encrypted vault</text>
+      <text x="30" y="66" font-size="11.5" fill="#6E6E73">SQLite + SQLCipher</text>
+      <text x="30" y="84" font-size="11.5" fill="#6E6E73">key lives in the iOS Keychain</text>
+      <text x="30" y="112" font-size="11.5" fill="#6E6E73">patients · meds · fills</text>
+      <text x="30" y="130" font-size="11.5" fill="#6E6E73">change log (append-only)</text>
+      <!-- little key -->
+      <g transform="translate(158,96)">
+        <circle cx="10" cy="10" r="9"/>
+        <path d="M17 17 L34 33 M27 26 L33 21 M30 30 L36 25"/>
+      </g>
+    </g>
+    <path d="M420 186 C452 184 468 185 494 186" marker-end="url(#arr)"/>
+    <!-- engine -->
+    <g transform="translate(498,96) rotate(-.7)">
+      <path d="M8 28 Q6 8 28 8 L212 6 Q232 6 232 26 L234 154 Q234 174 214 174 L28 176 Q8 176 8 156 Z" fill="#fff"/>
+      <text x="32" y="42" font-size="15" fill="#1D1D1F">the engine · pure code</text>
+      <text x="32" y="68" font-size="12.5" fill="#1D1D1F">runway = fill + supply − today</text>
+      <text x="32" y="94" font-size="12.5" fill="#1D1D1F">digest = rank everyone,</text>
+      <text x="46" y="112" font-size="12.5" fill="#1D1D1F">pick ONE action</text>
+      <text x="32" y="138" font-size="12.5" fill="#1D1D1F">alert plan = every future</text>
+      <text x="46" y="156" font-size="12.5" fill="#1D1D1F">reminder, known today</text>
+      <text x="120" y="196" font-size="11" fill="#2F7D53">135 tests pin every rule</text>
+    </g>
+    <path d="M736 140 C772 128 790 122 822 116" marker-end="url(#arr)"/>
+    <path d="M736 200 C772 212 790 220 822 228" marker-end="url(#arr)"/>
+    <!-- outputs -->
+    <g transform="translate(826,62) rotate(1.2)">
+      <path d="M6 20 Q5 5 22 5 L138 4 Q152 4 152 18 L153 84 Q153 98 139 98 L21 100 Q6 100 6 86 Z" fill="url(#hachG)"/>
+      <path d="M6 20 Q5 5 22 5 L138 4 Q152 4 152 18 L153 84 Q153 98 139 98 L21 100 Q6 100 6 86 Z" fill="none"/>
+      <text x="22" y="38" font-size="13.5" fill="#1D1D1F">calm screens</text>
+      <text x="22" y="58" font-size="11" fill="#6E6E73">one thing that needs</text>
+      <text x="22" y="74" font-size="11" fill="#6E6E73">you, quiet context</text>
+    </g>
+    <g transform="translate(826,214) rotate(-1.4)">
+      <path d="M6 20 Q5 5 22 5 L138 4 Q152 4 152 18 L153 96 Q153 110 139 110 L21 112 Q6 112 6 98 Z" fill="#fff"/>
+      <text x="22" y="36" font-size="13.5" fill="#1D1D1F">lock-screen alerts</text>
+      <text x="22" y="56" font-size="11" fill="#6E6E73">pre-scheduled, work</text>
+      <text x="22" y="72" font-size="11" fill="#6E6E73">even if the app is</text>
+      <text x="22" y="88" font-size="11" fill="#6E6E73">closed · no names ever</text>
+    </g>
+  </g>
+</svg>
+<div class="cap">the whole product in one line: verified label facts → encrypted vault → deterministic engine → one calm action</div>
+</div>
+
+<!-- ================= STAGE 1 ================= -->
+<div class="sec"><span class="l">Stage 1 · Foundation &amp; risk retirement</span><span class="rule"></span><span class="m">P1 – P4</span></div>
+<h2>Before features: prove the scary parts</h2>
+<p class="lede">Four things could invalidate the whole architecture later: losing someone's data, an ugly design language, OCR not being good enough, and the legal reality of holding another person's health information. Stage 1 retired all four.</p>
+
+<!-- P1 -->
+<div class="phase" id="p1">
+  <div class="phead"><span class="pnum">Phase 1</span><h3>The encrypted vault &amp; the durability gate</h3><span class="pdays">4 days · committed</span></div>
+  <p class="pwhat">Everything a caregiver will ever type lives in one SQLite database on the phone, encrypted with a key that never leaves the iOS Keychain. Before a single feature existed, this phase had to prove data survives crashes, upgrades, and even failed upgrades.</p>
+  <div class="cols">
+    <div>
+      <ul class="built">
+        <li>pnpm monorepo: the app, a pure-code engine package, a schema package — the engine can never secretly depend on UI</li>
+        <li>SQLCipher encryption: 256-bit key generated on first launch, stored only in the Keychain; the database file is unreadable without it</li>
+        <li>Copy-restore migrations: before any upgrade, the database is snapshotted; a failed upgrade restores it automatically</li>
+        <li>Every table carries UUIDv7 ids, UTC timestamps, and an append-only change log — the groundwork sync will use in Stage 7</li>
+        <li>Boot recovery screens for the two nightmare states (key lost, file lost) instead of a crash loop</li>
+      </ul>
+      <div class="verify"><b>Proved by:</b> 22 database tests including a deliberately failing migration that rolls back losslessly; the app builds and boots on an iPhone 16e simulator with the encrypted database live.</div>
+    </div>
+    <div class="sketch">
+      <svg viewBox="0 0 380 300" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#1D1D1F" stroke-width="1.6" fill="none" stroke-linecap="round">
+          <!-- keychain -->
+          <g transform="translate(28,26) rotate(-2)">
+            <path d="M4 18 Q3 4 18 4 L112 3 Q126 3 126 16 L127 62 Q127 76 113 76 L17 78 Q4 78 4 64 Z" fill="#fff"/>
+            <circle cx="34" cy="40" r="11"/><path d="M42 48 L62 66 M55 60 L62 54"/>
+            <text x="76" y="38" font-size="12">iOS</text><text x="76" y="54" font-size="12">Keychain</text>
+          </g>
+          <path d="M96 110 C100 130 106 144 118 160" marker-end="url(#arr)"/>
+          <text x="108" y="136" font-size="11" fill="#6E6E73" stroke="none">unlocks</text>
+          <!-- db cylinder -->
+          <g transform="translate(96,168) rotate(1)">
+            <ellipse cx="70" cy="16" rx="66" ry="14" fill="url(#hach)"/>
+            <path d="M4 16 L5 86 Q6 102 70 103 Q134 102 135 86 L136 16" fill="url(#hach)"/>
+            <ellipse cx="70" cy="16" rx="66" ry="14" fill="#fff"/>
+            <text x="34" y="21" font-size="12">hearth.db</text>
+            <text x="26" y="66" font-size="11" fill="#6E6E73">encrypted at rest</text>
+          </g>
+          <!-- backup loop -->
+          <g transform="translate(258,150)">
+            <path d="M8 20 Q7 6 20 6 L96 5 Q108 5 108 17 L109 74 Q109 86 97 86 L19 88 Q8 88 8 76 Z" fill="#fff" transform="rotate(2)"/>
+            <text x="22" y="34" font-size="11.5">snapshot copy</text>
+            <text x="22" y="52" font-size="10.5" fill="#6E6E73">before upgrades</text>
+            <text x="22" y="70" font-size="10.5" fill="#2F7D53">restores on failure</text>
+          </g>
+          <path d="M238 216 C248 212 252 208 262 204" marker-end="url(#arr)"/>
+          <path d="M266 232 C254 238 248 240 240 242" marker-end="url(#arr)" stroke-dasharray="5 4"/>
+        </g>
+      </svg>
+      <div class="cap">the key never touches the file; the file never upgrades without a safety copy</div>
+    </div>
+  </div>
+</div>
+
+<!-- P2 -->
+<div class="phase" id="p2">
+  <div class="phead"><span class="pnum">Phase 2</span><h3>Ivory Editorial, native</h3><span class="pdays">3 days · committed</span></div>
+  <p class="pwhat">The exact design language you approved on the web — pure white, hairline rules, editorial type, black pill buttons, color only as tiny status dots — rebuilt as native components. Every later screen is composed from this kit, so drift is impossible.</p>
+  <div class="cols">
+    <div>
+      <ul class="built">
+        <li>Design tokens: paper/ink palette, spacing, radii, a true half-pixel hairline, the editorial type scale</li>
+        <li>14 components: Screen, SectionHeader, Card, ListRow, PillButton, StatusDot, RunwayBar, FormField, CheckRow, EmptyState, DisclaimerFootnote and more</li>
+        <li>Lucide line icons only — a lint rule bans emoji from UI strings</li>
+        <li>A living gallery screen showing every component in every state, compared side by side with the web MVP</li>
+      </ul>
+      <div class="verify"><b>Proved by:</b> the gallery screenshot on the right is the actual simulator render; every screen in P5–P8 was built exclusively from these pieces.</div>
+    </div>
+    <div class="phshot"><img src="img/design-gallery.png" alt="Design gallery on the simulator"></div>
+  </div>
+</div>
+
+<!-- P3 -->
+<div class="phase" id="p3">
+  <div class="phead"><span class="pnum">Phase 3 · spike</span><h3>Can a phone read a pill bottle? <span class="go">GO</span></h3><span class="pdays">3 days · committed</span></div>
+  <p class="pwhat">Before committing to the scan-a-label flow (Phase 21), we proved it. Forty realistic pharmacy labels — four layout families, rotations, glare, stickers covering fields, small type — were run through Apple's Vision OCR (the same engine iPhones use) and a deterministic parser, scored field by field against ground truth.</p>
+  <div class="cols">
+    <div>
+      <table class="score">
+        <tr><th>Field</th><th>Clean labels</th><th>All 40 labels</th><th>What failures looked like</th></tr>
+        <tr><td>Drug name</td><td><b class="ok">100%</b></td><td><b class="ok">100%</b></td><td>none</td></tr>
+        <tr><td>Fill date</td><td><b class="ok">100%</b></td><td><b class="ok">100%</b></td><td>decoy dates never captured</td></tr>
+        <tr><td>Day supply</td><td><b class="ok">100%</b></td><td><b class="warn">85%</b></td><td>stickers physically covering the text → returned as <i>missing</i>, never wrong</td></tr>
+        <tr><td>Sig / schedule</td><td><b class="ok">100%</b></td><td><b class="ok">100%</b></td><td>two-line sigs rejoined correctly</td></tr>
+        <tr><td>Rx number / phone / refills</td><td><b class="ok">100%</b></td><td><b class="ok">95–100%</b></td><td>shared-line occlusion only</td></tr>
+      </table>
+      <div class="verify"><b>Why this matters:</b> zero wrong values in the whole run. Every failure was an <i>absent</i> field — exactly what a confirm-screen wants, because a blank asks the human while a wrong value sneaks past them. The scorecard now dictates which fields get low-confidence flags in the future scan UI. Final validation on your real bottles happens at Phase 21.</div>
+    </div>
+    <div class="sketch">
+      <svg viewBox="0 0 380 320" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#1D1D1F" stroke-width="1.6" fill="none" stroke-linecap="round">
+          <g transform="translate(24,22) rotate(-2)">
+            <rect x="0" y="0" width="96" height="64" rx="7" fill="#fff"/>
+            <path d="M10 14 L86 13 M10 28 L70 27 M10 42 L80 41" stroke="#98989D"/>
+            <rect x="52" y="34" width="40" height="18" rx="3" fill="#F7EFC9" stroke="#9A7213" transform="rotate(-5 72 43)"/>
+            <text x="6" y="84" font-size="11.5">40 labels + stickers</text>
+          </g>
+          <path d="M136 56 C158 56 168 58 188 60" marker-end="url(#arr)"/>
+          <g transform="translate(192,26) rotate(1.5)">
+            <path d="M6 16 Q5 4 18 4 L110 3 Q122 3 122 15 L123 56 Q123 68 111 68 L17 70 Q6 70 6 58 Z" fill="#fff"/>
+            <path d="M28 38 Q46 20 64 38 Q46 54 28 38 Z"/><circle cx="46" cy="38" r="6"/>
+            <text x="72" y="34" font-size="11.5">Apple</text><text x="72" y="50" font-size="11.5">Vision</text>
+          </g>
+          <path d="M252 106 C250 124 246 134 238 150" marker-end="url(#arr)"/>
+          <g transform="translate(120,152) rotate(-1)">
+            <path d="M6 18 Q5 5 19 5 L150 4 Q164 4 164 17 L165 66 Q165 80 151 80 L18 82 Q6 82 6 68 Z" fill="url(#hach)"/>
+            <path d="M6 18 Q5 5 19 5 L150 4 Q164 4 164 17 L165 66 Q165 80 151 80 L18 82 Q6 82 6 68 Z"/>
+            <text x="22" y="34" font-size="12.5">deterministic parser</text>
+            <text x="22" y="54" font-size="10.5" fill="#6E6E73">rules, not guesses · 29 tests</text>
+            <text x="22" y="70" font-size="10.5" fill="#6E6E73">unsure → leave blank</text>
+          </g>
+          <path d="M204 240 C206 252 208 258 212 268" marker-end="url(#arr)"/>
+          <g transform="translate(120,268)">
+            <text x="0" y="16" font-size="12.5">scorecard: name 100 · date 100 · supply 85</text>
+            <text x="0" y="36" font-size="11" fill="#2F7D53">wrong values across the run: 0</text>
+          </g>
+        </g>
+      </svg>
+      <div class="cap">label → Vision OCR → rule-based parser → per-field scorecard</div>
+    </div>
+  </div>
+</div>
+
+<!-- P4 -->
+<div class="phase" id="p4">
+  <div class="phead"><span class="pnum">Phase 4 · spike</span><h3>Whose data is it? The consent framework</h3><span class="pdays">2 days · committed</span></div>
+  <p class="pwhat">Hearth holds health information about someone other than the phone's owner. Before building anything that stores it, this phase fixed the legal posture and wrote the exact words the app ships: the caregiver-authority attestation, the disclaimer set, and the intended-use line every future feature is checked against.</p>
+  <div class="cols">
+    <div>
+      <ul class="built">
+        <li>Legal posture, written down: not a HIPAA covered entity (and never claims it); FTC health-breach rules with a 60-day incident plan; Washington and California consumer-health laws mapped to concrete duties</li>
+        <li>The attestation: when you add a person, you confirm you have their permission or authority — saved with a timestamp on their record</li>
+        <li>Four disclaimers, verbatim: onboarding, runway screens, emergency guides, and the future assistant</li>
+        <li>The intended-use statement: an organizational tool — no dosing, no diagnosis, no triage, ever</li>
+        <li>Per-category consent scopes and respite-mode rules, ready for the sharing features in Stage 7</li>
+      </ul>
+      <div class="verify"><b>Proved by:</b> the attestation and disclaimers are already live in the app — the add-person screen won't save without the confirmation, and every med screen carries the inventory-arithmetic footnote.</div>
+    </div>
+    <div class="sketch">
+      <svg viewBox="0 0 380 260" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#1D1D1F" stroke-width="1.6" fill="none" stroke-linecap="round">
+          <g transform="translate(30,24) rotate(-1.5)">
+            <path d="M6 16 Q5 4 18 4 L142 3 Q154 3 154 15 L155 88 Q155 100 143 100 L17 102 Q6 102 6 90 Z" fill="#fff"/>
+            <rect x="18" y="22" width="15" height="15" rx="3"/>
+            <path d="M21 30 L26 35 L34 22" stroke="#2F7D53" stroke-width="2.2"/>
+            <text x="42" y="30" font-size="11">I have their</text>
+            <text x="42" y="45" font-size="11">permission</text>
+            <text x="18" y="72" font-size="10" fill="#6E6E73">saved with a timestamp</text>
+            <text x="18" y="87" font-size="10" fill="#6E6E73">on the person's record</text>
+          </g>
+          <path d="M196 74 C216 74 226 76 244 78" marker-end="url(#arr)"/>
+          <g transform="translate(248,34) rotate(1)">
+            <path d="M6 14 Q5 4 16 4 L96 3 Q106 3 106 13 L107 74 Q107 84 97 84 L15 86 Q6 86 6 76 Z" fill="url(#hachG)"/>
+            <path d="M6 14 Q5 4 16 4 L96 3 Q106 3 106 13 L107 74 Q107 84 97 84 L15 86 Q6 86 6 76 Z"/>
+            <text x="18" y="30" font-size="11.5">access log</text>
+            <text x="18" y="48" font-size="10" fill="#6E6E73">every view,</text>
+            <text x="18" y="62" font-size="10" fill="#6E6E73">recorded</text>
+          </g>
+          <g transform="translate(56,150)">
+            <text x="0" y="14" font-size="12.5">the four disclaimers, shipped verbatim:</text>
+            <text x="10" y="38" font-size="10.5" fill="#6E6E73">"organizational tool, not medical advice"</text>
+            <text x="10" y="56" font-size="10.5" fill="#6E6E73">"runway is inventory arithmetic from the label"</text>
+            <text x="10" y="74" font-size="10.5" fill="#6E6E73">"first-aid info — in an emergency call 911"</text>
+            <text x="10" y="92" font-size="10.5" fill="#6E6E73">"the assistant never decides doses" (Stage 7)</text>
+          </g>
+        </g>
+      </svg>
+      <div class="cap">consent captured at the door · every sensitive view logged · words fixed before features</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= STAGE 2 ================= -->
+<div class="sec"><span class="l">Stage 2 · The lovable core</span><span class="rule"></span><span class="m">P5 – P8</span></div>
+<h2>The smallest thing a caregiver would miss if deleted</h2>
+<p class="lede">A care circle with real medication lists, exact refill runways, one calm daily answer, and lock-screen alerts that survive the app being closed. This is the retention loop everything else builds on.</p>
+
+<!-- P5 -->
+<div class="phase" id="p5">
+  <div class="phead"><span class="pnum">Phase 5</span><h3>The care circle &amp; medication records</h3><span class="pdays">4 days · committed</span></div>
+  <p class="pwhat">Multiple people, each with a complete record: conditions, allergies with severity, contacts you can call in one tap, and medications with the fill tracking the engine needs. Dangerous medications are flagged the moment you type their name.</p>
+  <div class="cols rev">
+    <div class="phshot"><img src="img/patient-record.png" alt="Robert's record on the simulator"></div>
+    <div>
+      <ul class="built">
+        <li>Add and edit people — with the Phase-4 attestation checkbox built into the flow</li>
+        <li>The allergy band: severe allergies render in red on every visit to the record</li>
+        <li>Medication create/edit with schedule, prescriber, pharmacy, and the last fill (date + day supply)</li>
+        <li>A live high-alert gate: typing "apixaban" or "insulin" flags the med instantly and adds one extra deliberate confirmation before saving</li>
+        <li>Every write appends to the audit log — nothing changes silently</li>
+      </ul>
+      <div class="verify"><b>Proved by:</b> the screenshot is Robert's real seeded record on the simulator — allergy band, condition chips, four meds with live runway bars, callable contacts.</div>
+    </div>
+  </div>
+</div>
+
+<!-- P6 -->
+<div class="phase" id="p6">
+  <div class="phead"><span class="pnum">Phase 6</span><h3>The runway engine — the deterministic heart</h3><span class="pdays">2 days · committed</span></div>
+  <p class="pwhat">One sum, done perfectly: the label says <i>filled June 15, 30-day supply</i>, so the supply ends July 15 — full stop. No AI, no adherence guessing, no clock tricks. If there's no fill on record, Hearth says so instead of inventing a number.</p>
+  <div class="cols">
+    <div>
+      <ul class="built">
+        <li><b>runway = fill date + day supply − today</b>, computed in pure code with no access to the system clock</li>
+        <li>Statuses live in code: OK → <i>worth a look</i> at 10 days → <i>act now</i> at 3 → <i>overdue</i> at 0</li>
+        <li>Med-sync calculator: finds the one pickup day that aligns a whole regimen, with short-fill quantities</li>
+        <li>Honesty rules: as-needed meds get no forecast; missing fills get an explicit "add fill" state</li>
+      </ul>
+      <div class="verify"><b>Proved by:</b> a golden table of hand-computed cases pinned in tests — daylight-saving weekends, leap days, year boundaries, zero supplies, future fill dates. The math cannot drift a single day.</div>
+    </div>
+    <div class="sketch">
+      <svg viewBox="0 0 380 240" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#1D1D1F" stroke-width="1.6" fill="none" stroke-linecap="round">
+          <path d="M24 120 C120 116 260 118 356 118" />
+          <path d="M40 108 L40 132 M356 118 l-10 -6 M356 118 l-10 8"/>
+          <text x="26" y="98" font-size="11.5">filled Jun 15</text>
+          <g transform="translate(40,120)">
+            <path d="M0 0 C60 -10 200 -8 268 0" stroke="#2F7D53" stroke-width="3" fill="none"/>
+            <text x="96" y="-18" font-size="11.5" fill="#2F7D53">30-day supply</text>
+          </g>
+          <path d="M308 104 L310 134" stroke="#C4362F" stroke-width="2.4"/>
+          <text x="264" y="96" font-size="11.5" fill="#C4362F">runs out Jul 15</text>
+          <g transform="translate(236,132)">
+            <path d="M6 8 C10 2 18 2 22 8 C26 2 34 2 38 8" stroke="#9A7213"/>
+            <text x="-14" y="30" font-size="11">today: 3 days left</text>
+            <circle cx="72" cy="26" r="5" fill="#C4362F" stroke="none"/>
+            <text x="82" y="30" font-size="11" fill="#C4362F">act now</text>
+          </g>
+          <g transform="translate(30,176)">
+            <text x="0" y="12" font-size="12">status zones:</text>
+            <circle cx="110" cy="8" r="5" fill="#2F7D53" stroke="none"/><text x="120" y="12" font-size="11">&gt;10d</text>
+            <circle cx="176" cy="8" r="5" fill="#9A7213" stroke="none"/><text x="186" y="12" font-size="11">≤10d</text>
+            <circle cx="240" cy="8" r="5" fill="#C4362F" stroke="none"/><text x="250" y="12" font-size="11">≤3d · 0d</text>
+          </g>
+        </g>
+      </svg>
+      <div class="cap">two numbers from the label place every medication on a number line — nothing to guess</div>
+    </div>
+  </div>
+</div>
+
+<!-- P7 -->
+<div class="phase" id="p7">
+  <div class="phead"><span class="pnum">Phase 7</span><h3>Today's Digest — one answer per morning</h3><span class="pdays">3 days · committed</span></div>
+  <p class="pwhat">Opening Hearth answers a single question: <i>what is the one thing that needs me today?</i> A ranking — not a feed — funnels every signal across every person into one lead action, with the calm shown quietly underneath. The ranking is code, so "why is this first?" always has an answer.</p>
+  <div class="cols rev">
+    <div class="phshot"><img src="img/home-digest.png" alt="The home digest on the simulator"></div>
+    <div>
+      <ul class="built">
+        <li>The funnel: overdue &gt; urgent &gt; soon &gt; missing-fill &gt; gone-quiet, ties broken by days left, then by high-alert</li>
+        <li>Exactly one lead card with its action; at most four quiet lines; a genuine "all good" state</li>
+        <li>Care-circle cards roll each person up to <span style="color:var(--red);font-weight:600">Act now</span> / <span style="color:var(--amber);font-weight:600">Worth a look</span> / <span style="color:var(--green);font-weight:600">All good</span></li>
+        <li>Recomputes on every write and at day rollover — never a stale morning</li>
+      </ul>
+      <div class="verify"><b>Proved by:</b> fixture households in tests pin the exact ranking order, and the screenshot shows the real seeded morning: Robert's metformin leads, everyone else stays quiet.</div>
+    </div>
+  </div>
+</div>
+
+<!-- P8 -->
+<div class="phase" id="p8">
+  <div class="phead"><span class="pnum">Phase 8</span><h3>Refill alerts that survive a closed app</h3><span class="pdays">3 days · committed</span></div>
+  <p class="pwhat">Because the runway is arithmetic, every future reminder is knowable the moment a fill is saved — so Hearth schedules them all with iOS immediately instead of hoping a background task runs someday. iOS background execution is famously unreliable; Hearth simply doesn't depend on it.</p>
+  <div class="cols">
+    <div>
+      <ul class="built">
+        <li>Three alerts per medication — a heads-up (your chosen lead time), an urgent at 3 days, and run-out day — plus a next-morning nudge if it's already overdue</li>
+        <li>Write-time reconciliation: every med edit and app-open diffs the desired plan against what iOS actually has pending, canceling and scheduling only the difference</li>
+        <li>Quiet hours (even windows that wrap midnight), per-person toggles, and the iOS 64-pending cap handled nearest-first</li>
+        <li>Lock-screen privacy by rule <i>and by test</i>: payloads never contain a drug, dose, or name — "A medication needs attention"</li>
+        <li>Tapping an alert deep-links straight to the medication it is about</li>
+      </ul>
+      <div class="verify"><b>Proved by:</b> planner unit tests for every window and edge; on the simulator, the seeded family yields <b>22 scheduled alerts</b> (visible in Settings). The 3-day force-killed soak on a real device is yours to run per the roadmap.</div>
+    </div>
+    <div class="phshot"><img src="img/settings-alerts.png" alt="Settings with 22 scheduled alerts"></div>
+  </div>
+</div>
+
+<!-- ================= PROOF ================= -->
+<div class="sec" id="proof"><span class="l">Proof</span><span class="rule"></span><span class="m">iPhone 16e simulator · seeded demo family</span></div>
+<h2>Running, on a phone, today</h2>
+<p class="lede">These are unedited simulator captures. The demo family is fictional and always live: fill dates are computed relative to today, so Robert's metformin is forever three days from empty — the digest always has a story to tell.</p>
+<div class="shots">
+  <div class="shot"><img src="img/home-digest.png" alt="Home"><div class="cap">Home — one action, the calm around it</div></div>
+  <div class="shot"><img src="img/patient-record.png" alt="Patient record"><div class="cap">Robert — allergy band, runway bars</div></div>
+  <div class="shot"><img src="img/med-detail-urgent.png" alt="Urgent med"><div class="cap">Metformin — 3 days, call the pharmacy</div></div>
+  <div class="shot"><img src="img/med-detail-ontrack.png" alt="On track med"><div class="cap">Lisinopril — 64 days, on track</div></div>
+  <div class="shot"><img src="img/settings-alerts.png" alt="Settings"><div class="cap">Settings — 22 pre-scheduled alerts</div></div>
+  <div class="shot"><img src="img/design-gallery.png" alt="Gallery"><div class="cap">The design system, living on device</div></div>
+</div>
+
+<!-- ================= DECISIONS ================= -->
+<div class="sec" id="adr"><span class="l">Architecture decisions</span><span class="rule"></span><span class="m">the load-bearing choices</span></div>
+<h2>Decisions we'll still be glad about at Phase 32</h2>
+<p class="lede">The full record lives in ARCHITECTURE.md in the repo — fifteen decision records with costs and payoffs. The eight that matter most:</p>
+<div class="adr">
+  <div class="adrc"><b>A React-free engine package</b><span>All safety-critical math lives in pure TypeScript with 135 tests and no UI imports — reusable by the future server, Android, and auditors.</span></div>
+  <div class="adrc"><b>Encryption by construction</b><span>SQLCipher with the key in the Keychain: the file is unreadable off-device, and "we never see your data" is physics, not policy.</span></div>
+  <div class="adrc"><b>Two kinds of time</b><span>Calendar facts (fill dates) never mix with instants (timestamps); all day math is DST-proof by design, and the engine never reads the clock.</span></div>
+  <div class="adrc"><b>An append-only change log</b><span>One audit spine powers the history timeline, the consent story, and — unchanged — the Stage-7 sync engine. Sync becomes a migration, not a rewrite.</span></div>
+  <div class="adrc"><b>The database is the only state</b><span>Screens read rows and re-read on writes. No mirrored stores, no "the screen says 4 but the DB says 3."</span></div>
+  <div class="adrc"><b>Alerts scheduled at write time</b><span>Every future reminder is computed the moment a fill is saved. iOS background flakiness simply isn't load-bearing.</span></div>
+  <div class="adrc"><b>Friction only where danger lives</b><span>High-alert meds (blood thinners, insulin, opioids) get one extra deliberate tap. Everything else stays frictionless.</span></div>
+  <div class="adrc"><b>Spikes before subsystems</b><span>OCR and the consent posture were proven before the features that need them exist — the two riskiest bets, retired first.</span></div>
+</div>
+
+<!-- ================= NEXT ================= -->
+<div class="sec"><span class="l">What's next</span><span class="rule"></span><span class="m">stage 3 begins</span></div>
+<h2>The road ahead</h2>
+<div class="next">
+  <span class="nx">P9 · Internal TestFlight — Hearth on your actual iPhone</span>
+  <span class="nx">P10–P16 · Patient 360 tabs, charts, documents vault, print engine, ER sheet, emergency guides</span>
+  <span class="nx">P17–P20 · Accessibility, hardening, external beta, App Store 1.0</span>
+  <span class="nx">P21–P24 · Scan-a-label goes live on the P3 scorecard</span>
+  <span class="nx">P25–P28 · The n8n-style admin workflow engine</span>
+  <span class="nx">P29–P32 · Accounts, sync, respite sharing, the grounded assistant</span>
+</div>
+
+<footer>
+  Hearth · build log for phases 1–8 of 32 · React Native (Expo SDK 57) · 186 tests passing · every person, record, and number shown is fictional demo data.
+</footer>
+
+</div>
+</body>
+</html>
