@@ -16,6 +16,9 @@ importers:
       '@hearth/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@hearth/print':
+        specifier: workspace:*
+        version: link:../../packages/print
       '@hearth/schema':
         specifier: workspace:*
         version: link:../../packages/schema

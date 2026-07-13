@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Settings2 } from 'lucide-react-native';
+import { BookOpen, FolderOutput, Settings2 } from 'lucide-react-native';
 import {
   buildDigest,
   type DigestItem,
@@ -15,6 +15,7 @@ import {
   Hairline,
   PillButton,
   Screen,
+  ListRow,
   SectionHeader,
   StatusDot,
   StatusTag,
@@ -188,6 +189,21 @@ export default function Home() {
       <View style={{ marginTop: space.lg }}>
         <PillButton label="Add a person" variant="outline" size="sm" onPress={() => router.push('/patient/new')} />
       </View>
+
+      <SectionHeader label="Tools" />
+      <ListRow
+        title="Emergency guides"
+        detail="Six situations, four calm steps each. Works offline, prints to paper."
+        onPress={() => router.push('/guides' as never)}
+        left={<BookOpen size={19} color={color.ink2} strokeWidth={1.8} />}
+      />
+      <ListRow
+        title="Everyone, one pack"
+        detail="Every person's one-pager bundled into a single printable set."
+        onPress={() => router.push('/portfolio' as never)}
+        last
+        left={<FolderOutput size={19} color={color.ink2} strokeWidth={1.8} />}
+      />
     </Screen>
   );
 }
