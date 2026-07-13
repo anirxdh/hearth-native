@@ -1,46 +1,71 @@
-import React from 'react';
-import { Linking, Pressable, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ChevronLeft, Pencil, Phone, TriangleAlert } from 'lucide-react-native';
+import { ChevronLeft, Pencil, TriangleAlert } from 'lucide-react-native';
 import {
   Avatar,
-  Card,
   DisclaimerFootnote,
-  EmptyState,
-  Hairline,
-  ListRow,
   PillButton,
-  RunwayBar,
   Screen,
-  SectionHeader,
-  StatusTag,
+  Seg,
   color,
   radius,
   space,
   type,
 } from '../../../ds';
-import { getPatient, listContacts, listMedications } from '../../../db/repo';
+import {
+  getPatient,
+  latestVitals,
+  listContacts,
+  listDocuments,
+  listLabs,
+  listMedications,
+  listObservations,
+  listTimeline,
+  listVitals,
+} from '../../../db/repo';
 import { useData } from '../../../lib/useData';
 import { RUNWAY_DISCLAIMER } from '../../../lib/copy';
-import type { RunwayStatus } from '@hearth/core';
+import { today } from '../../../lib/clock';
+import { OverviewTab } from '../../../features/patient360/OverviewTab';
+import { ActivityTab } from '../../../features/patient360/ActivityTab';
+import { HistoryTab } from '../../../features/patient360/HistoryTab';
+import { RecordsTab } from '../../../features/patient360/RecordsTab';
+import { DocumentsTab } from '../../../features/patient360/DocumentsTab';
+import { MedsSection } from '../../../features/patient360/MedsSection';
 
-function statusToColor(s: RunwayStatus): 'red' | 'amber' | 'green' {
-  return s === 'overdue' || s === 'urgent' ? 'red' : s === 'soon' ? 'amber' : 'green';
-}
+type Tab = 'overview' | 'meds' | 'activity' | 'history' | 'records' | 'documents';
 
-function runwayLabel(days: number): string {
-  if (days <= 0) return 'out';
-  return `${days} day${days === 1 ? '' : 's'}`;
-}
+const TABS: { key: Tab; label: string }[] = [
+  { key: 'overview', label: 'Overview' },
+  { key: 'meds', label: 'Meds' },
+  { key: 'activity', label: 'Activity' },
+  { key: 'history', label: 'History' },
+  { key: 'records', label: 'Records' },
+  { key: 'documents', label: 'Documents' },
+];
 
-export default function PatientRecord() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+export default function Patient360() {
+  const { id, tab: tabParam } = useLocalSearchParams<{ id: string; tab?: string }>();
   const router = useRouter();
+  const [tab, setTab] = useState<Tab>(
+    TABS.some((t) => t.key === tabParam) ? (tabParam as Tab) : 'overview',
+  );
+
   const data = useData(() => {
     const patient = getPatient(id);
-    return patient
-      ? { patient, meds: listMedications(id), contacts: listContacts(id) }
-      : null;
+    if (!patient) return null;
+    return {
+      patient,
+      meds: listMedications(id),
+      contacts: listContacts(id),
+      latest: latestVitals(id),
+      vitals: listVitals(id),
+      observations: listObservations(id),
+      events: listTimeline(id),
+      labs: listLabs(id),
+      documents: listDocuments(id),
+    };
   });
 
   if (!data) {
@@ -50,7 +75,7 @@ export default function PatientRecord() {
       </Screen>
     );
   }
-  const { patient, meds, contacts } = data;
+  const { patient } = data;
   const severeAllergies = patient.allergies.filter((a) => a.severe);
   const displayName = patient.preferredName ?? patient.fullName;
   const age = patient.dob
@@ -59,7 +84,13 @@ export default function PatientRecord() {
 
   return (
     <Screen>
-      <Pressable onPress={() => router.back()} hitSlop={10} style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+      <Pressable
+        onPress={() => router.back()}
+        hitSlop={10}
+        accessibilityRole="button"
+        accessibilityLabel="Back to home"
+        style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2, minHeight: 32 }}
+      >
         <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
         <Text style={type.mini}>Home</Text>
       </Pressable>
@@ -74,13 +105,22 @@ export default function PatientRecord() {
               .join(' · ')}
           </Text>
         </View>
-        <Pressable onPress={() => router.push(`/patient/${id}/edit` as never)} hitSlop={10} accessibilityLabel={`Edit ${displayName}`}>
+        <Pressable
+          onPress={() => router.push(`/patient/${id}/edit` as never)}
+          hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel={`Edit ${displayName}`}
+          style={{ minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' }}
+        >
           <Pencil size={19} color={color.ink2} strokeWidth={1.8} />
         </Pressable>
       </View>
 
+      {/* The allergy banner stays visible on every tab. That is the point. */}
       {patient.allergies.length > 0 ? (
         <View
+          accessible
+          accessibilityLabel={`Allergies: ${patient.allergies.map((a) => a.name).join(', ')}`}
           style={{
             marginTop: space.lg,
             borderWidth: 1,
@@ -101,98 +141,35 @@ export default function PatientRecord() {
             ]}
             numberOfLines={2}
           >
-            {'ALLERGY: ' + patient.allergies.map((a) => a.name + (a.reaction ? ` (${a.reaction})` : '')).join(' · ')}
+            {'ALLERGY: ' +
+              patient.allergies.map((a) => a.name + (a.reaction ? ` (${a.reaction})` : '')).join(' · ')}
           </Text>
         </View>
       ) : null}
 
-      {patient.conditions.length > 0 ? (
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: space.lg }}>
-          {patient.conditions.map((c) => (
-            <View
-              key={c}
-              style={{
-                borderWidth: 1,
-                borderColor: color.line,
-                borderRadius: 999,
-                paddingHorizontal: 12,
-                paddingVertical: 5,
-              }}
-            >
-              <Text style={type.mini}>{c}</Text>
-            </View>
-          ))}
-        </View>
-      ) : null}
-
-      <SectionHeader label="Medications" meta={`${meds.length}`} />
-      {meds.length === 0 ? (
-        <EmptyState
-          title="No medications yet"
-          detail="Add each medication with its last fill date and day supply; Hearth computes the refill runway from there."
-          action={<PillButton label="Add a medication" onPress={() => router.push(`/patient/${id}/med/new` as never)} />}
-        />
-      ) : (
-        <>
-          {meds.map((m, i) => (
-            <ListRow
-              key={m.id}
-              title={[m.name, m.strength].filter(Boolean).join(' ') + (m.highAlert ? '  ·  high-alert' : '')}
-              {...(m.sig ? { detail: m.sig } : {})}
-              onPress={() => router.push(`/patient/${id}/med/${m.id}` as never)}
-              last={i === meds.length - 1}
-              right={
-                m.prn ? (
-                  <Text style={type.mini}>as needed</Text>
-                ) : m.runway ? (
-                  <View style={{ alignItems: 'flex-end', gap: 5 }}>
-                    <RunwayBar fraction={m.runway.fraction} status={statusToColor(m.runway.status)} />
-                    <Text
-                      style={[
-                        type.mini,
-                        { fontWeight: '600', color: m.runway.status === 'ok' ? color.ink3 : color[statusToColor(m.runway.status)] },
-                      ]}
-                    >
-                      {runwayLabel(m.runway.daysRemaining)}
-                    </Text>
-                  </View>
-                ) : (
-                  <Text style={[type.mini, { color: color.amber, fontWeight: '600' }]}>add fill</Text>
-                )
-              }
-            />
-          ))}
-          <View style={{ marginTop: space.lg }}>
-            <PillButton label="Add a medication" variant="outline" size="sm" onPress={() => router.push(`/patient/${id}/med/new` as never)} />
-          </View>
-        </>
-      )}
-
-      <SectionHeader label="Contacts" meta={contacts.length ? undefined : 'none yet'} />
-      {contacts.map((c, i) => (
-        <ListRow
-          key={c.id}
-          title={c.name}
-          {...(c.relation ? { detail: c.relation } : {})}
-          last={i === contacts.length - 1}
-          right={
-            c.phone ? (
-              <Pressable
-                onPress={() => Linking.openURL(`tel:${c.phone!.replace(/[^\d+]/g, '')}`)}
-                hitSlop={8}
-                accessibilityLabel={`Call ${c.name}`}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
-              >
-                <Phone size={14} color={color.ink2} strokeWidth={1.8} />
-                <Text style={[type.mini, { fontWeight: '600', color: color.ink }]}>{c.phone}</Text>
-              </Pressable>
-            ) : undefined
-          }
-        />
-      ))}
-      <View style={{ marginTop: contacts.length ? space.lg : 0 }}>
-        <PillButton label="Add a contact" variant="outline" size="sm" onPress={() => router.push(`/patient/${id}/contact/new` as never)} />
+      <View style={{ marginTop: space.lg }}>
+        <Seg options={TABS} value={tab} onChange={setTab} scroll />
       </View>
+
+      {tab === 'overview' ? (
+        <OverviewTab
+          patient={patient}
+          meds={data.meds}
+          vitals={data.latest}
+          contacts={data.contacts}
+          today={today()}
+        />
+      ) : tab === 'meds' ? (
+        <MedsSection patientId={id} meds={data.meds} />
+      ) : tab === 'activity' ? (
+        <ActivityTab patientId={id} vitals={data.vitals} observations={data.observations} today={today()} />
+      ) : tab === 'history' ? (
+        <HistoryTab patientId={id} events={data.events} />
+      ) : tab === 'records' ? (
+        <RecordsTab patientId={id} labs={data.labs} />
+      ) : (
+        <DocumentsTab patientId={id} documents={data.documents} />
+      )}
 
       <DisclaimerFootnote>{RUNWAY_DISCLAIMER}</DisclaimerFootnote>
     </Screen>

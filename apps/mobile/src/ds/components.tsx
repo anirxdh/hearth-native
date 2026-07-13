@@ -167,6 +167,7 @@ export function PillButton({
   size = 'md',
   disabled = false,
   loading = false,
+  icon,
 }: {
   label: string;
   onPress: () => void;
@@ -174,6 +175,8 @@ export function PillButton({
   size?: 'sm' | 'md';
   disabled?: boolean;
   loading?: boolean;
+  /** Optional leading icon, sized by the caller (14 for sm, 16 for md). */
+  icon?: React.ReactNode;
 }) {
   const dark = variant === 'dark';
   const danger = variant === 'danger';
@@ -195,14 +198,17 @@ export function PillButton({
       {loading ? (
         <ActivityIndicator size="small" color={dark ? color.paper : color.ink} />
       ) : (
-        <Text
-          style={[
-            size === 'sm' ? styles.pillTextSm : styles.pillText,
-            { color: dark ? color.paper : danger ? color.red : color.ink },
-          ]}
-        >
-          {label}
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          {icon ?? null}
+          <Text
+            style={[
+              size === 'sm' ? styles.pillTextSm : styles.pillText,
+              { color: dark ? color.paper : danger ? color.red : color.ink },
+            ]}
+          >
+            {label}
+          </Text>
+        </View>
       )}
     </Pressable>
   );
@@ -413,3 +419,43 @@ const styles = StyleSheet.create({
     borderTopColor: color.line,
   },
 });
+
+/** Small stat card for the vitals grid: label, big value, quiet meta line. */
+export function StatCard({
+  label,
+  value,
+  unit,
+  meta,
+  flag,
+}: {
+  label: string;
+  value: string;
+  unit?: string;
+  meta?: string;
+  flag?: 'red' | 'amber';
+}) {
+  return (
+    <View
+      accessible
+      accessibilityLabel={`${label}: ${value}${unit ? ` ${unit}` : ''}${meta ? `, ${meta}` : ''}`}
+      style={{
+        flexBasis: '47%',
+        flexGrow: 1,
+        borderWidth: 1,
+        borderColor: color.line,
+        borderRadius: radius.md,
+        paddingHorizontal: 14,
+        paddingVertical: 12,
+      }}
+    >
+      <Text style={type.label}>{label}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4, marginTop: 6 }}>
+        <Text style={{ fontSize: 24, fontWeight: '600', letterSpacing: -0.4, color: flag ? color[flag] : color.ink }}>
+          {value}
+        </Text>
+        {unit ? <Text style={type.mini}>{unit}</Text> : null}
+      </View>
+      {meta ? <Text style={[type.mini, { marginTop: 3 }]}>{meta}</Text> : null}
+    </View>
+  );
+}

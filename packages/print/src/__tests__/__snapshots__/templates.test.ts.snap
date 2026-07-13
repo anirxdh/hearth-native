@@ -1,0 +1,645 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`erSheetHtml matches snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Emergency room sheet for Margaret Okafor</title>
+<style>
+  @page { size: letter; margin: 0.6in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #FFFFFF; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #1D1D1F;
+    font-size: 11px;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .kicker {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #6E6E73;
+  }
+  h1 {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+  .subline { color: #6E6E73; font-size: 11px; margin-top: 3px; }
+  .header { padding-bottom: 12px; border-bottom: 1px solid #E5E5EA; }
+  .severe-band {
+    background: #1D1D1F;
+    color: #FFFFFF;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    page-break-inside: avoid;
+  }
+  .severe-band .severe-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .section { margin-top: 20px; page-break-inside: avoid; }
+  .section h2 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #E5E5EA;
+    margin-bottom: 8px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6E6E73;
+    padding: 4px 10px 4px 0;
+    border-bottom: 1px solid #E5E5EA;
+  }
+  td {
+    padding: 6px 10px 6px 0;
+    border-bottom: 1px solid #E5E5EA;
+    vertical-align: top;
+  }
+  tr { page-break-inside: avoid; }
+  .med-name { font-weight: 600; }
+  .muted { color: #6E6E73; }
+  .high-alert {
+    color: #C4362F;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag {
+    color: #6E6E73;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .supply-low { color: #9A7213; font-weight: 600; }
+  .card {
+    border: 1px solid #E5E5EA;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    page-break-inside: avoid;
+  }
+  .card h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+  .step { display: flex; align-items: flex-start; }
+  .step-number {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #1D1D1F;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 12px;
+  }
+  .step-body { flex: 1 1 auto; }
+  .warning-card {
+    border: 1px solid #E5E5EA;
+    border-left: 3px solid #9A7213;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    page-break-inside: avoid;
+  }
+  .warning-card .warning-label {
+    color: #9A7213;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .review-line { margin-top: 14px; color: #6E6E73; font-size: 9px; }
+  .footer {
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid #E5E5EA;
+    color: #6E6E73;
+    font-size: 9px;
+  }
+</style>
+</head>
+<body>
+<div class="header"><div class="kicker">Emergency room sheet</div><h1>Margaret Okafor</h1><div class="subline">Goes by Peggy · Born March 22, 1948 · Mother</div></div>
+<div class="severe-band"><span class="severe-label">Severe allergy</span>Penicillin (Anaphylaxis)</div>
+<div class="section"><h2>Key facts</h2><table><tbody><tr><td style="width: 34%;" class="muted">Blood type</td><td><span class="med-name">O positive</span></td></tr><tr><td style="width: 34%;" class="muted">On blood thinner</td><td><span class="med-name">Yes, apixaban twice daily</span></td></tr><tr><td style="width: 34%;" class="muted">Code status</td><td><span class="med-name">Full code</span></td></tr></tbody></table></div>
+<div class="section"><h2>Conditions</h2><div>Atrial fibrillation · Type 2 diabetes · Osteoarthritis</div></div>
+<div class="section"><h2>Allergies</h2><table><thead><tr><th>Allergy</th><th>Reaction</th><th>Severity</th></tr></thead><tbody><tr><td><span class="med-name">Penicillin</span></td><td>Anaphylaxis</td><td><span class="high-alert">Severe</span></td></tr><tr><td><span class="med-name">Latex</span></td><td>Skin rash</td><td><span class="muted">Mild to moderate</span></td></tr></tbody></table></div>
+<div class="section"><h2>Medications</h2><table><thead><tr><th>Medication</th><th>Directions</th><th>Supply</th><th></th></tr></thead><tbody><tr><td><span class="med-name">Apixaban</span> 5 mg</td><td>Take 1 tablet by mouth twice daily</td><td><span class="supply-low">4 days left</span>, <span class="muted">runs out July 16, 2026</span></td><td><span class="high-alert">HIGH ALERT</span></td></tr><tr><td><span class="med-name">Metformin</span> 500 mg</td><td>Take 1 tablet with breakfast and dinner</td><td>21 days left, <span class="muted">runs out August 2, 2026</span></td><td></td></tr><tr><td><span class="med-name">Acetaminophen</span> 325 mg</td><td>Take 1 to 2 tablets as needed for pain, up to 4 times daily</td><td><span class="muted">As needed</span></td><td><span class="tag">PRN</span></td></tr></tbody></table></div>
+<div class="section"><h2>Contacts</h2><table><thead><tr><th>Name</th><th>Phone</th><th>Role</th></tr></thead><tbody><tr><td><span class="med-name">Daniel Okafor</span> <span class="muted">Son</span></td><td>(512) 555-0184</td><td><span class="tag">Emergency</span></td></tr><tr><td><span class="med-name">Dr. Alice Nguyen</span> <span class="muted">Cardiologist</span></td><td>(512) 555-0102</td><td><span class="tag">Provider</span></td></tr><tr><td><span class="med-name">Lamar Street Pharmacy</span></td><td>(512) 555-0139</td><td><span class="tag">Pharmacy</span></td></tr></tbody></table></div>
+<div class="footer">Generated by Hearth on July 12, 2026 at 3:00 PM. Always verify against the bottle and your clinician's instructions.</div>
+</body>
+</html>"
+`;
+
+exports[`guideHtml matches snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Helping someone up after a fall</title>
+<style>
+  @page { size: letter; margin: 0.6in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #FFFFFF; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #1D1D1F;
+    font-size: 11px;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .kicker {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #6E6E73;
+  }
+  h1 {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+  .subline { color: #6E6E73; font-size: 11px; margin-top: 3px; }
+  .header { padding-bottom: 12px; border-bottom: 1px solid #E5E5EA; }
+  .severe-band {
+    background: #1D1D1F;
+    color: #FFFFFF;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    page-break-inside: avoid;
+  }
+  .severe-band .severe-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .section { margin-top: 20px; page-break-inside: avoid; }
+  .section h2 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #E5E5EA;
+    margin-bottom: 8px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6E6E73;
+    padding: 4px 10px 4px 0;
+    border-bottom: 1px solid #E5E5EA;
+  }
+  td {
+    padding: 6px 10px 6px 0;
+    border-bottom: 1px solid #E5E5EA;
+    vertical-align: top;
+  }
+  tr { page-break-inside: avoid; }
+  .med-name { font-weight: 600; }
+  .muted { color: #6E6E73; }
+  .high-alert {
+    color: #C4362F;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag {
+    color: #6E6E73;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .supply-low { color: #9A7213; font-weight: 600; }
+  .card {
+    border: 1px solid #E5E5EA;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    page-break-inside: avoid;
+  }
+  .card h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+  .step { display: flex; align-items: flex-start; }
+  .step-number {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #1D1D1F;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 12px;
+  }
+  .step-body { flex: 1 1 auto; }
+  .warning-card {
+    border: 1px solid #E5E5EA;
+    border-left: 3px solid #9A7213;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    page-break-inside: avoid;
+  }
+  .warning-card .warning-label {
+    color: #9A7213;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .review-line { margin-top: 14px; color: #6E6E73; font-size: 9px; }
+  .footer {
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid #E5E5EA;
+    color: #6E6E73;
+    font-size: 9px;
+  }
+</style>
+</head>
+<body>
+<div class="header">
+<div class="kicker">Caregiver guide</div>
+<h1>Helping someone up after a fall</h1>
+<div class="subline">A calm, step by step way to help without hurting either of you.</div>
+</div>
+<div class="warning-card"><span class="warning-label">Take care</span>If they hit their head or take a blood thinner, call their clinician even if they feel fine.</div>
+<div class="card step"><div class="step-number">1</div><div class="step-body"><h3>Do not rush to lift</h3><div>Ask if they feel pain. If there is pain in the hip, back, or head, call 911 and keep them still.</div></div></div>
+<div class="card step"><div class="step-number">2</div><div class="step-body"><h3>Bring a sturdy chair</h3><div>Place a stable chair next to them so they can push up onto it in stages.</div></div></div>
+<div class="card step"><div class="step-number">3</div><div class="step-body"><h3>Guide, do not pull</h3><div>Let them roll to their side, then to hands and knees, then up onto the chair. You steady, they climb.</div></div></div>
+<div class="review-line">Version 1.2, reviewed by K. Ramos, RN on June 3, 2026.</div>
+<div class="footer">Generated by Hearth on July 12, 2026 at 3:00 PM. Always verify against the bottle and your clinician's instructions.</div>
+</body>
+</html>"
+`;
+
+exports[`onePagerHtml matches snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Care one-pager for Margaret Okafor</title>
+<style>
+  @page { size: letter; margin: 0.6in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #FFFFFF; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #1D1D1F;
+    font-size: 11px;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .kicker {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #6E6E73;
+  }
+  h1 {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+  .subline { color: #6E6E73; font-size: 11px; margin-top: 3px; }
+  .header { padding-bottom: 12px; border-bottom: 1px solid #E5E5EA; }
+  .severe-band {
+    background: #1D1D1F;
+    color: #FFFFFF;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    page-break-inside: avoid;
+  }
+  .severe-band .severe-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .section { margin-top: 20px; page-break-inside: avoid; }
+  .section h2 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #E5E5EA;
+    margin-bottom: 8px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6E6E73;
+    padding: 4px 10px 4px 0;
+    border-bottom: 1px solid #E5E5EA;
+  }
+  td {
+    padding: 6px 10px 6px 0;
+    border-bottom: 1px solid #E5E5EA;
+    vertical-align: top;
+  }
+  tr { page-break-inside: avoid; }
+  .med-name { font-weight: 600; }
+  .muted { color: #6E6E73; }
+  .high-alert {
+    color: #C4362F;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag {
+    color: #6E6E73;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .supply-low { color: #9A7213; font-weight: 600; }
+  .card {
+    border: 1px solid #E5E5EA;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    page-break-inside: avoid;
+  }
+  .card h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+  .step { display: flex; align-items: flex-start; }
+  .step-number {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #1D1D1F;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 12px;
+  }
+  .step-body { flex: 1 1 auto; }
+  .warning-card {
+    border: 1px solid #E5E5EA;
+    border-left: 3px solid #9A7213;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    page-break-inside: avoid;
+  }
+  .warning-card .warning-label {
+    color: #9A7213;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .review-line { margin-top: 14px; color: #6E6E73; font-size: 9px; }
+  .footer {
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid #E5E5EA;
+    color: #6E6E73;
+    font-size: 9px;
+  }
+</style>
+</head>
+<body>
+<div class="header"><div class="kicker">Care one-pager</div><h1>Margaret Okafor</h1><div class="subline">Goes by Peggy · Born March 22, 1948 · Mother</div></div>
+<div class="severe-band"><span class="severe-label">Severe allergy</span>Penicillin (Anaphylaxis)</div>
+<div class="section"><h2>Conditions</h2><div>Atrial fibrillation · Type 2 diabetes · Osteoarthritis</div></div>
+<div class="section"><h2>Allergies</h2><table><thead><tr><th>Allergy</th><th>Reaction</th><th>Severity</th></tr></thead><tbody><tr><td><span class="med-name">Penicillin</span></td><td>Anaphylaxis</td><td><span class="high-alert">Severe</span></td></tr><tr><td><span class="med-name">Latex</span></td><td>Skin rash</td><td><span class="muted">Mild to moderate</span></td></tr></tbody></table></div>
+<div class="section"><h2>Medications</h2><table><thead><tr><th>Medication</th><th>Directions</th><th>Supply</th><th></th></tr></thead><tbody><tr><td><span class="med-name">Apixaban</span> 5 mg</td><td>Take 1 tablet by mouth twice daily</td><td><span class="supply-low">4 days left</span>, <span class="muted">runs out July 16, 2026</span></td><td><span class="high-alert">HIGH ALERT</span></td></tr><tr><td><span class="med-name">Metformin</span> 500 mg</td><td>Take 1 tablet with breakfast and dinner</td><td>21 days left, <span class="muted">runs out August 2, 2026</span></td><td></td></tr><tr><td><span class="med-name">Acetaminophen</span> 325 mg</td><td>Take 1 to 2 tablets as needed for pain, up to 4 times daily</td><td><span class="muted">As needed</span></td><td><span class="tag">PRN</span></td></tr></tbody></table></div>
+<div class="section"><h2>Recent vitals</h2><table><thead><tr><th>Measure</th><th>Value</th><th>Recorded</th></tr></thead><tbody><tr><td>Blood pressure</td><td><span class="med-name">128/76</span></td><td class="muted">July 11, 2026</td></tr><tr><td>Weight</td><td><span class="med-name">142 lb</span></td><td class="muted">July 10, 2026</td></tr><tr><td>Blood glucose</td><td><span class="med-name">104 mg/dL</span></td><td class="muted">July 12, 2026</td></tr></tbody></table></div>
+<div class="section"><h2>Nutrition targets</h2><table><thead><tr><th>Nutrient</th><th>Daily target</th><th>Why it matters</th></tr></thead><tbody><tr><td><span class="med-name">Sodium</span></td><td>Under 2,000 mg</td><td class="muted">Helps keep blood pressure steady with atrial fibrillation</td></tr><tr><td><span class="med-name">Vitamin K</span></td><td>Keep intake consistent</td><td class="muted">Large swings can affect anticoagulation</td></tr></tbody></table></div>
+<div class="section"><h2>Contacts</h2><table><thead><tr><th>Name</th><th>Phone</th><th>Role</th></tr></thead><tbody><tr><td><span class="med-name">Daniel Okafor</span> <span class="muted">Son</span></td><td>(512) 555-0184</td><td><span class="tag">Emergency</span></td></tr><tr><td><span class="med-name">Dr. Alice Nguyen</span> <span class="muted">Cardiologist</span></td><td>(512) 555-0102</td><td><span class="tag">Provider</span></td></tr><tr><td><span class="med-name">Lamar Street Pharmacy</span></td><td>(512) 555-0139</td><td><span class="tag">Pharmacy</span></td></tr></tbody></table></div>
+<div class="footer">Generated by Hearth on July 12, 2026 at 3:00 PM. Always verify against the bottle and your clinician's instructions.</div>
+</body>
+</html>"
+`;
+
+exports[`portfolioHtml matches snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Care portfolio</title>
+<style>
+  @page { size: letter; margin: 0.6in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #FFFFFF; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #1D1D1F;
+    font-size: 11px;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .kicker {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #6E6E73;
+  }
+  h1 {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+  .subline { color: #6E6E73; font-size: 11px; margin-top: 3px; }
+  .header { padding-bottom: 12px; border-bottom: 1px solid #E5E5EA; }
+  .severe-band {
+    background: #1D1D1F;
+    color: #FFFFFF;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    page-break-inside: avoid;
+  }
+  .severe-band .severe-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .section { margin-top: 20px; page-break-inside: avoid; }
+  .section h2 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #E5E5EA;
+    margin-bottom: 8px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6E6E73;
+    padding: 4px 10px 4px 0;
+    border-bottom: 1px solid #E5E5EA;
+  }
+  td {
+    padding: 6px 10px 6px 0;
+    border-bottom: 1px solid #E5E5EA;
+    vertical-align: top;
+  }
+  tr { page-break-inside: avoid; }
+  .med-name { font-weight: 600; }
+  .muted { color: #6E6E73; }
+  .high-alert {
+    color: #C4362F;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag {
+    color: #6E6E73;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .supply-low { color: #9A7213; font-weight: 600; }
+  .card {
+    border: 1px solid #E5E5EA;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    page-break-inside: avoid;
+  }
+  .card h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+  .step { display: flex; align-items: flex-start; }
+  .step-number {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #1D1D1F;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 12px;
+  }
+  .step-body { flex: 1 1 auto; }
+  .warning-card {
+    border: 1px solid #E5E5EA;
+    border-left: 3px solid #9A7213;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    page-break-inside: avoid;
+  }
+  .warning-card .warning-label {
+    color: #9A7213;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .review-line { margin-top: 14px; color: #6E6E73; font-size: 9px; }
+  .footer {
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid #E5E5EA;
+    color: #6E6E73;
+    font-size: 9px;
+  }
+</style>
+</head>
+<body>
+<div class="header">
+<div class="kicker">Care portfolio</div>
+<h1>Everyone at a glance</h1>
+<div class="subline">2 people in this care circle</div>
+</div>
+<div class="card"><h3>Margaret Okafor</h3><div class="subline">Goes by Peggy · Born March 22, 1948 · Mother</div><div class="severe-band"><span class="severe-label">Severe allergy</span>Penicillin (Anaphylaxis)</div><div class="section"><h2>Conditions</h2><div>Atrial fibrillation · Type 2 diabetes · Osteoarthritis</div></div><div class="section"><h2>Medications</h2><table><thead><tr><th>Medication</th><th>Directions</th><th>Supply</th><th></th></tr></thead><tbody><tr><td><span class="med-name">Apixaban</span> 5 mg</td><td>Take 1 tablet by mouth twice daily</td><td><span class="supply-low">4 days left</span>, <span class="muted">runs out July 16, 2026</span></td><td><span class="high-alert">HIGH ALERT</span></td></tr><tr><td><span class="med-name">Metformin</span> 500 mg</td><td>Take 1 tablet with breakfast and dinner</td><td>21 days left, <span class="muted">runs out August 2, 2026</span></td><td></td></tr><tr><td><span class="med-name">Acetaminophen</span> 325 mg</td><td>Take 1 to 2 tablets as needed for pain, up to 4 times daily</td><td><span class="muted">As needed</span></td><td><span class="tag">PRN</span></td></tr></tbody></table></div><div class="section"><h2>Contacts</h2><table><thead><tr><th>Name</th><th>Phone</th><th>Role</th></tr></thead><tbody><tr><td><span class="med-name">Daniel Okafor</span> <span class="muted">Son</span></td><td>(512) 555-0184</td><td><span class="tag">Emergency</span></td></tr><tr><td><span class="med-name">Dr. Alice Nguyen</span> <span class="muted">Cardiologist</span></td><td>(512) 555-0102</td><td><span class="tag">Provider</span></td></tr><tr><td><span class="med-name">Lamar Street Pharmacy</span></td><td>(512) 555-0139</td><td><span class="tag">Pharmacy</span></td></tr></tbody></table></div></div>
+<div class="card"><h3>Samuel Okafor</h3><div class="subline">Father</div><div class="section"><h2>Conditions</h2><div>Hypertension</div></div><div class="section"><h2>Medications</h2><table><thead><tr><th>Medication</th><th>Directions</th><th>Supply</th><th></th></tr></thead><tbody><tr><td><span class="med-name">Lisinopril</span> 10 mg</td><td>Take 1 tablet every morning</td><td>12 days left, <span class="muted">runs out July 24, 2026</span></td><td></td></tr></tbody></table></div><div class="section"><h2>Contacts</h2><table><thead><tr><th>Name</th><th>Phone</th><th>Role</th></tr></thead><tbody><tr><td><span class="med-name">Daniel Okafor</span> <span class="muted">Son</span></td><td>(512) 555-0184</td><td><span class="tag">Emergency</span></td></tr></tbody></table></div></div>
+<div class="footer">Generated by Hearth on July 12, 2026 at 3:00 PM. Always verify against the bottle and your clinician's instructions.</div>
+</body>
+</html>"
+`;

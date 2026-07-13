@@ -1,0 +1,553 @@
+/**
+ * Print templates: complete, self-contained HTML documents for PDF output.
+ *
+ * The app renders these with expo-print, but this package knows nothing
+ * about React Native. Every template returns a full HTML document with
+ * inline CSS only, sized for US Letter, in the Ivory Editorial language:
+ * white paper, ink text, hairline rules, and status color used only as
+ * a small semantic accent. Every interpolated string passes through esc().
+ */
+
+import type {
+  PrintAllergy,
+  PrintContact,
+  PrintMed,
+  PrintNutritionRow,
+  PrintPatient,
+  PrintVital,
+} from './types';
+
+/** Escape a string for safe interpolation into HTML text and attributes. */
+function esc(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+const INK = '#1D1D1F';
+const SECONDARY = '#6E6E73';
+const HAIRLINE = '#E5E5EA';
+const RED = '#C4362F';
+const AMBER = '#9A7213';
+
+const BASE_CSS = `
+  @page { size: letter; margin: 0.6in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #FFFFFF; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: ${INK};
+    font-size: 11px;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .kicker {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: ${SECONDARY};
+  }
+  h1 {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+  .subline { color: ${SECONDARY}; font-size: 11px; margin-top: 3px; }
+  .header { padding-bottom: 12px; border-bottom: 1px solid ${HAIRLINE}; }
+  .severe-band {
+    background: ${INK};
+    color: #FFFFFF;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    page-break-inside: avoid;
+  }
+  .severe-band .severe-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .section { margin-top: 20px; page-break-inside: avoid; }
+  .section h2 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    padding-bottom: 6px;
+    border-bottom: 1px solid ${HAIRLINE};
+    margin-bottom: 8px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: ${SECONDARY};
+    padding: 4px 10px 4px 0;
+    border-bottom: 1px solid ${HAIRLINE};
+  }
+  td {
+    padding: 6px 10px 6px 0;
+    border-bottom: 1px solid ${HAIRLINE};
+    vertical-align: top;
+  }
+  tr { page-break-inside: avoid; }
+  .med-name { font-weight: 600; }
+  .muted { color: ${SECONDARY}; }
+  .high-alert {
+    color: ${RED};
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag {
+    color: ${SECONDARY};
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .supply-low { color: ${AMBER}; font-weight: 600; }
+  .card {
+    border: 1px solid ${HAIRLINE};
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    page-break-inside: avoid;
+  }
+  .card h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+  .step { display: flex; align-items: flex-start; }
+  .step-number {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    border: 1px solid ${INK};
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 12px;
+  }
+  .step-body { flex: 1 1 auto; }
+  .warning-card {
+    border: 1px solid ${HAIRLINE};
+    border-left: 3px solid ${AMBER};
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    page-break-inside: avoid;
+  }
+  .warning-card .warning-label {
+    color: ${AMBER};
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .review-line { margin-top: 14px; color: ${SECONDARY}; font-size: 9px; }
+  .footer {
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid ${HAIRLINE};
+    color: ${SECONDARY};
+    font-size: 9px;
+  }
+`;
+
+function documentShell(title: string, body: string): string {
+  return [
+    '<!DOCTYPE html>',
+    '<html lang="en">',
+    '<head>',
+    '<meta charset="utf-8">',
+    `<title>${esc(title)}</title>`,
+    `<style>${BASE_CSS}</style>`,
+    '</head>',
+    '<body>',
+    body,
+    '</body>',
+    '</html>',
+  ].join('\n');
+}
+
+function footerHtml(generatedAt: string): string {
+  return `<div class="footer">Generated by Hearth on ${esc(
+    generatedAt,
+  )}. Always verify against the bottle and your clinician's instructions.</div>`;
+}
+
+/** High-contrast black band for severe allergies. Empty string when none. */
+function severeAllergyBand(allergies: PrintAllergy[]): string {
+  const severe = allergies.filter((a) => a.severe);
+  if (severe.length === 0) return '';
+  const items = severe.map((a) => `${esc(a.name)} (${esc(a.reaction)})`).join(', ');
+  return [
+    '<div class="severe-band">',
+    `<span class="severe-label">Severe allerg${severe.length === 1 ? 'y' : 'ies'}</span>`,
+    items,
+    '</div>',
+  ].join('');
+}
+
+function patientHeader(patient: PrintPatient, kicker: string): string {
+  const sublineParts: string[] = [];
+  if (patient.preferredName) sublineParts.push(`Goes by ${esc(patient.preferredName)}`);
+  if (patient.dob) sublineParts.push(`Born ${esc(patient.dob)}`);
+  if (patient.relationship) sublineParts.push(esc(patient.relationship));
+  const subline =
+    sublineParts.length > 0 ? `<div class="subline">${sublineParts.join(' · ')}</div>` : '';
+  return [
+    '<div class="header">',
+    `<div class="kicker">${esc(kicker)}</div>`,
+    `<h1>${esc(patient.fullName)}</h1>`,
+    subline,
+    '</div>',
+  ].join('');
+}
+
+function medSupplyCell(med: PrintMed): string {
+  if (med.daysLeft == null && !med.runOutDate) {
+    return med.prn ? '<span class="muted">As needed</span>' : '<span class="muted">Not tracked</span>';
+  }
+  const parts: string[] = [];
+  if (med.daysLeft != null) {
+    const days = med.daysLeft === 1 ? '1 day left' : `${med.daysLeft} days left`;
+    parts.push(med.daysLeft <= 10 ? `<span class="supply-low">${days}</span>` : days);
+  }
+  if (med.runOutDate) parts.push(`<span class="muted">runs out ${esc(med.runOutDate)}</span>`);
+  return parts.join(', ');
+}
+
+function medsTable(meds: PrintMed[]): string {
+  if (meds.length === 0) {
+    return '<div class="muted">No medications on record.</div>';
+  }
+  const rows = meds
+    .map((med) => {
+      const nameParts = [`<span class="med-name">${esc(med.name)}</span>`];
+      if (med.strength) nameParts.push(esc(med.strength));
+      const flags: string[] = [];
+      if (med.highAlert) flags.push('<span class="high-alert">HIGH ALERT</span>');
+      if (med.prn) flags.push('<span class="tag">PRN</span>');
+      return [
+        '<tr>',
+        `<td>${nameParts.join(' ')}</td>`,
+        `<td>${med.sig ? esc(med.sig) : '<span class="muted">See label</span>'}</td>`,
+        `<td>${medSupplyCell(med)}</td>`,
+        `<td>${flags.join(' ')}</td>`,
+        '</tr>',
+      ].join('');
+    })
+    .join('');
+  return [
+    '<table>',
+    '<thead><tr><th>Medication</th><th>Directions</th><th>Supply</th><th></th></tr></thead>',
+    `<tbody>${rows}</tbody>`,
+    '</table>',
+  ].join('');
+}
+
+const CONTACT_KIND_LABEL: Record<PrintContact['kind'], string> = {
+  emergency: 'Emergency',
+  provider: 'Provider',
+  pharmacy: 'Pharmacy',
+  other: 'Contact',
+};
+
+function contactsTable(contacts: PrintContact[]): string {
+  if (contacts.length === 0) {
+    return '<div class="muted">No contacts on record.</div>';
+  }
+  const rows = contacts
+    .map((contact) =>
+      [
+        '<tr>',
+        `<td><span class="med-name">${esc(contact.name)}</span>${
+          contact.relation ? ` <span class="muted">${esc(contact.relation)}</span>` : ''
+        }</td>`,
+        `<td>${contact.phone ? esc(contact.phone) : '<span class="muted">No phone on file</span>'}</td>`,
+        `<td><span class="tag">${CONTACT_KIND_LABEL[contact.kind]}</span></td>`,
+        '</tr>',
+      ].join(''),
+    )
+    .join('');
+  return [
+    '<table>',
+    '<thead><tr><th>Name</th><th>Phone</th><th>Role</th></tr></thead>',
+    `<tbody>${rows}</tbody>`,
+    '</table>',
+  ].join('');
+}
+
+function allergiesList(allergies: PrintAllergy[]): string {
+  if (allergies.length === 0) {
+    return '<div class="muted">No known allergies on record.</div>';
+  }
+  const rows = allergies
+    .map((allergy) =>
+      [
+        '<tr>',
+        `<td><span class="med-name">${esc(allergy.name)}</span></td>`,
+        `<td>${esc(allergy.reaction)}</td>`,
+        `<td>${allergy.severe ? '<span class="high-alert">Severe</span>' : '<span class="muted">Mild to moderate</span>'}</td>`,
+        '</tr>',
+      ].join(''),
+    )
+    .join('');
+  return [
+    '<table>',
+    '<thead><tr><th>Allergy</th><th>Reaction</th><th>Severity</th></tr></thead>',
+    `<tbody>${rows}</tbody>`,
+    '</table>',
+  ].join('');
+}
+
+function conditionsLine(conditions: string[]): string {
+  if (conditions.length === 0) {
+    return '<div class="muted">No conditions on record.</div>';
+  }
+  return `<div>${conditions.map((c) => esc(c)).join(' · ')}</div>`;
+}
+
+/**
+ * The patient one-pager: everything a sitter, visiting nurse, or family
+ * member needs on a single sheet.
+ */
+export function onePagerHtml(input: {
+  patient: PrintPatient;
+  meds: PrintMed[];
+  vitals: PrintVital[];
+  contacts: PrintContact[];
+  nutrition: PrintNutritionRow[];
+  generatedAt: string;
+}): string {
+  const { patient, meds, vitals, contacts, nutrition, generatedAt } = input;
+
+  const vitalsSection =
+    vitals.length === 0
+      ? '<div class="muted">No recent vitals on record.</div>'
+      : [
+          '<table>',
+          '<thead><tr><th>Measure</th><th>Value</th><th>Recorded</th></tr></thead>',
+          '<tbody>',
+          vitals
+            .map((v) =>
+              [
+                '<tr>',
+                `<td>${esc(v.label)}</td>`,
+                `<td><span class="med-name">${esc(v.value)}</span></td>`,
+                `<td class="muted">${esc(v.recordedOn)}</td>`,
+                '</tr>',
+              ].join(''),
+            )
+            .join(''),
+          '</tbody>',
+          '</table>',
+        ].join('');
+
+  const nutritionSection =
+    nutrition.length === 0
+      ? '<div class="muted">No nutrition targets on record.</div>'
+      : [
+          '<table>',
+          '<thead><tr><th>Nutrient</th><th>Daily target</th><th>Why it matters</th></tr></thead>',
+          '<tbody>',
+          nutrition
+            .map((row) =>
+              [
+                '<tr>',
+                `<td><span class="med-name">${esc(row.nutrient)}</span></td>`,
+                `<td>${esc(row.target)}</td>`,
+                `<td class="muted">${esc(row.why)}</td>`,
+                '</tr>',
+              ].join(''),
+            )
+            .join(''),
+          '</tbody>',
+          '</table>',
+        ].join('');
+
+  const body = [
+    patientHeader(patient, 'Care one-pager'),
+    severeAllergyBand(patient.allergies),
+    `<div class="section"><h2>Conditions</h2>${conditionsLine(patient.conditions)}</div>`,
+    `<div class="section"><h2>Allergies</h2>${allergiesList(patient.allergies)}</div>`,
+    `<div class="section"><h2>Medications</h2>${medsTable(meds)}</div>`,
+    `<div class="section"><h2>Recent vitals</h2>${vitalsSection}</div>`,
+    `<div class="section"><h2>Nutrition targets</h2>${nutritionSection}</div>`,
+    `<div class="section"><h2>Contacts</h2>${contactsTable(contacts)}</div>`,
+    footerHtml(generatedAt),
+  ].join('\n');
+
+  return documentShell(`Care one-pager for ${patient.fullName}`, body);
+}
+
+/**
+ * The emergency room sheet: the short, blunt version for a hospital
+ * intake desk. Severe allergies first, then key facts, meds, contacts.
+ */
+export function erSheetHtml(input: {
+  patient: PrintPatient;
+  meds: PrintMed[];
+  contacts: PrintContact[];
+  keyFacts: { label: string; value: string }[];
+  generatedAt: string;
+}): string {
+  const { patient, meds, contacts, keyFacts, generatedAt } = input;
+
+  const keyFactsSection =
+    keyFacts.length === 0
+      ? '<div class="muted">No key facts on record.</div>'
+      : [
+          '<table>',
+          '<tbody>',
+          keyFacts
+            .map((fact) =>
+              [
+                '<tr>',
+                `<td style="width: 34%;" class="muted">${esc(fact.label)}</td>`,
+                `<td><span class="med-name">${esc(fact.value)}</span></td>`,
+                '</tr>',
+              ].join(''),
+            )
+            .join(''),
+          '</tbody>',
+          '</table>',
+        ].join('');
+
+  const body = [
+    patientHeader(patient, 'Emergency room sheet'),
+    severeAllergyBand(patient.allergies),
+    `<div class="section"><h2>Key facts</h2>${keyFactsSection}</div>`,
+    `<div class="section"><h2>Conditions</h2>${conditionsLine(patient.conditions)}</div>`,
+    `<div class="section"><h2>Allergies</h2>${allergiesList(patient.allergies)}</div>`,
+    `<div class="section"><h2>Medications</h2>${medsTable(meds)}</div>`,
+    `<div class="section"><h2>Contacts</h2>${contactsTable(contacts)}</div>`,
+    footerHtml(generatedAt),
+  ].join('\n');
+
+  return documentShell(`Emergency room sheet for ${patient.fullName}`, body);
+}
+
+/**
+ * The household portfolio: one document covering everyone in the care
+ * circle, one card per person.
+ */
+export function portfolioHtml(input: {
+  people: { patient: PrintPatient; meds: PrintMed[]; contacts: PrintContact[] }[];
+  generatedAt: string;
+}): string {
+  const { people, generatedAt } = input;
+
+  const cards =
+    people.length === 0
+      ? '<div class="muted section">No people on record.</div>'
+      : people
+          .map((person) => {
+            const sublineParts: string[] = [];
+            if (person.patient.preferredName) {
+              sublineParts.push(`Goes by ${esc(person.patient.preferredName)}`);
+            }
+            if (person.patient.dob) sublineParts.push(`Born ${esc(person.patient.dob)}`);
+            if (person.patient.relationship) sublineParts.push(esc(person.patient.relationship));
+            return [
+              '<div class="card">',
+              `<h3>${esc(person.patient.fullName)}</h3>`,
+              sublineParts.length > 0
+                ? `<div class="subline">${sublineParts.join(' · ')}</div>`
+                : '',
+              severeAllergyBand(person.patient.allergies),
+              `<div class="section"><h2>Conditions</h2>${conditionsLine(person.patient.conditions)}</div>`,
+              `<div class="section"><h2>Medications</h2>${medsTable(person.meds)}</div>`,
+              `<div class="section"><h2>Contacts</h2>${contactsTable(person.contacts)}</div>`,
+              '</div>',
+            ].join('');
+          })
+          .join('\n');
+
+  const body = [
+    '<div class="header">',
+    '<div class="kicker">Care portfolio</div>',
+    '<h1>Everyone at a glance</h1>',
+    `<div class="subline">${people.length === 1 ? '1 person' : `${people.length} people`} in this care circle</div>`,
+    '</div>',
+    cards,
+    footerHtml(generatedAt),
+  ].join('\n');
+
+  return documentShell('Care portfolio', body);
+}
+
+/**
+ * An illustrated-guide text layout: a reviewed, versioned set of steps
+ * for a caregiving situation, printed for the fridge or the binder.
+ */
+export function guideHtml(input: {
+  title: string;
+  oneLiner: string;
+  steps: { n: number; title: string; body: string }[];
+  warning?: string;
+  review: { version: string; reviewer: string; reviewedOn: string };
+  generatedAt: string;
+}): string {
+  const { title, oneLiner, steps, warning, review, generatedAt } = input;
+
+  const stepCards = steps
+    .map((step) =>
+      [
+        '<div class="card step">',
+        `<div class="step-number">${esc(String(step.n))}</div>`,
+        '<div class="step-body">',
+        `<h3>${esc(step.title)}</h3>`,
+        `<div>${esc(step.body)}</div>`,
+        '</div>',
+        '</div>',
+      ].join(''),
+    )
+    .join('\n');
+
+  const warningCard = warning
+    ? [
+        '<div class="warning-card">',
+        '<span class="warning-label">Take care</span>',
+        esc(warning),
+        '</div>',
+      ].join('')
+    : '';
+
+  const body = [
+    '<div class="header">',
+    '<div class="kicker">Caregiver guide</div>',
+    `<h1>${esc(title)}</h1>`,
+    `<div class="subline">${esc(oneLiner)}</div>`,
+    '</div>',
+    warningCard,
+    stepCards,
+    `<div class="review-line">Version ${esc(review.version)}, reviewed by ${esc(
+      review.reviewer,
+    )} on ${esc(review.reviewedOn)}.</div>`,
+    footerHtml(generatedAt),
+  ].join('\n');
+
+  return documentShell(title, body);
+}

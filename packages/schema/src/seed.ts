@@ -13,13 +13,21 @@ import { LocalDate, addDays, isHighAlert, uuidv7 } from '@hearth/core';
 import { HearthDatabase, logChange } from './audit';
 import {
   NewContact,
+  NewLabResult,
   NewMedFill,
   NewMedication,
+  NewObservation,
   NewPatient,
+  NewTimelineEvent,
+  NewVital,
   contacts,
+  labResults,
   medFills,
   medications,
+  observations,
   patients,
+  timelineEvents,
+  vitals,
 } from './schema';
 
 export interface SeedResult {
@@ -429,6 +437,180 @@ export async function seedDemoFamily(db: HearthDatabase, today: LocalDate): Prom
     pharmacyPhone: excelsiorPharmacy.phone,
   });
   medicationIds['rosa.ibuprofen'] = rosaIbuprofen;
+
+
+  /* ─────────────── Stage 3 demo data: vitals, observations, history, labs ─────────────── */
+
+  /** Deterministic wobble in [-1, 1] so series look alive but seed identically. */
+  const wobble = (i: number, phase: number) => Math.sin(i * 1.7 + phase) * 0.7 + Math.sin(i * 0.43 + phase * 2) * 0.3;
+
+  async function addVital(row: Omit<NewVital, 'id' | 'createdAt'>) {
+    const id = nextId();
+    const values = { ...row, id, createdAt: now };
+    await db.insert(vitals).values(values);
+    await logChange(db, {
+      at: now,
+      entity: 'vital',
+      entityId: id,
+      patientId: row.patientId,
+      action: 'create',
+      detail: snapshot(values),
+    });
+    return id;
+  }
+
+  async function addObservation(row: Omit<NewObservation, 'id' | 'createdAt'>) {
+    const id = nextId();
+    const values = { ...row, id, createdAt: now };
+    await db.insert(observations).values(values);
+    await logChange(db, {
+      at: now,
+      entity: 'observation',
+      entityId: id,
+      patientId: row.patientId,
+      action: 'create',
+      detail: snapshot(values),
+    });
+    return id;
+  }
+
+  async function addTimelineEvent(row: Omit<NewTimelineEvent, 'id' | 'createdAt'>) {
+    const id = nextId();
+    const values = { ...row, id, createdAt: now };
+    await db.insert(timelineEvents).values(values);
+    await logChange(db, {
+      at: now,
+      entity: 'timeline_event',
+      entityId: id,
+      patientId: row.patientId,
+      action: 'create',
+      detail: snapshot(values),
+    });
+    return id;
+  }
+
+  async function addLab(row: Omit<NewLabResult, 'id' | 'createdAt'>) {
+    const id = nextId();
+    const values = { ...row, id, createdAt: now };
+    await db.insert(labResults).values(values);
+    await logChange(db, {
+      at: now,
+      entity: 'lab_result',
+      entityId: id,
+      patientId: row.patientId,
+      action: 'create',
+      detail: snapshot(values),
+    });
+    return id;
+  }
+
+  const instantOn = (d: LocalDate, hour: number) =>
+    `${d}T${String(hour).padStart(2, '0')}:00:00.000Z`;
+
+  // Robert: 90 days of weekly weight (gentle decline), 30 days of BP and
+  // fasting glucose, 30 days of resting HR drifting up ~6 bpm in the last
+  // two weeks. The HR drift is the story his Activity tab should tell.
+  for (let i = 12; i >= 0; i--) {
+    const d = addDays(today, -i * 7);
+    await addVital({
+      patientId: robert, kind: 'weight', unit: 'lb',
+      value: Math.round(186 - (12 - i) * 0.35 + wobble(i, 1) * 1.2),
+      recordedOn: d, recordedAt: instantOn(d, 8),
+    });
+  }
+  for (let i = 29; i >= 0; i--) {
+    const d = addDays(today, -i);
+    if (i % 3 === 0) {
+      await addVital({
+        patientId: robert, kind: 'bp', unit: 'mmHg',
+        value: Math.round(138 + wobble(i, 2) * 6),
+        value2: Math.round(84 + wobble(i, 3) * 4),
+        recordedOn: d, recordedAt: instantOn(d, 9),
+      });
+    }
+    await addVital({
+      patientId: robert, kind: 'glucose', unit: 'mg/dL',
+      value: Math.round(124 + wobble(i, 4) * 14 + (i === 6 ? 24 : 0)),
+      recordedOn: d, recordedAt: instantOn(d, 7),
+    });
+    const drift = i < 14 ? (14 - i) * 0.45 : 0;
+    await addVital({
+      patientId: robert, kind: 'hr', unit: 'bpm',
+      value: Math.round(71 + drift + wobble(i, 5) * 2),
+      recordedOn: d, recordedAt: instantOn(d, 10),
+    });
+  }
+  await addObservation({
+    patientId: robert, kind: 'incident',
+    text: 'Dizzy this morning getting up from bed. Passed after a minute sitting down. He skipped dinner last night.',
+    at: instantOn(addDays(today, -6), 8),
+  });
+  await addObservation({
+    patientId: robert, kind: 'note',
+    text: 'Resting heart rate has been creeping up for about two weeks. Worth raising at the cardiology visit.',
+    at: instantOn(addDays(today, -2), 20),
+  });
+  await addObservation({
+    patientId: robert, kind: 'appetite',
+    text: 'Eating well this week. Finished the lentil soup and asked for seconds on Tuesday.',
+    at: instantOn(addDays(today, -3), 19),
+  });
+
+  await addTimelineEvent({ patientId: robert, kind: 'diagnosis', title: 'Hypertension diagnosed', happenedOn: '2008', });
+  await addTimelineEvent({ patientId: robert, kind: 'diagnosis', title: 'Type 2 diabetes diagnosed', detail: 'Started metformin.', happenedOn: '2011' });
+  await addTimelineEvent({ patientId: robert, kind: 'procedure', title: 'Cataract surgery, right eye', happenedOn: '2019' });
+  await addTimelineEvent({ patientId: robert, kind: 'diagnosis', title: 'Atrial fibrillation diagnosed', detail: 'Started apixaban, a blood thinner.', happenedOn: '2022' });
+  await addTimelineEvent({ patientId: robert, kind: 'hospitalization', title: 'Pneumonia, 5-day stay', detail: 'Full recovery.', happenedOn: '2023' });
+  await addTimelineEvent({ patientId: robert, kind: 'diagnosis', title: 'Right knee osteoarthritis', detail: 'Managed with physical therapy and acetaminophen.', happenedOn: '2024' });
+  await addTimelineEvent({ patientId: robert, kind: 'hospitalization', title: 'Observation stay for chest pain', detail: 'Two nights. Heart attack ruled out; stress test normal.', happenedOn: addDays(today, -70) });
+
+  const robertLabsOn = addDays(today, -100);
+  await addLab({ patientId: robert, name: 'HbA1c', value: '7.1', unit: '%', refLow: '4.0', refHigh: '5.6', abnormal: true, collectedOn: robertLabsOn, source: 'Quest Diagnostics' });
+  await addLab({ patientId: robert, name: 'LDL cholesterol', value: '88', unit: 'mg/dL', refHigh: '100', abnormal: false, collectedOn: robertLabsOn, source: 'Quest Diagnostics', note: 'At goal on statin.' });
+  await addLab({ patientId: robert, name: 'eGFR', value: '68', unit: 'mL/min', refLow: '90', abnormal: true, collectedOn: robertLabsOn, source: 'Quest Diagnostics', note: 'Mildly reduced. Relevant to metformin dosing, per Dr. Okafor.' });
+  await addLab({ patientId: robert, name: 'Potassium', value: '4.2', unit: 'mmol/L', refLow: '3.5', refHigh: '5.1', abnormal: false, collectedOn: robertLabsOn, source: 'Quest Diagnostics' });
+
+  // Eleanor: stable weight and BP; the signal lives in her sleep observations.
+  for (let i = 8; i >= 0; i--) {
+    const d = addDays(today, -i * 7);
+    await addVital({
+      patientId: eleanor, kind: 'weight', unit: 'lb',
+      value: Math.round(138 + wobble(i, 6) * 1.1),
+      recordedOn: d, recordedAt: instantOn(d, 8),
+    });
+    await addVital({
+      patientId: eleanor, kind: 'bp', unit: 'mmHg',
+      value: Math.round(128 + wobble(i, 7) * 5),
+      value2: Math.round(78 + wobble(i, 8) * 3),
+      recordedOn: d, recordedAt: instantOn(d, 9),
+    });
+  }
+  await addObservation({ patientId: eleanor, kind: 'sleep', text: 'Up at 4 again. About six hours total. Third short night this week.', at: instantOn(addDays(today, -1), 7) });
+  await addObservation({ patientId: eleanor, kind: 'incident', text: 'Hard evening. Anxious after 6 PM, settled with the photo album and her playlist.', at: instantOn(addDays(today, -2), 21) });
+  await addObservation({ patientId: eleanor, kind: 'mood', text: 'Bright morning. Told the story about the Chennai train trip and laughed a lot.', at: instantOn(addDays(today, -4), 11) });
+
+  await addTimelineEvent({ patientId: eleanor, kind: 'diagnosis', title: 'Hypertension diagnosed', happenedOn: '2018' });
+  await addTimelineEvent({ patientId: eleanor, kind: 'diagnosis', title: 'Osteoporosis diagnosed', detail: 'After a wrist fracture from a minor fall.', happenedOn: '2020' });
+  await addTimelineEvent({ patientId: eleanor, kind: 'diagnosis', title: 'Early-stage Alzheimer\'s disease diagnosed', detail: 'Started donepezil with Dr. Patel.', happenedOn: '2024' });
+
+  const eleanorLabsOn = addDays(today, -60);
+  await addLab({ patientId: eleanor, name: 'Vitamin D, 25-OH', value: '24', unit: 'ng/mL', refLow: '30', refHigh: '100', abnormal: true, collectedOn: eleanorLabsOn, source: 'LabCorp', note: 'Low. Dr. Patel suggested discussing a supplement at the next visit.' });
+  await addLab({ patientId: eleanor, name: 'Vitamin B12', value: '380', unit: 'pg/mL', refLow: '200', refHigh: '900', abnormal: false, collectedOn: eleanorLabsOn, source: 'LabCorp' });
+  await addLab({ patientId: eleanor, name: 'TSH', value: '1.9', unit: 'mIU/L', refLow: '0.4', refHigh: '4.0', abnormal: false, collectedOn: eleanorLabsOn, source: 'LabCorp' });
+
+  // Rosa: light data on purpose; her "all good" status should feel earned.
+  for (let i = 4; i >= 0; i--) {
+    const d = addDays(today, -i * 14);
+    await addVital({
+      patientId: rosa, kind: 'weight', unit: 'lb',
+      value: Math.round(150 + wobble(i, 9)),
+      recordedOn: d, recordedAt: instantOn(d, 8),
+    });
+  }
+  await addObservation({ patientId: rosa, kind: 'note', text: 'Repotted the tomatoes. Knee held up fine on the garden steps.', at: instantOn(addDays(today, -5), 17) });
+  await addTimelineEvent({ patientId: rosa, kind: 'diagnosis', title: 'Hypothyroidism diagnosed', detail: 'Started levothyroxine.', happenedOn: '2015' });
+  const rosaLabsOn = addDays(today, -45);
+  await addLab({ patientId: rosa, name: 'TSH', value: '2.8', unit: 'mIU/L', refLow: '0.4', refHigh: '4.0', abnormal: false, collectedOn: rosaLabsOn, source: 'Quest Diagnostics', note: 'Stable on 75 mcg.' });
 
   return { patientIds: { robert, eleanor, rosa }, medicationIds };
 }

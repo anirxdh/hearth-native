@@ -14,10 +14,15 @@ const EXPECTED_TABLES = [
   'access_log',
   'change_log',
   'contacts',
+  'documents',
+  'lab_results',
   'med_fills',
   'medications',
+  'observations',
   'patients',
   'settings',
+  'timeline_events',
+  'vitals',
 ];
 
 const EXPECTED_INDEXES = [
@@ -25,8 +30,13 @@ const EXPECTED_INDEXES = [
   'change_log_at_idx',
   'change_log_entity_idx',
   'contacts_patient_idx',
+  'documents_patient_idx',
+  'labs_patient_idx',
   'med_fills_medication_idx',
   'medications_patient_idx',
+  'observations_patient_idx',
+  'timeline_patient_idx',
+  'vitals_patient_kind_idx',
 ];
 
 describe('migration harness', () => {

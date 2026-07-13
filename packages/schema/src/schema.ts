@@ -117,7 +117,7 @@ export const changeLog = sqliteTable(
     at: text('at').notNull(),
     actor: text('actor').notNull().default('owner'),
     entity: text('entity', {
-      enum: ['patient', 'medication', 'med_fill', 'contact', 'settings'],
+      enum: ['patient', 'medication', 'med_fill', 'contact', 'settings', 'vital', 'observation', 'timeline_event', 'lab_result', 'document'],
     }).notNull(),
     entityId: text('entity_id').notNull(),
     patientId: text('patient_id'),
@@ -158,3 +158,129 @@ export type MedFill = typeof medFills.$inferSelect;
 export type NewMedFill = typeof medFills.$inferInsert;
 export type ChangeLogEntry = typeof changeLog.$inferSelect;
 export type SettingsRow = typeof settings.$inferSelect;
+
+/* ───────────────────────── Stage 3 additions (migration 0001) ───────────────────────── */
+
+/**
+ * Manual vitals: blood pressure stores systolic in `value` and diastolic in
+ * `value2`; every other kind uses `value` alone. Values are numbers; display
+ * formatting lives in the app.
+ */
+export const vitals = sqliteTable(
+  'vitals',
+  {
+    id: text('id').primaryKey(),
+    patientId: text('patient_id')
+      .notNull()
+      .references(() => patients.id),
+    kind: text('kind', {
+      enum: ['bp', 'weight', 'glucose', 'spo2', 'temp', 'hr'],
+    }).notNull(),
+    value: integer('value', { mode: 'number' }).notNull(),
+    value2: integer('value2', { mode: 'number' }),
+    unit: text('unit').notNull(), // "mmHg", "lb", "mg/dL", "%", "F", "bpm"
+    recordedOn: text('recorded_on').notNull(), // YYYY-MM-DD caregiver-local
+    recordedAt: text('recorded_at').notNull(), // full instant, for ordering
+    note: text('note'),
+    createdAt: text('created_at').notNull(),
+  },
+  (t) => [index('vitals_patient_kind_idx').on(t.patientId, t.kind, t.recordedAt)],
+);
+
+/** Caregiver observations: the soft signal log a prep sheet is built from. */
+export const observations = sqliteTable(
+  'observations',
+  {
+    id: text('id').primaryKey(),
+    patientId: text('patient_id')
+      .notNull()
+      .references(() => patients.id),
+    kind: text('kind', {
+      enum: ['mood', 'appetite', 'sleep', 'incident', 'note'],
+    }).notNull(),
+    text: text('text').notNull(),
+    at: text('at').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (t) => [index('observations_patient_idx').on(t.patientId, t.at)],
+);
+
+/**
+ * Unified medical history. Medication changes are appended automatically by
+ * the repository write path; hand-entered events use the other kinds.
+ * `happenedOn` may be a year ("2019") or a full date ("2026-05-03").
+ */
+export const timelineEvents = sqliteTable(
+  'timeline_events',
+  {
+    id: text('id').primaryKey(),
+    patientId: text('patient_id')
+      .notNull()
+      .references(() => patients.id),
+    kind: text('kind', {
+      enum: ['diagnosis', 'hospitalization', 'procedure', 'med_change', 'other'],
+    }).notNull(),
+    title: text('title').notNull(),
+    detail: text('detail'),
+    happenedOn: text('happened_on').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (t) => [index('timeline_patient_idx').on(t.patientId, t.happenedOn)],
+);
+
+/** Structured lab results with reference ranges; abnormal is precomputed. */
+export const labResults = sqliteTable(
+  'lab_results',
+  {
+    id: text('id').primaryKey(),
+    patientId: text('patient_id')
+      .notNull()
+      .references(() => patients.id),
+    name: text('name').notNull(), // "HbA1c"
+    value: text('value').notNull(), // keep as text: "7.1", "<0.01"
+    unit: text('unit'),
+    refLow: text('ref_low'),
+    refHigh: text('ref_high'),
+    abnormal: integer('abnormal', { mode: 'boolean' }).notNull().default(false),
+    collectedOn: text('collected_on').notNull(), // YYYY-MM-DD
+    source: text('source'), // "Quest Diagnostics"
+    note: text('note'),
+    createdAt: text('created_at').notNull(),
+  },
+  (t) => [index('labs_patient_idx').on(t.patientId, t.collectedOn)],
+);
+
+/**
+ * Documents vault metadata. Files live in the app sandbox under
+ * documents/vault/<id>.<ext>; iOS Data Protection covers the bytes, this
+ * table carries only names and categories.
+ */
+export const documents = sqliteTable(
+  'documents',
+  {
+    id: text('id').primaryKey(),
+    patientId: text('patient_id')
+      .notNull()
+      .references(() => patients.id),
+    title: text('title').notNull(),
+    category: text('category', {
+      enum: ['insurance', 'directive', 'discharge', 'lab', 'photo', 'other'],
+    }).notNull().default('other'),
+    fileName: text('file_name').notNull(), // relative to the vault dir
+    mimeType: text('mime_type').notNull(),
+    addedAt: text('added_at').notNull(),
+    archivedAt: text('archived_at'),
+  },
+  (t) => [index('documents_patient_idx').on(t.patientId)],
+);
+
+export type Vital = typeof vitals.$inferSelect;
+export type NewVital = typeof vitals.$inferInsert;
+export type Observation = typeof observations.$inferSelect;
+export type NewObservation = typeof observations.$inferInsert;
+export type TimelineEvent = typeof timelineEvents.$inferSelect;
+export type NewTimelineEvent = typeof timelineEvents.$inferInsert;
+export type LabResult = typeof labResults.$inferSelect;
+export type NewLabResult = typeof labResults.$inferInsert;
+export type DocumentRow = typeof documents.$inferSelect;
+export type NewDocument = typeof documents.$inferInsert;

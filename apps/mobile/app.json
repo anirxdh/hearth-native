@@ -24,10 +24,41 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-sqlite", { "useSQLCipher": true }],
+      [
+        "expo-sqlite",
+        {
+          "useSQLCipher": true
+        }
+      ],
       "expo-secure-store",
-      ["expo-notifications", { "defaultChannel": "default" }],
-      ["expo-splash-screen", { "backgroundColor": "#FFFFFF", "image": "./assets/images/splash-icon.png", "imageWidth": 76 }]
+      [
+        "expo-notifications",
+        {
+          "defaultChannel": "default"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76
+        }
+      ],
+      "expo-sharing",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Hearth uses the camera to photograph insurance cards, discharge papers, and other care documents you choose to keep in the vault.",
+          "photosPermission": "Hearth lets you import photos of care documents you already have, such as insurance cards or visit summaries."
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Hearth can require Face ID to open the app so care records stay private."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

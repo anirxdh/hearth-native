@@ -155,7 +155,11 @@ describe('seedDemoFamily', () => {
     expect(count('contact')).toBe(14);
     expect(count('medication')).toBe(9);
     expect(count('med_fill')).toBe(8);
-    expect(log).toHaveLength(34);
+    expect(count('vital')).toBe(106);
+    expect(count('observation')).toBe(7);
+    expect(count('timeline_event')).toBe(11);
+    expect(count('lab_result')).toBe(8);
+    expect(log).toHaveLength(166);
   });
 
   test('change_log detail carries a full JSON snapshot of the create', async () => {
