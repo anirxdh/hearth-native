@@ -64,9 +64,12 @@ export default function Settings() {
       {
         text: 'Load demo',
         onPress: () => {
-          seedDemoFamily(getDb(), today());
-          bumpDataVersion();
-          syncNotifications().catch(() => {});
+          seedDemoFamily(getDb(), today())
+            .then(() => {
+              bumpDataVersion();
+              return syncNotifications();
+            })
+            .catch((e) => Alert.alert('Demo load failed', String(e)));
         },
       },
     ]);

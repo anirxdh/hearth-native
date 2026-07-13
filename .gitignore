@@ -9,3 +9,5 @@ android/
 coverage/
 .eas/
 *.tsbuildinfo
+.claude/
+.vscode/

@@ -22,10 +22,17 @@ Notifications.setNotificationHandler({
   }),
 });
 
+let suppressPermissionRequest = false;
+
+/** Dev-only: lets QA automation run flows without tripping the iOS dialog. */
+export function setSuppressPermissionRequest(v: boolean): void {
+  suppressPermissionRequest = v;
+}
+
 export async function ensureNotificationPermission(): Promise<boolean> {
   const current = await Notifications.getPermissionsAsync();
   if (current.granted) return true;
-  if (!current.canAskAgain) return false;
+  if (!current.canAskAgain || suppressPermissionRequest) return false;
   const req = await Notifications.requestPermissionsAsync();
   return req.granted;
 }
@@ -41,10 +48,13 @@ function triggerFor(n: DesiredNotification): Notifications.NotificationTriggerIn
  * identical plans are a no-op.
  */
 export async function syncNotifications(): Promise<{ scheduled: number; canceled: number }> {
+  const all = listAllMedications();
+  // Ask for permission in context: only once there is something to alert on.
+  if (all.length === 0) return { scheduled: 0, canceled: 0 };
   const granted = await ensureNotificationPermission();
   if (!granted) return { scheduled: 0, canceled: 0 };
 
-  const meds: PlanMedInput[] = listAllMedications().map((m) => ({
+  const meds: PlanMedInput[] = all.map((m) => ({
     medicationId: m.id,
     patientId: m.patientId,
     active: m.active,
