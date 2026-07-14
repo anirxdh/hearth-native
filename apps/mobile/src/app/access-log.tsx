@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { EmptyState, Screen, SectionHeader, color, space, type } from '../ds';
 import { getPatient, listAccessLog } from '../db/repo';
+import { describeAccess } from '../lib/accessLabels';
 import { useData } from '../lib/useData';
 
 /**
@@ -11,28 +12,6 @@ import { useData } from '../lib/useData';
  * sensitive read lands here, newest first. When sharing arrives (P31),
  * a second caregiver's reads appear in this same list.
  */
-
-const WHAT_LABEL: [RegExp, string][] = [
-  [/^er_sheet\.print/, 'Printed the ER sheet'],
-  [/^er_sheet\.share/, 'Shared the ER sheet'],
-  [/^one_pager\.print/, 'Printed the one-pager'],
-  [/^one_pager\.share/, 'Shared the one-pager'],
-  [/^portfolio\.print/, 'Printed the everyone pack'],
-  [/^portfolio\.share/, 'Shared the everyone pack'],
-  [/^guide\.print:(.+)/, 'Printed a guide'],
-  [/^guide\.share:(.+)/, 'Shared a guide'],
-  [/^document\.share:(.+)/, 'Shared a document'],
-  [/^backup\.export/, 'Exported an encrypted backup'],
-  [/^backup\.import/, 'Restored from a backup'],
-];
-
-function describe(what: string): string {
-  for (const [re, label] of WHAT_LABEL) {
-    const m = re.exec(what);
-    if (m) return m[1] ? `${label}: ${m[1]}` : label;
-  }
-  return what;
-}
 
 function fmtAt(at: string): string {
   return new Date(at).toLocaleString(undefined, {
@@ -88,7 +67,7 @@ export default function AccessLogScreen() {
               }}
             >
               <View style={{ flex: 1 }}>
-                <Text style={[type.body, { fontWeight: '600' }]}>{describe(e.what)}</Text>
+                <Text style={[type.body, { fontWeight: '600' }]}>{describeAccess(e.what)}</Text>
                 <Text style={[type.mini, { marginTop: 2 }]}>
                   {[patient ? (patient.preferredName ?? patient.fullName) : null, `by ${e.actor}`]
                     .filter(Boolean)

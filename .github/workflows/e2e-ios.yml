@@ -1,0 +1,76 @@
+name: E2E (iOS simulator)
+
+# Maestro end-to-end flows on a real simulator build.
+#
+# COST NOTE: macOS runners bill at 10x on private repos (a ~30 min run uses
+# ~300 of the 2,000 free monthly minutes), so this is NOT on every push:
+# it runs weekly and on demand. Run it locally for free with
+# scripts/e2e-local.sh before releases.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 14 * * 1' # Mondays 14:00 UTC
+
+jobs:
+  e2e:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install JS dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prebuild iOS project
+        working-directory: apps/mobile
+        run: npx expo prebuild -p ios --no-install
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: apps/mobile/ios/Pods
+          key: pods-${{ runner.os }}-${{ hashFiles('apps/mobile/ios/Podfile.lock') }}
+          restore-keys: pods-${{ runner.os }}-
+
+      - name: Pod install
+        working-directory: apps/mobile/ios
+        run: LANG=en_US.UTF-8 pod install
+
+      - name: Build for simulator (Release)
+        working-directory: apps/mobile/ios
+        run: |
+          xcodebuild -workspace Hearth.xcworkspace -scheme Hearth \
+            -configuration Release -sdk iphonesimulator \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO | tail -20
+
+      - name: Boot simulator and install app
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(dev['udid'] for devs in d.values() for dev in devs if dev['name'].startswith('iPhone')))")
+          xcrun simctl boot "$UDID"
+          xcrun simctl install "$UDID" apps/mobile/ios/build/Build/Products/Release-iphonesimulator/Hearth.app
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL https://get.maestro.mobile.dev | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Run E2E flows
+        run: maestro test .maestro/ --format junit --output e2e-report.xml
+
+      - name: Upload report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-artifacts
+          path: |
+            e2e-report.xml
+            ~/.maestro/tests/**/*.png
+          if-no-files-found: ignore

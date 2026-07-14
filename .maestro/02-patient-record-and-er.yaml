@@ -1,0 +1,44 @@
+# E2E: the record is complete and the emergency paper is two taps away.
+# Assumes 01-first-run-and-seed.yaml ran first (Maestro runs flows in order).
+appId: com.anirudh.hearth
+---
+- launchApp
+
+# Into Robert's record: the allergy banner must be there, on every tab.
+- tapOn: 'Robert'
+- assertVisible:
+    text: 'ALLERGY: Penicillin.*'
+- assertVisible: 'Robert Alvarez'
+
+# Tabs: Activity has the chart controls, History has the timeline years.
+- tapOn: 'Activity'
+- assertVisible:
+    text: 'ALLERGY: Penicillin.*'
+- assertVisible: '30d'
+- assertVisible: 'OBSERVATIONS'
+- tapOn: 'History'
+- assertVisible:
+    text: '.*Atrial fibrillation.*'
+
+# The ER sheet: critical facts above the fold, reachable in two taps.
+- tapOn: 'Overview'
+- tapOn: 'ER sheet'
+- assertVisible:
+    text: 'ALLERGY: Penicillin.*'
+- assertVisible: 'Current medications'
+- assertVisible:
+    text: '.*Apixaban.*'
+- assertVisible: 'Emergency contacts'
+
+# The guides: offline book, 911-first banner.
+- tapOn: 'Back'
+- tapOn: 'Home'
+- scrollUntilVisible:
+    element: 'Emergency guides'
+- tapOn: 'Emergency guides'
+- assertVisible: 'Open this when something happens'
+- assertVisible: 'After a fall'
+- tapOn: 'After a fall'
+- assertVisible: 'Keep them still at first'
+- assertVisible:
+    text: '.*blood thinner.*'

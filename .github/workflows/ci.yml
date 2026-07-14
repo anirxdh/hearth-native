@@ -6,15 +6,38 @@ on:
   pull_request:
 
 jobs:
-  check:
-    runs-on: macos-14
+  # Fast, free, on every commit: types, all unit + component tests, house rules.
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck (all packages + app)
+        run: pnpm typecheck
+      - name: Unit and component tests (all packages + app)
+        run: pnpm test
+      - name: House-rule guardrails
+        run: ./scripts/guardrails.sh
+
+  # The deterministic core gets its own visible check so a safety-math
+  # regression is unmissable in the PR checks list.
+  core-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm test
+      - name: Runway, digest, notification-planner, series, nutrition suites
+        run: pnpm --filter @hearth/core test -- --verbose

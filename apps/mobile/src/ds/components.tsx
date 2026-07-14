@@ -3,6 +3,7 @@
  * no screen reaches for raw colors or ad-hoc borders.
  */
 import React from 'react';
+import { Check } from 'lucide-react-native';
 import {
   ActivityIndicator,
   Pressable,
@@ -66,7 +67,7 @@ export function Screen({
   );
 }
 
-/** The .seclabel pattern: LABEL ———————— meta */
+/** The .seclabel pattern: LABEL ---- hairline ---- meta */
 export function SectionHeader({ label, meta, top = space.xl }: { label: string; meta?: string; top?: number }) {
   return (
     <View style={[styles.secRow, { marginTop: top }]}>
@@ -312,7 +313,7 @@ export function CheckRow({
       style={styles.checkRow}
     >
       <View style={[styles.checkbox, checked && { backgroundColor: color.ink, borderColor: color.ink }]}>
-        {checked ? <Text style={{ color: color.paper, fontSize: 12, fontWeight: '700' }}>✓</Text> : null}
+        {checked ? <Check size={13} color={color.paper} strokeWidth={3} /> : null}
       </View>
       <Text style={[type.detail, { flex: 1, color: color.ink }]}>{label}</Text>
     </Pressable>

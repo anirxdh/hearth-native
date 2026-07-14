@@ -1,0 +1,38 @@
+# E2E: first run -> demo family seeded -> digest tells the story.
+# Runs on the iOS simulator via Maestro (https://maestro.mobile.dev), locally
+# with scripts/e2e-local.sh or in CI via .github/workflows/e2e-ios.yml.
+appId: com.anirudh.hearth
+---
+- launchApp:
+    clearState: true
+    permissions:
+      notifications: allow
+
+# clearState wipes app data but the Keychain key can survive a reinstall;
+# the P1 recovery screen offers "Start fresh" in that case. Handle both.
+- runFlow:
+    when:
+      visible: 'Start fresh'
+    commands:
+      - tapOn: 'Start fresh'
+
+# Empty state: the calm onboarding.
+- assertVisible: 'Start your care circle'
+- assertVisible: 'Add a person'
+
+# Load the demo family from Settings.
+- tapOn: 'Settings'
+- assertVisible: 'Refill alerts'
+- tapOn: 'Load the demo family'
+- tapOn: 'Load demo'
+- tapOn: 'Home'
+
+# The digest must lead with Robert's metformin, the circle shows all three.
+- assertVisible: 'NEEDS ACTION'
+- assertVisible:
+    text: '.*Metformin.*'
+- assertVisible: 'Request refill'
+- assertVisible: 'Robert'
+- assertVisible: 'Ellie'
+- assertVisible: 'Rosa'
+- assertVisible: 'Act now'

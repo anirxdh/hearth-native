@@ -1,6 +1,6 @@
 # Hearth Native — What Remains (and who holds it)
 
-Phases P1-P19's **code** is complete: 217 tests green, all screens working on
+Phases P1-P19's **code** is complete: 242 tests green (CI-enforced on every push), all screens working on
 the simulator. This file is the honest list of what is deliberately NOT done,
 split by who has to do it. Check items off as they land.
 
@@ -52,7 +52,8 @@ split by who has to do it. Check items off as they land.
 
 ## 4. Standing release gates (never skipped, each release)
 
-1. `pnpm typecheck && pnpm test` green across the monorepo
+1. `pnpm typecheck && pnpm test` green across the monorepo (CI enforces on every push, plus house-rule guardrails)
+1a. Maestro E2E flows green: `./scripts/e2e-local.sh` locally (free) or the weekly/on-demand `E2E (iOS simulator)` workflow
 2. `HOSPITAL_BASEMENT.md` full pass in airplane mode on a physical device
 3. Xcode archive privacy report matches the privacy nutrition labels
 4. No PHI in any log line, URL, notification payload, or app-switcher snapshot

@@ -128,13 +128,15 @@ label facts (fill date + day supply)
 |---|---|---|
 | `packages/core` | Jest (ts-jest), 155 tests | Golden runway tables across DST/leap/boundaries; full digest ranking order; notification trigger sets, quiet-hours wrap, 64-cap, PHI-free payloads; UUIDv7 bits and ordering; high-alert matches |
 | `packages/schema` | Jest + better-sqlite3, 22 tests (now over migrations 0000+0001) | Migrations apply in journal order onto a fresh DB; seed round-trips field-for-field; audit helpers append; copy-restore durability under a failing migration |
-| `apps/mobile` | `tsc --noEmit` strict + simulator build | Type-level integration of core/schema/screens; the P9-era on-device checks (force-quit persistence, notification soak) are user-run per the roadmap |
+| `apps/mobile` | Jest (jest-expo + Testing Library), 25 tests, plus `tsc --noEmit` strict and the simulator build | DS component behavior and accessibility contracts (roles, labels, disabled states); chart empty/summary states; guide-content invariants (four steps, call-first set, blood-thinner warnings, review stamps, no dose instructions); access-log labels |
 | CI | GitHub Actions (macOS) | `pnpm typecheck && pnpm test` on every push |
 
 | `packages/print` | Jest snapshots, 11 tests | Template output stability; escaping; severe-allergy-before-meds ordering |
 | `packages/label-parser` | Jest, 29 tests | Deterministic label parsing against the P3 corpus |
 
-**The rule that generated the tests:** every number a caregiver might act on must be computed in exactly one place, in pure code, with a test pinning it. Total: 217.
+**The rule that generated the tests:** every number a caregiver might act on must be computed in exactly one place, in pure code, with a test pinning it. Total: 242.
+
+**CI (every push):** an ubuntu job runs typecheck, all 242 tests, and `scripts/guardrails.sh` (no emojis, no em dashes, no `console.log` in app source, generic notification payload intact, no PII in routes, guide review stamps present); a second visible `core-safety` job re-runs the deterministic core verbosely so a safety-math regression is unmissable. **E2E (weekly + on demand):** Maestro flows in `.maestro/` drive a Release simulator build through first-run, demo seed, the digest, the patient record, the ER sheet, and the guides; `scripts/e2e-local.sh` runs the same flows free before releases.
 
 ---
 
