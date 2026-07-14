@@ -147,7 +147,7 @@ label facts (fill date + day supply)
 | `packages/print` | Jest snapshots, 11 tests | Template output stability; escaping; severe-allergy-before-meds ordering |
 | `packages/label-parser` | Jest, 29 tests | Deterministic label parsing against the P3 corpus |
 
-**The rule that generated the tests:** every number a caregiver might act on must be computed in exactly one place, in pure code, with a test pinning it. Total: 242.
+**The rule that generated the tests:** every number a caregiver might act on must be computed in exactly one place, in pure code, with a test pinning it. Total: 290 unit/component tests, plus 14 Playwright E2E specs driving the exported web build (smoke, core journey, one per admin workflow, scan gates, appointment kit).
 
 **CI (every push):** an ubuntu job runs typecheck, all 242 tests, and `scripts/guardrails.sh` (no emojis, no em dashes, no `console.log` in app source, generic notification payload intact, no PII in routes, guide review stamps present); a second visible `core-safety` job re-runs the deterministic core verbosely so a safety-math regression is unmissable. **E2E (weekly + on demand):** Maestro flows in `.maestro/` drive a Release simulator build through first-run, demo seed, the digest, the patient record, the ER sheet, and the guides; `scripts/e2e-local.sh` runs the same flows free before releases.
 

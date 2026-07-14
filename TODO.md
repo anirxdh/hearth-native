@@ -1,6 +1,6 @@
 # Hearth Native — What Remains (and who holds it)
 
-Phases P1-P19's **code** is complete: 242 tests green (CI-enforced on every push), all screens working on
+Phases P1-P28's **code** is complete: 290 unit/component tests plus 14 Playwright E2E specs, all green and CI-enforced on every push, all screens working on
 the simulator. This file is the honest list of what is deliberately NOT done,
 split by who has to do it. Check items off as they land.
 
@@ -24,6 +24,7 @@ split by who has to do it. Check items off as they land.
 - [ ] Note for flaky finds: on this Xcode 26.3 simulator, below-the-fold elements are sometimes missing from the accessibility snapshot (kAXError -25218); flows are written to assert above-the-fold content on an iPhone 17 Pro Max.
 
 ### Physical-device verification (cannot be simulated)
+- [ ] **Package the Vision OCR Expo Module** (P21 finishing item): the spike proved Apple Vision reads labels (docs/ocr-scorecard.md); lib/ocr.ts already calls requireOptionalNativeModule('HearthVision').recognizeText(uri) when present. Wrap the spike's ~150-line Swift into an Expo Module, rebuild the dev client, and rerun the corpus scorecard on device. Until then the scan flow works via the sample-label path and manual entry.
 - [ ] **3-day notification soak** (P8 gate): two physical iPhones, app force-quit, verify every refill alert lands on time
 - [ ] **Real-bottle OCR corpus** (P3/P21 gate): photograph 30-50 of your family's actual Rx bottles across pharmacies; rerun `spike/ocr/run.sh`; compare the scorecard before building P21 scanning
 - [ ] **Hospital basement gate** (`HOSPITAL_BASEMENT.md`): full airplane-mode checklist on a physical device before any release
