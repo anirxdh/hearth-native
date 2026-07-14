@@ -8,6 +8,9 @@ split by who has to do it. Check items off as they land.
 
 ## 1. Yours (needs your Apple account, devices, or people)
 
+### GitHub (one-click, optional)
+- [ ] Required-to-merge checks (branch protection) need GitHub Pro on private repos, or a public repo. When either happens, run: gh api -X PUT repos/anirxdh/hearth-native/branches/main/protection with contexts ["test", "core-safety", "e2e"]. Until then both workflows already run on every PR and push; a red check is loudly visible on the PR page, just not merge-blocking.
+
 ### Apple / distribution
 - [ ] Enroll in the Apple Developer Program ($99/yr) and register the bundle id `com.anirudh.hearth`
 - [ ] Create the App Store Connect app record; answer the age-rating questionnaire honestly (medical/wellness topics)
