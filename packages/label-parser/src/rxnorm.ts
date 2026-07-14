@@ -4,7 +4,8 @@
  * Curated list of the most-dispensed US generics for older adults. Each
  * entry carries an ingredient-level RXCUI where the value is confidently
  * known; entries whose RXCUI still needs to be checked against the RxNorm
- * API carry the sentinel string 'pending-verify' instead of an invented
+ * API carried the sentinel 'pending-verify' until resolved against the live
+ * NLM RxNav API (2026-07-14); every entry now has a verified
  * number. Names and ingredients are lowercase, matching RxNorm's own
  * ingredient naming. Strengths are common US dispensed strengths, for
  * display in the confirm UI only.
@@ -25,7 +26,7 @@ export type HighAlertClass =
   | 'sedative';
 
 export type RxEntry = {
-  /** Ingredient-level RXCUI, or 'pending-verify' when not yet confirmed. */
+  /** Ingredient-level RXCUI, verified against the live NLM RxNav API. */
   rxcui: string;
   name: string;
   ingredient: string;
@@ -80,12 +81,12 @@ export const RXNORM_SUBSET: RxEntry[] = [
   { rxcui: '25789', name: 'glimepiride', ingredient: 'glimepiride', strengths: ['1 mg', '2 mg', '4 mg'], highAlertClass: 'hypoglycemic' },
   { rxcui: '33738', name: 'pioglitazone', ingredient: 'pioglitazone', strengths: ['15 mg', '30 mg', '45 mg'], highAlertClass: null },
   { rxcui: '593411', name: 'sitagliptin', ingredient: 'sitagliptin', strengths: ['25 mg', '50 mg', '100 mg'], highAlertClass: null },
-  { rxcui: 'pending-verify', name: 'linagliptin', ingredient: 'linagliptin', strengths: ['5 mg'], highAlertClass: null },
+  { rxcui: '1100699', name: 'linagliptin', ingredient: 'linagliptin', strengths: ['5 mg'], highAlertClass: null },
   { rxcui: '1545653', name: 'empagliflozin', ingredient: 'empagliflozin', strengths: ['10 mg', '25 mg'], highAlertClass: null },
   { rxcui: '1488564', name: 'dapagliflozin', ingredient: 'dapagliflozin', strengths: ['5 mg', '10 mg'], highAlertClass: null },
   { rxcui: '1991302', name: 'semaglutide', ingredient: 'semaglutide', strengths: ['0.25 mg', '0.5 mg', '1 mg', '2 mg'], highAlertClass: null },
   { rxcui: '475968', name: 'liraglutide', ingredient: 'liraglutide', strengths: ['6 mg/mL'], highAlertClass: null },
-  { rxcui: 'pending-verify', name: 'dulaglutide', ingredient: 'dulaglutide', strengths: ['0.75 mg/0.5 mL', '1.5 mg/0.5 mL'], highAlertClass: null },
+  { rxcui: '1551291', name: 'dulaglutide', ingredient: 'dulaglutide', strengths: ['0.75 mg/0.5 mL', '1.5 mg/0.5 mL'], highAlertClass: null },
   { rxcui: '274783', name: 'insulin glargine', ingredient: 'insulin glargine', strengths: ['100 units/mL', '300 units/mL'], highAlertClass: 'insulin' },
   { rxcui: '86009', name: 'insulin lispro', ingredient: 'insulin lispro', strengths: ['100 units/mL', '200 units/mL'], highAlertClass: 'insulin' },
   { rxcui: '51428', name: 'insulin aspart', ingredient: 'insulin aspart', strengths: ['100 units/mL'], highAlertClass: 'insulin' },
@@ -123,23 +124,23 @@ export const RXNORM_SUBSET: RxEntry[] = [
   { rxcui: '3322', name: 'diazepam', ingredient: 'diazepam', strengths: ['2 mg', '5 mg', '10 mg'], highAlertClass: 'sedative' },
   { rxcui: '10355', name: 'temazepam', ingredient: 'temazepam', strengths: ['15 mg', '30 mg'], highAlertClass: 'sedative' },
   { rxcui: '39993', name: 'zolpidem', ingredient: 'zolpidem', strengths: ['5 mg', '10 mg'], highAlertClass: 'sedative' },
-  { rxcui: 'pending-verify', name: 'eszopiclone', ingredient: 'eszopiclone', strengths: ['1 mg', '2 mg', '3 mg'], highAlertClass: 'sedative' },
+  { rxcui: '461016', name: 'eszopiclone', ingredient: 'eszopiclone', strengths: ['1 mg', '2 mg', '3 mg'], highAlertClass: 'sedative' },
 
   // Memory, seizures, and nerve pain
   { rxcui: '135446', name: 'donepezil', ingredient: 'donepezil', strengths: ['5 mg', '10 mg', '23 mg'], highAlertClass: null },
   { rxcui: '6719', name: 'memantine', ingredient: 'memantine', strengths: ['5 mg', '10 mg', '28 mg'], highAlertClass: null },
-  { rxcui: 'pending-verify', name: 'rivastigmine', ingredient: 'rivastigmine', strengths: ['1.5 mg', '3 mg', '4.5 mg', '6 mg'], highAlertClass: null },
-  { rxcui: 'pending-verify', name: 'galantamine', ingredient: 'galantamine', strengths: ['4 mg', '8 mg', '12 mg'], highAlertClass: null },
+  { rxcui: '183379', name: 'rivastigmine', ingredient: 'rivastigmine', strengths: ['1.5 mg', '3 mg', '4.5 mg', '6 mg'], highAlertClass: null },
+  { rxcui: '2690627', name: 'galantamine', ingredient: 'galantamine', strengths: ['4 mg', '8 mg', '12 mg'], highAlertClass: null },
   { rxcui: '25480', name: 'gabapentin', ingredient: 'gabapentin', strengths: ['100 mg', '300 mg', '400 mg', '600 mg', '800 mg'], highAlertClass: null },
   { rxcui: '187832', name: 'pregabalin', ingredient: 'pregabalin', strengths: ['25 mg', '50 mg', '75 mg', '150 mg'], highAlertClass: null },
   { rxcui: '114477', name: 'levetiracetam', ingredient: 'levetiracetam', strengths: ['250 mg', '500 mg', '750 mg', '1000 mg'], highAlertClass: null },
   { rxcui: '28439', name: 'lamotrigine', ingredient: 'lamotrigine', strengths: ['25 mg', '100 mg', '150 mg', '200 mg'], highAlertClass: null },
-  { rxcui: 'pending-verify', name: 'carbidopa-levodopa', ingredient: 'carbidopa-levodopa', strengths: ['10-100 mg', '25-100 mg', '25-250 mg'], highAlertClass: null },
+  { rxcui: '103990', name: 'carbidopa-levodopa', ingredient: 'carbidopa-levodopa', strengths: ['10-100 mg', '25-100 mg', '25-250 mg'], highAlertClass: null },
 
   // Pain
   { rxcui: '10689', name: 'tramadol', ingredient: 'tramadol', strengths: ['50 mg', '100 mg'], highAlertClass: 'opioid' },
   { rxcui: '7804', name: 'oxycodone', ingredient: 'oxycodone', strengths: ['5 mg', '10 mg', '15 mg', '20 mg', '30 mg'], highAlertClass: 'opioid' },
-  { rxcui: 'pending-verify', name: 'hydrocodone-acetaminophen', ingredient: 'hydrocodone-acetaminophen', strengths: ['5-325 mg', '7.5-325 mg', '10-325 mg'], highAlertClass: 'opioid' },
+  { rxcui: '214182', name: 'hydrocodone-acetaminophen', ingredient: 'hydrocodone-acetaminophen', strengths: ['5-325 mg', '7.5-325 mg', '10-325 mg'], highAlertClass: 'opioid' },
   { rxcui: '7052', name: 'morphine', ingredient: 'morphine', strengths: ['15 mg', '30 mg', '60 mg'], highAlertClass: 'opioid' },
   { rxcui: '3423', name: 'hydromorphone', ingredient: 'hydromorphone', strengths: ['2 mg', '4 mg', '8 mg'], highAlertClass: 'opioid' },
   { rxcui: '4337', name: 'fentanyl', ingredient: 'fentanyl', strengths: ['12 mcg/hr', '25 mcg/hr', '50 mcg/hr'], highAlertClass: 'opioid' },
@@ -174,8 +175,8 @@ export const RXNORM_SUBSET: RxEntry[] = [
   { rxcui: '25025', name: 'finasteride', ingredient: 'finasteride', strengths: ['1 mg', '5 mg'], highAlertClass: null },
   { rxcui: '7512', name: 'oxybutynin', ingredient: 'oxybutynin', strengths: ['5 mg', '10 mg'], highAlertClass: null },
   { rxcui: '519', name: 'allopurinol', ingredient: 'allopurinol', strengths: ['100 mg', '300 mg'], highAlertClass: null },
-  { rxcui: 'pending-verify', name: 'alendronate', ingredient: 'alendronate', strengths: ['35 mg', '70 mg'], highAlertClass: null },
-  { rxcui: 'pending-verify', name: 'latanoprost', ingredient: 'latanoprost', strengths: ['0.005%'], highAlertClass: null },
+  { rxcui: '46041', name: 'alendronate', ingredient: 'alendronate', strengths: ['35 mg', '70 mg'], highAlertClass: null },
+  { rxcui: '43611', name: 'latanoprost', ingredient: 'latanoprost', strengths: ['0.005%'], highAlertClass: null },
   { rxcui: '10600', name: 'timolol', ingredient: 'timolol', strengths: ['0.25%', '0.5%'], highAlertClass: null },
   { rxcui: '2418', name: 'cholecalciferol', ingredient: 'cholecalciferol', strengths: ['1000 units', '2000 units', '5000 units'], highAlertClass: null },
 
