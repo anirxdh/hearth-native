@@ -37,6 +37,9 @@ split by who has to do it. Check items off as they land.
 
 ---
 
+### Auth decision (end-stage, P29)
+- [ ] Accounts stay absent by design until P29 (device-local UUIDv7 identities; "Data Not Collected" privacy label). At P29 pick: Supabase Auth (roadmap pick: pairs with Postgres RLS + PowerSync sync, BAA path) vs Clerk Expo (nicer prebuilt auth UI, but a second vendor next to the sync database). Decide when sync lands; both support Sign in with Apple, which is mandatory either way (guideline 4.8).
+
 ## 2. Next build phases (mine, when you say go)
 
 - [ ] **P21-P23 (v1.1)**: scan-a-label camera flow -> productize the spike module -> field-by-field confirm UI with RxNorm + patient-match + high-alert gates -> scan creates the medication
