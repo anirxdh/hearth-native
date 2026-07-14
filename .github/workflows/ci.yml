@@ -40,4 +40,4 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Runway, digest, notification-planner, series, nutrition suites
-        run: pnpm --filter @hearth/core test -- --verbose
+        run: pnpm --filter @hearth/core test --verbose
