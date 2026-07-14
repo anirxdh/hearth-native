@@ -42,7 +42,8 @@
     "react-native-svg": "15.15.4",
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.10.0",
-    "sql.js": "^1.14.1"
+    "sql.js": "^1.14.1",
+    "@hearth/workflows": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/react-native": "^14.0.1",

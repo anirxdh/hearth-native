@@ -284,3 +284,142 @@ export type LabResult = typeof labResults.$inferSelect;
 export type NewLabResult = typeof labResults.$inferInsert;
 export type DocumentRow = typeof documents.$inferSelect;
 export type NewDocument = typeof documents.$inferInsert;
+
+/* ───────────── Stage 6 additions (migration 0002): admin workflows ───────────── */
+
+/**
+ * The admin-workflow engine's persistence (see packages/workflows): template
+ * definitions are seeded from bundled code at boot, version-checked; nodes
+ * and properties mirror the nonlinear reference model where a property's
+ * inputNodeId IS the edge. Executions and per-node outputs make runs
+ * resumable across force-quits.
+ */
+export const wfWorkflows = sqliteTable('wf_workflows', {
+  id: text('id').primaryKey(),
+  key: text('key').notNull(),
+  name: text('name').notNull(),
+  description: text('description').notNull(),
+  category: text('category').notNull(),
+  estMinutes: integer('est_minutes').notNull(),
+  replacesHours: text('replaces_hours').notNull(),
+  version: integer('version').notNull(),
+  createdAt: text('created_at').notNull(),
+});
+
+export const wfNodes = sqliteTable(
+  'wf_nodes',
+  {
+    id: text('id').primaryKey(),
+    workflowId: text('workflow_id')
+      .notNull()
+      .references(() => wfWorkflows.id),
+    type: text('type').notNull(),
+    description: text('description').notNull(),
+    positionX: integer('position_x').notNull(),
+    positionY: integer('position_y').notNull(),
+  },
+  (t) => [index('wf_nodes_workflow_idx').on(t.workflowId)],
+);
+
+export const wfNodeProperties = sqliteTable(
+  'wf_node_properties',
+  {
+    id: text('id').primaryKey(),
+    nodeId: text('node_id')
+      .notNull()
+      .references(() => wfNodes.id),
+    name: text('name').notNull(),
+    label: text('label'),
+    /** THE EDGE: values flow from this node's output when set. */
+    inputNodeId: text('input_node_id'),
+    hidden: integer('hidden', { mode: 'boolean' }).notNull().default(false),
+    /** Preset literal values as a JSON InterNodeVal[]. */
+    values: text('values', { mode: 'json' }).$type<unknown[]>().notNull().default([]),
+  },
+  (t) => [index('wf_props_node_idx').on(t.nodeId)],
+);
+
+export const wfExecutions = sqliteTable(
+  'wf_executions',
+  {
+    id: text('id').primaryKey(),
+    workflowId: text('workflow_id')
+      .notNull()
+      .references(() => wfWorkflows.id),
+    workflowVersion: integer('workflow_version').notNull(),
+    patientId: text('patient_id'),
+    status: text('status', {
+      enum: ['running', 'awaiting_confirm', 'completed', 'failed', 'canceled'],
+    }).notNull(),
+    awaitingNodeId: text('awaiting_node_id'),
+    error: text('error'),
+    startedAt: text('started_at').notNull(),
+    finishedAt: text('finished_at'),
+  },
+  (t) => [index('wf_exec_workflow_idx').on(t.workflowId, t.startedAt)],
+);
+
+export const wfExecutionInputs = sqliteTable(
+  'wf_execution_inputs',
+  {
+    id: text('id').primaryKey(),
+    executionId: text('execution_id')
+      .notNull()
+      .references(() => wfExecutions.id),
+    nodePropertyId: text('node_property_id').notNull(),
+    values: text('values', { mode: 'json' }).$type<unknown[]>().notNull(),
+  },
+  (t) => [index('wf_exec_inputs_idx').on(t.executionId)],
+);
+
+export const wfExecutionOutputs = sqliteTable(
+  'wf_execution_outputs',
+  {
+    id: text('id').primaryKey(),
+    executionId: text('execution_id')
+      .notNull()
+      .references(() => wfExecutions.id),
+    nodeId: text('node_id').notNull(),
+    output: text('output', { mode: 'json' }).$type<unknown[]>().notNull(),
+    at: text('at').notNull(),
+  },
+  (t) => [index('wf_exec_outputs_idx').on(t.executionId, t.nodeId)],
+);
+
+/* ───────────── Stage 5 additions (same migration): appointments ───────────── */
+
+export const appointments = sqliteTable(
+  'appointments',
+  {
+    id: text('id').primaryKey(),
+    patientId: text('patient_id')
+      .notNull()
+      .references(() => patients.id),
+    provider: text('provider').notNull(), // "Dr. Chen"
+    specialty: text('specialty'), // "cardiology"
+    location: text('location'),
+    phone: text('phone'),
+    /** Local calendar date + optional time, caregiver-local. */
+    onDate: text('on_date').notNull(), // YYYY-MM-DD
+    atTime: text('at_time'), // "09:30"
+    driver: text('driver'), // who is taking them
+    bring: text('bring'), // "sleep log"
+    purpose: text('purpose'),
+    postVisitNotes: text('post_visit_notes'),
+    status: text('status', { enum: ['scheduled', 'done', 'canceled'] })
+      .notNull()
+      .default('scheduled'),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+    archivedAt: text('archived_at'),
+  },
+  (t) => [index('appointments_patient_idx').on(t.patientId, t.onDate)],
+);
+
+export type WfWorkflowRow = typeof wfWorkflows.$inferSelect;
+export type WfNodeRow = typeof wfNodes.$inferSelect;
+export type WfNodePropertyRow = typeof wfNodeProperties.$inferSelect;
+export type WfExecutionRow = typeof wfExecutions.$inferSelect;
+export type WfExecutionOutputRow = typeof wfExecutionOutputs.$inferSelect;
+export type Appointment = typeof appointments.$inferSelect;
+export type NewAppointment = typeof appointments.$inferInsert;

@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from 'expo-notifications';
 import { bootDatabase, destroyAllData, type BootState } from '../db/client';
+import { seedWorkflowTemplates } from '../db/workflowStore';
 import { syncNotifications } from '../lib/notifications';
 import { PillButton, Screen, color, space, type } from '../ds';
 import { ErrorBoundary, Shields } from '../components/Shields';
@@ -60,7 +61,16 @@ export default function RootLayout() {
 
   const doBoot = React.useCallback(() => {
     bootDatabase()
-      .then(setBoot)
+      .then((state) => {
+        if (state.kind === 'ready') {
+          try {
+            seedWorkflowTemplates();
+          } catch (e) {
+            console.error('workflow template seeding failed', e);
+          }
+        }
+        setBoot(state);
+      })
       .catch((e) => setBoot({ kind: 'boot-error', error: e instanceof Error ? e.message : String(e) }))
       .finally(() => SplashScreen.hideAsync().catch(() => {}));
   }, []);

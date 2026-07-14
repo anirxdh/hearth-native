@@ -15,6 +15,13 @@
       "when": 1783983290202,
       "tag": "0001_lean_nebula",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1784065921000,
+      "tag": "0002_mysterious_black_knight",
+      "breakpoints": true
     }
   ]
 }

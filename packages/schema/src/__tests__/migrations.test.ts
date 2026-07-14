@@ -12,6 +12,7 @@ import { applyMigrations, readJournal, readMigrationSql } from './support/testDb
 
 const EXPECTED_TABLES = [
   'access_log',
+  'appointments',
   'change_log',
   'contacts',
   'documents',
@@ -23,10 +24,17 @@ const EXPECTED_TABLES = [
   'settings',
   'timeline_events',
   'vitals',
+  'wf_execution_inputs',
+  'wf_execution_outputs',
+  'wf_executions',
+  'wf_node_properties',
+  'wf_nodes',
+  'wf_workflows',
 ];
 
 const EXPECTED_INDEXES = [
   'access_log_at_idx',
+  'appointments_patient_idx',
   'change_log_at_idx',
   'change_log_entity_idx',
   'contacts_patient_idx',
@@ -37,6 +45,11 @@ const EXPECTED_INDEXES = [
   'observations_patient_idx',
   'timeline_patient_idx',
   'vitals_patient_kind_idx',
+  'wf_exec_inputs_idx',
+  'wf_exec_outputs_idx',
+  'wf_exec_workflow_idx',
+  'wf_nodes_workflow_idx',
+  'wf_props_node_idx',
 ];
 
 describe('migration harness', () => {
