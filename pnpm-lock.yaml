@@ -16,6 +16,9 @@ importers:
       '@hearth/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@hearth/label-parser':
+        specifier: workspace:*
+        version: link:../../packages/label-parser
       '@hearth/print':
         specifier: workspace:*
         version: link:../../packages/print

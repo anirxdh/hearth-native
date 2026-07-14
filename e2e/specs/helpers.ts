@@ -28,20 +28,12 @@ export async function loadApp(page: Page): Promise<void> {
 export async function seedDemo(page: Page): Promise<void> {
   const exploreLink = page.getByText('Explore with a demo family');
   if (!(await exploreLink.isVisible())) {
-    return;
+    return; // dashboard already has people
   }
+  // The web surface confirms via window.confirm (lib/dialogs.ts).
+  page.once('dialog', (d) => {
+    d.accept().catch(() => {});
+  });
   await exploreLink.click();
-
-  const confirmByText = page
-    .getByRole('button', { name: 'Load demo' })
-    .or(page.getByText('Load demo', { exact: true }))
-    .first();
-  try {
-    await confirmByText.click({ timeout: 5_000 });
-  } catch {
-    await page.getByTestId('confirm-load-demo').click();
-  }
-
-  // Seeding lands on the dashboard.
-  await expect(page.getByText("Today's digest")).toBeVisible();
+  await page.getByText('NEEDS ACTION').waitFor({ timeout: 10_000 });
 }

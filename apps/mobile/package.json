@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo/ui": "~57.0.4",
     "@hearth/core": "workspace:*",
+    "@hearth/label-parser": "workspace:*",
     "@hearth/print": "workspace:*",
     "@hearth/schema": "workspace:*",
     "drizzle-orm": "^0.44.7",

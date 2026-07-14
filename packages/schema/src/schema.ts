@@ -117,7 +117,7 @@ export const changeLog = sqliteTable(
     at: text('at').notNull(),
     actor: text('actor').notNull().default('owner'),
     entity: text('entity', {
-      enum: ['patient', 'medication', 'med_fill', 'contact', 'settings', 'vital', 'observation', 'timeline_event', 'lab_result', 'document'],
+      enum: ['patient', 'medication', 'med_fill', 'contact', 'settings', 'vital', 'observation', 'timeline_event', 'lab_result', 'document', 'appointment'],
     }).notNull(),
     entityId: text('entity_id').notNull(),
     patientId: text('patient_id'),

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { BookOpen, FolderOutput, Settings2 } from 'lucide-react-native';
+import { BookOpen, CalendarDays, FolderOutput, ScanLine, Settings2, Workflow } from 'lucide-react-native';
 import { confirmLoadDemoFamily } from '../lib/demo';
 import {
   buildDigest,
@@ -217,6 +217,24 @@ export default function Home() {
       </View>
 
       <SectionHeader label="Tools" />
+      <ListRow
+        title="Scan a label"
+        detail="Photograph a bottle; confirm each field; the runway updates itself."
+        onPress={() => router.push('/scan' as never)}
+        left={<ScanLine size={19} color={color.ink2} strokeWidth={1.8} />}
+      />
+      <ListRow
+        title="Paperwork, automated"
+        detail="Denial appeals, renewals, and releases assembled from your records. You confirm every fact."
+        onPress={() => router.push('/workflows' as never)}
+        left={<Workflow size={19} color={color.ink2} strokeWidth={1.8} />}
+      />
+      <ListRow
+        title="Appointments"
+        detail="Patient-first visits with a prep sheet that writes itself."
+        onPress={() => router.push('/appointments' as never)}
+        left={<CalendarDays size={19} color={color.ink2} strokeWidth={1.8} />}
+      />
       <ListRow
         title="Emergency guides"
         detail="Six situations, four calm steps each. Works offline, prints to paper."
