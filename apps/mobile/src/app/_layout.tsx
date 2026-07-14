@@ -33,7 +33,13 @@ function Recovery({ state, onReset }: { state: BootState; onReset: () => void })
               'Your encryption key survived but the database file is missing (this can happen after a restore). You can start fresh with a new circle.',
             action: 'Start fresh',
           }
-        : {
+        : state.kind === 'boot-error'
+          ? {
+              title: 'Hearth could not start',
+              detail: `Something on this device blocked startup (often a Keychain or storage issue). Your data was not touched. Restart the app; if this repeats, restart the phone. (${state.error})`,
+              action: 'Try again',
+            }
+          : {
             title: 'An update could not be applied',
             detail: `Your data was restored to its state before the update and nothing was lost. Please try again; if this repeats, reinstalling the app update will fix it. (${state.kind === 'migration-failed' ? state.error : ''})`,
             action: 'Try again',
@@ -55,6 +61,7 @@ export default function RootLayout() {
   const doBoot = React.useCallback(() => {
     bootDatabase()
       .then(setBoot)
+      .catch((e) => setBoot({ kind: 'boot-error', error: e instanceof Error ? e.message : String(e) }))
       .finally(() => SplashScreen.hideAsync().catch(() => {}));
   }, []);
 
@@ -86,14 +93,16 @@ export default function RootLayout() {
       <Recovery
         state={boot}
         onReset={() => {
-          if (boot.kind === 'migration-failed') {
-            setBoot(null);
-            doBoot();
-          } else {
+          // Only the two explicit start-fresh states may destroy data;
+          // transient failures (migration, keychain) must never wipe.
+          if (boot.kind === 'key-without-db' || boot.kind === 'db-without-key') {
             destroyAllData().then(() => {
               setBoot(null);
               doBoot();
             });
+          } else {
+            setBoot(null);
+            doBoot();
           }
         }}
       />

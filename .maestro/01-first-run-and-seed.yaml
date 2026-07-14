@@ -20,19 +20,18 @@ appId: com.anirudh.hearth
 - assertVisible: 'Start your care circle'
 - assertVisible: 'Add a person'
 
-# Load the demo family from Settings.
-- tapOn: 'Settings'
-- assertVisible: 'Refill alerts'
-- tapOn: 'Load the demo family'
-- tapOn: 'Load demo'
-- tapOn: 'Home'
+# Load the demo family from Settings (shared steps).
+- runFlow: shared/load-demo.yaml
 
 # The digest must lead with Robert's metformin, the circle shows all three.
 - assertVisible: 'NEEDS ACTION'
 - assertVisible:
     text: '.*Metformin.*'
 - assertVisible: 'Request refill'
-- assertVisible: 'Robert'
-- assertVisible: 'Ellie'
-- assertVisible: 'Rosa'
+- assertVisible:
+    text: '.*Robert.*'
+- assertVisible:
+    text: '.*Ellie.*'
+- assertVisible:
+    text: '.*Rosa.*'
 - assertVisible: 'Act now'

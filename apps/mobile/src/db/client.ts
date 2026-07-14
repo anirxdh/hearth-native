@@ -27,7 +27,8 @@ export type BootState =
   | { kind: 'ready'; db: HearthDb }
   | { kind: 'key-without-db' } // keychain survived, file gone (restore/new device)
   | { kind: 'db-without-key' } // file present, key lost: data unrecoverable by design
-  | { kind: 'migration-failed'; error: string };
+  | { kind: 'migration-failed'; error: string }
+  | { kind: 'boot-error'; error: string }; // unexpected failure (keychain, filesystem)
 
 export type HearthDb = ReturnType<typeof drizzle<typeof schema>>;
 

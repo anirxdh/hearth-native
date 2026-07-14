@@ -1,8 +1,20 @@
 # E2E: the record is complete and the emergency paper is two taps away.
-# Assumes 01-first-run-and-seed.yaml ran first (Maestro runs flows in order).
+# Self-sufficient: seeds the demo family first if the circle is empty.
 appId: com.anirudh.hearth
 ---
-- launchApp
+- launchApp:
+    permissions:
+      notifications: allow
+- runFlow:
+    when:
+      visible: 'Start fresh'
+    commands:
+      - tapOn: 'Start fresh'
+- runFlow:
+    when:
+      visible: 'Start your care circle'
+    commands:
+      - runFlow: shared/load-demo.yaml
 
 # Into Robert's record: the allergy banner must be there, on every tab.
 - tapOn: 'Robert'
@@ -10,7 +22,7 @@ appId: com.anirudh.hearth
     text: 'ALLERGY: Penicillin.*'
 - assertVisible: 'Robert Alvarez'
 
-# Tabs: Activity has the chart controls, History has the timeline years.
+# Tabs: Activity has the chart controls, History has the timeline.
 - tapOn: 'Activity'
 - assertVisible:
     text: 'ALLERGY: Penicillin.*'
@@ -28,14 +40,14 @@ appId: com.anirudh.hearth
 - assertVisible: 'Current medications'
 - assertVisible:
     text: '.*Apixaban.*'
-- assertVisible: 'Emergency contacts'
 
-# The guides: offline book, 911-first banner.
-- tapOn: 'Back'
-- tapOn: 'Home'
-- scrollUntilVisible:
-    element: 'Emergency guides'
-- tapOn: 'Emergency guides'
+# The guides: offline book, 911-first banner (deep link; confirm if asked).
+- openLink: hearth:///guides
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
 - assertVisible: 'Open this when something happens'
 - assertVisible: 'After a fall'
 - tapOn: 'After a fall'

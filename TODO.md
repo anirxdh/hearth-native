@@ -16,6 +16,10 @@ split by who has to do it. Check items off as they land.
 - [ ] **P19 external beta**: 8-15 real caregivers through Beta App Review, structured feedback, bug bash
 - [ ] **P20 v1.0 submission**: listing copy (checked against `docs/consent-and-compliance.md` intended-use statement), screenshots, phased release, respond to App Review
 
+### One-command E2E verification (after a Mac restart)
+- [ ] The Maestro E2E flows are written and were verified step by step, but the final full pass is blocked by a wedged CoreSimulator on this machine (hundreds of stale simulator processes after many boot cycles). After restarting the Mac: `./scripts/e2e-local.sh` (app is already built; add `--build` to rebuild). Alternatively run the "E2E (iOS simulator)" workflow from the GitHub Actions tab (uses ~300 of the 2,000 free monthly minutes).
+- [ ] Note for flaky finds: on this Xcode 26.3 simulator, below-the-fold elements are sometimes missing from the accessibility snapshot (kAXError -25218); flows are written to assert above-the-fold content on an iPhone 17 Pro Max.
+
 ### Physical-device verification (cannot be simulated)
 - [ ] **3-day notification soak** (P8 gate): two physical iPhones, app force-quit, verify every refill alert lands on time
 - [ ] **Real-bottle OCR corpus** (P3/P21 gate): photograph 30-50 of your family's actual Rx bottles across pharmacies; rerun `spike/ocr/run.sh`; compare the scorecard before building P21 scanning

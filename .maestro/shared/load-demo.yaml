@@ -1,0 +1,6 @@
+# Shared steps: load the demo family from the empty-home onboarding action.
+appId: com.anirudh.hearth
+---
+- tapOn: 'Explore with a demo family'
+- tapOn: 'Load demo'
+- assertVisible: 'NEEDS ACTION'

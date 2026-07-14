@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BookOpen, FolderOutput, Settings2 } from 'lucide-react-native';
+import { confirmLoadDemoFamily } from '../lib/demo';
 import {
   buildDigest,
   type DigestItem,
@@ -103,14 +104,39 @@ export default function Home() {
   if (data.patients.length === 0) {
     return (
       <Screen>
-        <Text style={type.greet}>{greetingFor(hour, null)}</Text>
-        <Text style={[type.detail, { marginTop: 6 }]}>
-          Hearth is a calm command center for everyone you care for.
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+          <View style={{ flex: 1 }}>
+            <Text style={type.greet}>{greetingFor(hour, null)}</Text>
+            <Text style={[type.detail, { marginTop: 6 }]}>
+              Hearth is a calm command center for everyone you care for.
+            </Text>
+          </View>
+          <Pressable
+            onPress={() => router.push('/settings')}
+            accessibilityLabel="Settings"
+            hitSlop={10}
+            style={{ paddingTop: 6 }}
+          >
+            <Settings2 size={21} color={color.ink2} strokeWidth={1.8} />
+          </Pressable>
+        </View>
         <EmptyState
           title="Start your care circle"
           detail="Add the first person you care for. You stay in control of every detail; nothing is shared with anyone."
-          action={<PillButton label="Add a person" onPress={() => router.push('/patient/new')} />}
+          action={
+            <View style={{ alignItems: 'center', gap: 14 }}>
+              <PillButton label="Add a person" onPress={() => router.push('/patient/new')} />
+              <Pressable
+                onPress={confirmLoadDemoFamily}
+                accessibilityRole="button"
+                hitSlop={8}
+              >
+                <Text style={[type.mini, { textDecorationLine: 'underline' }]}>
+                  Explore with a demo family
+                </Text>
+              </Pressable>
+            </View>
+          }
         />
       </Screen>
     );

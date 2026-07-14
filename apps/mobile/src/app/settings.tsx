@@ -22,6 +22,7 @@ import { useData } from '../lib/useData';
 import { ONBOARDING_DISCLAIMER } from '../lib/copy';
 import { seedDemoFamily } from '@hearth/schema';
 import { exportBackup, importBackup, validPassphrase } from '../lib/backup';
+import { confirmLoadDemoFamily } from '../lib/demo';
 import { today } from '../lib/clock';
 import { bumpDataVersion } from '../lib/events';
 
@@ -60,22 +61,7 @@ export default function Settings() {
     commit(next);
   }
 
-  function seed() {
-    Alert.alert('Load the demo family?', 'Adds three fictional people with realistic medications. For trying Hearth out.', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Load demo',
-        onPress: () => {
-          seedDemoFamily(getDb(), today())
-            .then(() => {
-              bumpDataVersion();
-              return syncNotifications();
-            })
-            .catch((e) => Alert.alert('Demo load failed', String(e)));
-        },
-      },
-    ]);
-  }
+  const seed = confirmLoadDemoFamily;
 
   function wipe() {
     Alert.alert(

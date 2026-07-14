@@ -47,8 +47,7 @@ jobs:
         run: |
           xcodebuild -workspace Hearth.xcworkspace -scheme Hearth \
             -configuration Release -sdk iphonesimulator \
-            -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO | tail -20
+            -derivedDataPath build | tail -20
 
       - name: Boot simulator and install app
         run: |

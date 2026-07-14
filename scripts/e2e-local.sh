@@ -17,8 +17,7 @@ if [[ "${1:-}" == "--build" ]]; then
   (cd apps/mobile && npx expo prebuild -p ios --no-install)
   (cd apps/mobile/ios && LANG=en_US.UTF-8 pod install)
   (cd apps/mobile/ios && xcodebuild -workspace Hearth.xcworkspace -scheme Hearth \
-    -configuration Release -sdk iphonesimulator -derivedDataPath build \
-    CODE_SIGNING_ALLOWED=NO | tail -5)
+    -configuration Release -sdk iphonesimulator -derivedDataPath build | tail -5)
   UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(dev['udid'] for devs in d.values() for dev in devs if dev['name'].startswith('iPhone')))")
   xcrun simctl bootstatus "$UDID" -b || xcrun simctl boot "$UDID"
   xcrun simctl install "$UDID" apps/mobile/ios/build/Build/Products/Release-iphonesimulator/Hearth.app
