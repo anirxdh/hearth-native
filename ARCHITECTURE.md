@@ -120,6 +120,19 @@ label facts (fill date + day supply)
 **Decision.** The six emergency guides live in the binary as typed data (24 SVG pictogram components, four steps each), with a version + reviewer + date stamp rendered on every card and printout. They currently ship stamped "Pending clinician review v0.9" — visibly, not in a changelog.
 **Why.** Emergency content must work offline, never vary by network state, and never be generated. Content updates are data changes reviewed like code (guideline 2.5.2-safe). Wearing the review status on the surface is the honest version of "clinician-reviewed": the stamp is real, so its absence is visible until a licensed reviewer signs.
 
+### ADR-16 · The admin-workflow engine is a literal port of the nonlinear reference
+**Decision.** `packages/workflows` ports the architecture of the reference product (SpectAI/nonlinear): workflows own nodes; nodes own properties; a property either holds typed `InterNodeVal[]` literals or points at another node via `inputNodeId`, and that pointer IS the edge. A typed `nodeDefinition` registry declares each node type's property specs; one executor per type; single-brace mustache interpolation; the single sink node's unfilled visible properties form the run card's inputs.
+**Hearth deltas.** Node types are deterministic and local (no cloud-AI executor exists in v1); the reference's ApprovalError became `ConfirmPause`, persisting the pause in SQLite so a run survives force-quit; Human Confirm bundles every named upstream fact into one reviewable json payload so names survive the pause and caregiver edits win downstream; `validateGateBeforeSink()` structurally rejects any template that could reach a document without a human gate.
+**Why a port, not a fresh design.** The reference shape is proven in production and the user asked for it literally; the property-level edge model also renders naturally on the canvas.
+
+### ADR-17 · Workflows are data; definitions are versioned, runs pin their version
+**Decision.** The six caregiver workflows are template configurations (rows), interpreted by shipped node types - never downloaded code (App Review 2.5.2-safe). Seeding inserts a bumped template under a NEW definition id (`key@vN`); in-flight executions keep the id they started with.
+**Why.** Editing a template must never corrupt a paused run: a caregiver mid-appeal keeps the graph they saw, and the library shows the newest version.
+
+### ADR-18 · Web is a test surface, not the product
+**Decision.** The app runs on Expo web solely so Playwright can drive the real screens in CI on free ubuntu runners. expo-sqlite's sync API cannot run on the web main thread (Atomics.wait is banned there), so a platform-split module (`db/webdb.web.ts`) swaps in sql.js - pure-wasm SQLite that IS synchronous - and drizzle plus every repo query run unchanged. In-memory per tab, unencrypted, seeded by each spec; iOS keeps SQLCipher + Keychain and remains the only product path.
+**What it bought.** Every push exercises boot, onboarding, seeding, the digest, records, and the workflow engine end to end in about two minutes of CI; bring-up itself caught two real recovery-path bugs.
+
 ---
 
 ## 3. Testing strategy
