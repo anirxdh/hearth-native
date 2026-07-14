@@ -15,4 +15,4 @@ export {
   type RunnerEnv,
   type RunResult,
 } from './runner';
-export { claimDenialAppeal } from './templates/claimDenialAppeal';
+export * from './templates/index';

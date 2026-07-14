@@ -11,6 +11,7 @@
  * - Before applying migrations we copy the DB file; a failed migration
  *   restores the copy so an interrupted upgrade can never strand data.
  */
+import { Platform } from 'react-native';
 import * as Crypto from 'expo-crypto';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as SecureStore from 'expo-secure-store';
@@ -32,7 +33,8 @@ export type BootState =
 
 export type HearthDb = ReturnType<typeof drizzle<typeof schema>>;
 
-let cached: { db: HearthDb; raw: SQLiteDatabase } | null = null;
+type RawHandle = Pick<SQLiteDatabase, 'execSync' | 'getAllSync' | 'closeSync'>;
+let cached: { db: HearthDb; raw: RawHandle } | null = null;
 
 function dbPath(): string {
   return `${FileSystem.documentDirectory}SQLite/${DB_NAME}`;
@@ -91,8 +93,28 @@ async function migrateSafely(db: HearthDb, raw: SQLiteDatabase): Promise<void> {
   }
 }
 
+/**
+ * WEB IS A TEST SURFACE, NOT THE PRODUCT: the Playwright E2E suite runs the
+ * app as an Expo web export on plain (unencrypted, browser-sandboxed)
+ * SQLite. SQLCipher, the Keychain, and file-copy migration safety are
+ * iOS-only; nothing PHI-real should ever be entered on web.
+ */
+async function bootWeb(): Promise<BootState> {
+  try {
+    // Platform-split module: webdb.web.ts (sql.js) on web, stub on native.
+    // expo-sqlite's sync API cannot run on the web main thread (Atomics.wait
+    // is banned there), so the web surface uses sql.js instead.
+    const { openWebDb } = await import('./webdb');
+    cached = await openWebDb();
+    return { kind: 'ready', db: cached.db };
+  } catch (e) {
+    return { kind: 'migration-failed', error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 export async function bootDatabase(): Promise<BootState> {
   if (cached) return { kind: 'ready', db: cached.db };
+  if (Platform.OS === 'web') return bootWeb();
 
   const fileExists = await dbFileExists();
   const key = await getOrCreateKey(!fileExists);
@@ -119,7 +141,7 @@ export function getDb(): HearthDb {
 }
 
 /** Raw SQLCipher handle for maintenance paths (backup export/import). */
-export function getRawDb(): SQLiteDatabase {
+export function getRawDb(): RawHandle {
   if (!cached) throw new Error('Database accessed before bootDatabase() completed');
   return cached.raw;
 }
@@ -144,6 +166,17 @@ export function closeDb(): void {
 
 /** Full local wipe: DB file + key + document vault. The P19 "delete everything" path. */
 export async function destroyAllData(): Promise<void> {
+  if (Platform.OS === 'web') {
+    // web test surface: delete every row, keep the connection
+    if (cached) {
+      const raw = cached.raw;
+      const tables = raw.getAllSync<{ name: string }>(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '__drizzle%'",
+      );
+      for (const t of tables) raw.execSync(`DELETE FROM "${t.name}";`);
+    }
+    return;
+  }
   if (cached) {
     cached.raw.closeSync();
     cached = null;

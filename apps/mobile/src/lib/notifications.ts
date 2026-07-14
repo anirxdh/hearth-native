@@ -3,6 +3,7 @@
  * against what iOS actually has pending. Called after every med write and
  * on every app foreground; background execution is never load-bearing.
  */
+import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import {
   planNotifications,
@@ -48,6 +49,7 @@ function triggerFor(n: DesiredNotification): Notifications.NotificationTriggerIn
  * identical plans are a no-op.
  */
 export async function syncNotifications(): Promise<{ scheduled: number; canceled: number }> {
+  if (Platform.OS === 'web') return { scheduled: 0, canceled: 0 };
   const all = listAllMedications();
   // Ask for permission in context: only once there is something to alert on.
   if (all.length === 0) return { scheduled: 0, canceled: 0 };

@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { confirmDialog, infoDialog } from './dialogs';
 import { seedDemoFamily } from '@hearth/schema';
 import { getDb } from '../db/client';
 import { bumpDataVersion } from './events';
@@ -10,22 +10,17 @@ import { today } from './clock';
  * (so a new user or App Review can explore in one tap) and in Settings.
  */
 export function confirmLoadDemoFamily(): void {
-  Alert.alert(
-    'Load the demo family?',
-    'Adds three fictional people with realistic medications. For trying Hearth out.',
-    [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Load demo',
-        onPress: () => {
-          seedDemoFamily(getDb(), today())
-            .then(() => {
-              bumpDataVersion();
-              return syncNotifications();
-            })
-            .catch((e) => Alert.alert('Demo load failed', String(e)));
-        },
-      },
-    ],
-  );
+  confirmDialog({
+    title: 'Load the demo family?',
+    message: 'Adds three fictional people with realistic medications. For trying Hearth out.',
+    confirmText: 'Load demo',
+    onConfirm: () => {
+      seedDemoFamily(getDb(), today())
+        .then(() => {
+          bumpDataVersion();
+          return syncNotifications();
+        })
+        .catch((e) => infoDialog('Demo load failed', String(e)));
+    },
+  });
 }

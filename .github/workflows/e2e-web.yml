@@ -1,0 +1,50 @@
+name: E2E (web)
+
+# Playwright against the Expo WEB export, on free Linux runners (unlike the
+# 10x-billed macOS Maestro job in e2e-ios.yml). The web build itself (platform
+# shims in apps/mobile) lands in the next commit; until it does, this job
+# fails at the export step. That failure is the signal that the harness is
+# ready and waiting on the build, not a harness bug.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  e2e-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Export web build
+        working-directory: apps/mobile
+        run: npx expo export --platform web
+
+      - name: Verify web build output exists
+        run: test -d apps/mobile/dist
+
+      - name: Install Playwright Chromium
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright specs
+        run: pnpm --filter @hearth/e2e test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 14
