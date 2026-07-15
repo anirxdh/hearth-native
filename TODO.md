@@ -41,6 +41,18 @@ split by who has to do it. Check items off as they land.
 
 ---
 
+### Clerk integration (the swap is pre-wired)
+- [ ] apps/mobile/src/lib/auth.ts defines the provider interface the whole app consumes; onboarding, silent refresh, and the Face ID gate are already wired against it. To integrate Clerk: install @clerk/clerk-expo, implement ClerkAuthProvider (signUp/signIn via Clerk flows, refresh(oldToken) becomes session.getToken({ skipCache: true }), signOut -> clerk signOut), swap the one authProvider export, delete the local token minting. The 30-minute TTL + Face-ID-gated silent re-login semantics match Clerk session behavior by design.
+
+### Wearables (band data: how it actually works)
+- [ ] Package the HearthHealthKit Expo Module (Swift: HKStatisticsQuery daily resting HR, steps, sleep) next to HearthVision; lib/wearables.ts already calls it optionally. HealthKit is DEVICE-OWNER ONLY: valid when the patient's own iPhone/Watch runs Hearth. Requires the HealthKit entitlement + purpose strings + a dev-client rebuild.
+- [ ] Cross-person band data (caregiver views patient's numbers): Fitbit / Withings / Oura cloud APIs with patient-consented OAuth; needs the P29 backend for token custody. Slots into lib/wearables.ts as another adapter. There is no MCP path for this (MCP is a desktop agent protocol, not an on-device health API).
+
+### Deliberate placeholders (user-approved)
+- [ ] 'Request refill' routes to the med screen; a real pharmacy request flow is future integration work.
+- [ ] Insurance details on the patient record: the onboarding captures the card as a vault photo; structured member-id fields come later (the booking script's insurance line reads from them then).
+- [ ] Workflow editing in-app (rewire nodes, author new workflows): run/pause/resume/cancel is the v1 surface.
+
 ### Auth decision (end-stage, P29)
 - [ ] Accounts stay absent by design until P29 (device-local UUIDv7 identities; "Data Not Collected" privacy label). At P29 pick: Supabase Auth (roadmap pick: pairs with Postgres RLS + PowerSync sync, BAA path) vs Clerk Expo (nicer prebuilt auth UI, but a second vendor next to the sync database). Decide when sync lands; both support Sign in with Apple, which is mandatory either way (guideline 4.8).
 

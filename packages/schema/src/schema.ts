@@ -174,7 +174,7 @@ export const vitals = sqliteTable(
       .notNull()
       .references(() => patients.id),
     kind: text('kind', {
-      enum: ['bp', 'weight', 'glucose', 'spo2', 'temp', 'hr'],
+      enum: ['bp', 'weight', 'glucose', 'spo2', 'temp', 'hr', 'steps', 'sleep', 'active_min'],
     }).notNull(),
     value: integer('value', { mode: 'number' }).notNull(),
     value2: integer('value2', { mode: 'number' }),

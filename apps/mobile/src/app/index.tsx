@@ -134,7 +134,8 @@ export default function Home() {
           detail="Add the first person you care for. You stay in control of every detail; nothing is shared with anyone."
           action={
             <View style={{ alignItems: 'center', gap: 14 }}>
-              <PillButton label="Add a person" onPress={() => router.push('/patient/new')} />
+              <PillButton label="Set up Hearth" onPress={() => router.push('/onboarding' as never)} />
+              <PillButton label="Add a person" variant="outline" onPress={() => router.push('/patient/new')} />
               <Pressable
                 onPress={confirmLoadDemoFamily}
                 accessibilityRole="button"

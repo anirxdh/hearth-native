@@ -53,6 +53,9 @@ const VITAL_LABEL: Record<Vital['kind'], string> = {
   glucose: 'Fasting glucose',
   spo2: 'Oxygen',
   temp: 'Temperature',
+  steps: 'Steps',
+  sleep: 'Sleep',
+  active_min: 'Active minutes',
   hr: 'Resting heart rate',
 };
 

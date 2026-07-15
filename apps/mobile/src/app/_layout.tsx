@@ -7,7 +7,10 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from 'expo-notifications';
 import { bootDatabase, destroyAllData, type BootState } from '../db/client';
 import { seedWorkflowTemplates } from '../db/workflowStore';
+import { ensureFreshSession, hasAccount } from '../lib/auth';
+import { infoDialog } from '../lib/dialogs';
 import { syncNotifications } from '../lib/notifications';
+import { syncWearables } from '../lib/wearables';
 import { PillButton, Screen, color, space, type } from '../ds';
 import { ErrorBoundary, Shields } from '../components/Shields';
 
@@ -77,12 +80,29 @@ export default function RootLayout() {
 
   useEffect(doBoot, [doBoot]);
 
-  // Recompute pending alerts whenever the app returns to the foreground.
+  // Foreground upkeep: recompute pending alerts, and when an account exists,
+  // silently refresh the session (Face ID gates an expired token; see
+  // lib/auth.ts) and pull any new wearable readings. All fire-and-forget;
+  // a failed biometric is reported once and the appLock Shields flow keeps
+  // covering the relock itself.
   useEffect(() => {
     if (boot?.kind !== 'ready') return;
-    syncNotifications().catch(() => {});
+    const upkeep = () => {
+      syncNotifications().catch(() => {});
+      if (hasAccount()) {
+        ensureFreshSession()
+          .then((state) => {
+            if (state.kind === 'locked') {
+              infoDialog('Locked', 'Face ID did not match. Hearth stays locked until it does.');
+            }
+          })
+          .catch(() => {});
+        syncWearables().catch(() => {});
+      }
+    };
+    upkeep();
     const sub = AppState.addEventListener('change', (s) => {
-      if (s === 'active') syncNotifications().catch(() => {});
+      if (s === 'active') upkeep();
     });
     return () => sub.remove();
   }, [boot?.kind]);
