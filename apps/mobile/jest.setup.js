@@ -1,3 +1,6 @@
+/* Reanimated under jest: the official mock (no native worklets runtime). */
+jest.mock('react-native-reanimated', () => require('./jest-reanimated-stub'));
+
 /* Component tests run against the pure DS layer; native modules are stubbed. */
 /* eslint-disable no-undef */
 jest.mock('expo-secure-store', () => ({

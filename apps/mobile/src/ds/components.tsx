@@ -3,6 +3,7 @@
  * no screen reaches for raw colors or ad-hoc borders.
  */
 import React from 'react';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, ReduceMotion } from 'react-native-reanimated';
 import { Check } from 'lucide-react-native';
 import {
   ActivityIndicator,
@@ -161,6 +162,20 @@ export function ListRow({
 
 /* ---------- controls ---------- */
 
+/** Quiet press feedback: 3% scale-down on touch, spring back on release. */
+function PressScale({ pressed, children }: { pressed: boolean; children: React.ReactNode }) {
+  const v = useSharedValue(1);
+  React.useEffect(() => {
+    v.value = withSpring(pressed ? 0.97 : 1, {
+      damping: 22,
+      stiffness: 420,
+      reduceMotion: ReduceMotion.System,
+    });
+  }, [pressed, v]);
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: v.value }] }));
+  return <Animated.View style={style}>{children}</Animated.View>;
+}
+
 export function PillButton({
   label,
   onPress,
@@ -181,21 +196,26 @@ export function PillButton({
 }) {
   const dark = variant === 'dark';
   const danger = variant === 'danger';
+  const [pressed, setPressed] = React.useState(false);
   return (
     <Pressable
       onPress={onPress}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
       disabled={disabled || loading}
       accessibilityRole="button"
       accessibilityState={{ disabled: disabled || loading }}
-      style={({ pressed }) => [
-        styles.pill,
-        size === 'sm' ? styles.pillSm : styles.pillMd,
-        dark && { backgroundColor: color.ink, borderColor: color.ink },
-        danger && { backgroundColor: color.paper, borderColor: color.red },
-        pressed && { opacity: 0.75 },
-        (disabled || loading) && { opacity: 0.35 },
-      ]}
     >
+      <PressScale pressed={pressed}>
+      <View
+        style={[
+          styles.pill,
+          size === 'sm' ? styles.pillSm : styles.pillMd,
+          dark && { backgroundColor: color.ink, borderColor: color.ink },
+          danger && { backgroundColor: color.paper, borderColor: color.red },
+          (disabled || loading) && { opacity: 0.35 },
+        ]}
+      >
       {loading ? (
         <ActivityIndicator size="small" color={dark ? color.paper : color.ink} />
       ) : (
@@ -211,6 +231,8 @@ export function PillButton({
           </Text>
         </View>
       )}
+      </View>
+      </PressScale>
     </Pressable>
   );
 }

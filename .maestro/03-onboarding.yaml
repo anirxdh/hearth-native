@@ -1,6 +1,14 @@
 appId: com.anirudh.hearth
 ---
 - launchApp
+# Brand-new installs land on the threshold sphere; enter via the
+# accessible door (the 1.6s hold is covered by the web E2E ritual).
+- runFlow:
+    when:
+      visible: 'Press and hold to begin'
+    commands:
+      - tapOn:
+          id: 'threshold-continue'
 - runFlow:
     when:
       visible: 'Set up Hearth'

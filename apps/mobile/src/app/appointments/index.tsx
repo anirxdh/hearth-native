@@ -131,7 +131,7 @@ export default function Appointments() {
           action={
             <View style={{ alignItems: 'center', gap: 14 }}>
               <PillButton label="Add a person" onPress={() => router.push('/patient/new' as never)} />
-              <Pressable onPress={confirmLoadDemoFamily} accessibilityRole="button" hitSlop={8}>
+              <Pressable onPress={() => confirmLoadDemoFamily()} accessibilityRole="button" hitSlop={8}>
                 <Text style={[type.mini, { textDecorationLine: 'underline' }]}>
                   Explore with a demo family
                 </Text>

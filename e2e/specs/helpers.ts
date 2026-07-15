@@ -8,13 +8,15 @@ import { expect, type Page } from '@playwright/test';
 
 /** Open the app and wait until either the onboarding or the dashboard shows. */
 export async function loadApp(page: Page): Promise<void> {
+  // Fresh visitors land on the threshold (the sphere); known apps land on
+  // onboarding-done states or the dashboard.
   await page.goto('/');
-  await expect(
-    page
-      .getByText('Start your care circle')
-      .or(page.getByText("Today's digest"))
-      .first(),
-  ).toBeVisible();
+  await page
+    .getByText('Press and hold to begin')
+    .or(page.getByText('Start your care circle'))
+    .or(page.getByText("Today's digest"))
+    .first()
+    .waitFor({ timeout: 20_000 });
 }
 
 /**
@@ -26,14 +28,19 @@ export async function loadApp(page: Page): Promise<void> {
  * fall back to the testid.
  */
 export async function seedDemo(page: Page): Promise<void> {
+  // The demo link lives on the threshold for brand-new visitors and on the
+  // empty home for account holders; both confirm via window.confirm.
+  const thresholdDemo = page.getByTestId('threshold-demo');
   const exploreLink = page.getByText('Explore with a demo family');
-  if (!(await exploreLink.isVisible())) {
-    return; // dashboard already has people
-  }
-  // The web surface confirms via window.confirm (lib/dialogs.ts).
   page.once('dialog', (d) => {
     d.accept().catch(() => {});
   });
-  await exploreLink.click();
+  if (await thresholdDemo.isVisible()) {
+    await thresholdDemo.click();
+  } else if (await exploreLink.isVisible()) {
+    await exploreLink.click();
+  } else {
+    return; // dashboard already has people
+  }
   await page.getByText('NEEDS ACTION').waitFor({ timeout: 10_000 });
 }

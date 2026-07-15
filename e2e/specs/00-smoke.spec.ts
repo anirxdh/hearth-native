@@ -11,7 +11,8 @@ test.describe('smoke', () => {
 
     await expect(
       page
-        .getByText('Start your care circle')
+        .getByText('Press and hold to begin')
+        .or(page.getByText('Start your care circle'))
         .or(page.getByText("Today's digest"))
         .first(),
     ).toBeVisible();

@@ -1,8 +1,11 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { BookOpen, CalendarDays, FolderOutput, ScanLine, Settings2, Workflow } from 'lucide-react-native';
+import Animated from 'react-native-reanimated';
 import { confirmLoadDemoFamily } from '../lib/demo';
+import { currentUser, hasAccount } from '../lib/auth';
+import { enterLead, enterRow } from '../ds/motion';
 import {
   buildDigest,
   daysBetween,
@@ -110,12 +113,18 @@ export default function Home() {
 
   const hour = new Date().getHours();
 
+  // The threshold rule: nobody gets greeted before Hearth knows someone.
+  // Brand-new visitors (no account, no people) meet the sphere instead.
+  if (!hasAccount() && data.patients.length === 0) {
+    return <Redirect href={'/welcome' as never} />;
+  }
+
   if (data.patients.length === 0) {
     return (
       <Screen>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
           <View style={{ flex: 1 }}>
-            <Text style={type.greet}>{greetingFor(hour, null)}</Text>
+            <Text style={type.greet}>{greetingFor(hour, currentUser()?.name.split(' ')[0] ?? null)}</Text>
             <Text style={[type.detail, { marginTop: 6 }]}>
               Hearth is a calm command center for everyone you care for.
             </Text>
@@ -137,7 +146,7 @@ export default function Home() {
               <PillButton label="Set up Hearth" onPress={() => router.push('/onboarding' as never)} />
               <PillButton label="Add a person" variant="outline" onPress={() => router.push('/patient/new')} />
               <Pressable
-                onPress={confirmLoadDemoFamily}
+                onPress={() => confirmLoadDemoFamily()}
                 accessibilityRole="button"
                 hitSlop={8}
               >
@@ -154,9 +163,9 @@ export default function Home() {
 
   return (
     <Screen>
-      <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+      <Animated.View entering={enterLead} style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         <View style={{ flex: 1 }}>
-          <Text style={type.greet}>{greetingFor(hour, null)}</Text>
+          <Text style={type.greet}>{greetingFor(hour, currentUser()?.name.split(' ')[0] ?? null)}</Text>
           <Text style={[type.detail, { marginTop: 5 }]}>
             Here is the one thing that needs you, and the calm around it.
           </Text>
@@ -169,11 +178,13 @@ export default function Home() {
         >
           <Settings2 size={21} color={color.ink2} strokeWidth={1.8} />
         </Pressable>
-      </View>
+      </Animated.View>
 
       <SectionHeader label="Today's digest" meta={today()} />
       {data.digest.lead ? (
-        <LeadCard item={data.digest.lead} onGo={(r) => router.push(r as never)} />
+        <Animated.View entering={enterRow(0)}>
+          <LeadCard item={data.digest.lead} onGo={(r) => router.push(r as never)} />
+        </Animated.View>
       ) : (
         <Card style={{ marginTop: space.md }}>
           <StatusTag status="green" label="All good" />
@@ -225,7 +236,7 @@ export default function Home() {
         ))}
 
       <SectionHeader label="Care circle" meta={`${data.patients.length} ${data.patients.length === 1 ? 'person' : 'people'}`} />
-      {data.patients.map((p) => {
+      {data.patients.map((p, pi) => {
         const st = circleStatus(data.meds, p.id);
         const name = p.preferredName ?? p.fullName;
         return (

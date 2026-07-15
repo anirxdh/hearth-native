@@ -9,7 +9,7 @@ import { today } from './clock';
  * Confirm-and-load the fictional demo family. Offered on the empty home
  * (so a new user or App Review can explore in one tap) and in Settings.
  */
-export function confirmLoadDemoFamily(): void {
+export function confirmLoadDemoFamily(onDone?: () => void): void {
   confirmDialog({
     title: 'Load the demo family?',
     message: 'Adds three fictional people with realistic medications. For trying Hearth out.',
@@ -20,6 +20,7 @@ export function confirmLoadDemoFamily(): void {
           bumpDataVersion();
           return syncNotifications();
         })
+        .then(() => onDone?.())
         .catch((e) => infoDialog('Demo load failed', String(e)));
     },
   });

@@ -179,7 +179,7 @@ export default function WorkflowPreview() {
               <Text style={type.detail}>No one is in your circle yet.</Text>
               <Pressable
                 testID="picker-load-demo"
-                onPress={confirmLoadDemoFamily}
+                onPress={() => confirmLoadDemoFamily()}
                 accessibilityRole="button"
                 accessibilityLabel="Load the demo family"
                 hitSlop={8}

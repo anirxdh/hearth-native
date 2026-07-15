@@ -44,11 +44,18 @@ test.describe('first-time onboarding', () => {
 
     await loadApp(page);
 
-    // Empty home leads with the wizard; the existing doors stay put.
-    await expect(page.getByText('Start your care circle')).toBeVisible();
-    await expect(page.getByText('Explore with a demo family')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Add a person' })).toBeVisible();
-    await page.getByRole('button', { name: 'Set up Hearth' }).click();
+    // The threshold: the sphere, its hint, and both dignified alternatives.
+    await expect(page.getByText('Press and hold to begin')).toBeVisible();
+    await expect(page.getByTestId('threshold-continue')).toBeVisible();
+    await expect(page.getByTestId('threshold-demo')).toBeVisible();
+    // THE RITUAL: press and hold the threshold sphere until the ring fills.
+    const sphere = page.getByTestId('threshold-sphere');
+    await expect(sphere).toBeVisible();
+    const box = (await sphere.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(1900);
+    await page.mouse.up();
 
     // Step 1: welcome and the account.
     await expect(page.getByText('Step 1 of 5')).toBeVisible();
