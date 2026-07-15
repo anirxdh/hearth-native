@@ -1,6 +1,6 @@
 import { claimDenialAppeal } from '../templates/claimDenialAppeal';
 import { MemoryStore } from '../store';
-import { confirm, execute, resume, sinkNode, userInputTemplate, validateGateBeforeSink } from '../runner';
+import { cancel, confirm, execute, resume, sinkNode, userInputTemplate, validateGateBeforeSink } from '../runner';
 import { WorkflowBuilder } from '../builder';
 import { fileVal, jsonVal, textVal, type InterNodeVal } from '../values';
 import type { RecordAccess } from '../executors';
@@ -134,6 +134,43 @@ describe('claim denial appeal fixture (the P25 proving run)', () => {
     if (result.kind !== 'failed') return;
     expect(result.error).toMatch(/missing/);
     expect(store.getExecution(result.executionId)?.status).toBe('failed');
+  });
+});
+
+describe('cancel', () => {
+  test('canceling a paused run closes it; confirming afterwards is refused', async () => {
+    const store = new MemoryStore();
+    const w = seedFixture(store);
+    const env = makeEnv(store);
+    const paused = await execute(env, w.id, fixtureInputs(w), 'patient-robert');
+    if (paused.kind !== 'awaiting_confirm') throw new Error('expected pause');
+
+    cancel(env, paused.executionId);
+    const e = store.getExecution(paused.executionId)!;
+    expect(e.status).toBe('canceled');
+    expect(e.finishedAt).toBe(NOW);
+    expect(e.awaitingNodeId).toBeNull();
+
+    await expect(
+      confirm(env, paused.executionId, paused.nodeId, [jsonVal({})]),
+    ).rejects.toThrow(/not awaiting/);
+  });
+
+  test('cancel is idempotent and never touches terminal runs', async () => {
+    const store = new MemoryStore();
+    const w = seedFixture(store);
+    const env = makeEnv(store);
+    const paused = await execute(env, w.id, fixtureInputs(w), 'patient-robert');
+    if (paused.kind !== 'awaiting_confirm') throw new Error('expected pause');
+    const bundle = paused.payload[0]!;
+    if (bundle.type !== 'jsonv') throw new Error('expected jsonv');
+    const done = await confirm(env, paused.executionId, paused.nodeId, [jsonVal(bundle.json)]);
+    expect(done.kind).toBe('completed');
+
+    cancel(env, paused.executionId); // no-op on completed
+    expect(store.getExecution(paused.executionId)?.status).toBe('completed');
+    cancel(env, paused.executionId); // still a no-op
+    expect(store.getExecution(paused.executionId)?.status).toBe('completed');
   });
 });
 

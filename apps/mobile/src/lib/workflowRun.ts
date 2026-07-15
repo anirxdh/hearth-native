@@ -7,6 +7,7 @@
 import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system/legacy';
 import {
+  cancel,
   confirm,
   execute,
   resume,
@@ -357,4 +358,10 @@ export async function saveWorkflowOutputToDocuments(
   await FileSystem.writeAsStringAsync(`${vaultDir}${fileName}`, body);
   addDocument({ patientId, title, category: 'other', fileName, mimeType: 'text/plain' });
   return true;
+}
+
+/** Cancel an in-flight run (idempotent on terminal states). */
+export function cancelRun(executionId: string): void {
+  cancel(runnerEnv(), executionId);
+  bumpDataVersion();
 }

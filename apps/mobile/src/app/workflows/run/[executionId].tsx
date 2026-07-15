@@ -25,7 +25,7 @@ import { jsonVal, valToText, type InterNodeVal, type NodeWithProperties } from '
 import { getWorkflowStore } from '../../../db/workflowStore';
 import { getPatient } from '../../../db/repo';
 import { useData } from '../../../lib/useData';
-import { infoDialog } from '../../../lib/dialogs';
+import { confirmDialog, infoDialog } from '../../../lib/dialogs';
 import {
   MANUAL_TEXT_COPY,
   confirmBundle,
@@ -33,6 +33,7 @@ import {
   gatePrompt,
   orderNodes,
   printWorkflowOutput,
+  cancelRun,
   resumeRun,
   saveWorkflowOutputToDocuments,
   sinkInfo,
@@ -141,6 +142,34 @@ export default function WorkflowRun() {
     Boolean(execution.error?.includes('could not produce a value')) &&
     workflow.nodes.some((n) => n.type === 'Document Text Extract');
 
+  // A run stranded in 'running' (force-quit mid-resolve) picks itself up:
+  // resume() re-walks persisted node outputs and lands at the gate, the
+  // finished document, or the failure - never a spinner that waits forever.
+  const autoResumed = React.useRef(false);
+  React.useEffect(() => {
+    if (execution.status === 'running' && !autoResumed.current && !busy) {
+      autoResumed.current = true;
+      resumeRun(executionId).catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [execution.status]);
+
+  function onCancel(): void {
+    confirmDialog({
+      title: 'Cancel this run?',
+      message: 'Nothing has been produced yet. The inputs you entered stay on this screen for reference, but the run closes.',
+      confirmText: 'Cancel the run',
+      destructive: true,
+      onConfirm: () => {
+        try {
+          cancelRun(executionId);
+        } catch (e) {
+          infoDialog('Could not cancel', e instanceof Error ? e.message : String(e));
+        }
+      },
+    });
+  }
+
   async function onConfirm(): Promise<void> {
     if (!gateId || busy) return;
     setBusy(true);
@@ -199,6 +228,17 @@ export default function WorkflowRun() {
           <GitBranch size={14} color={color.ink2} strokeWidth={1.8} />
           <Text style={[type.mini, { fontWeight: '600', textDecorationLine: 'underline' }]}>View the flow</Text>
         </Pressable>
+        {execution.status === 'running' || execution.status === 'awaiting_confirm' ? (
+          <Pressable
+            onPress={onCancel}
+            accessibilityRole="button"
+            accessibilityLabel="Cancel this run"
+            testID="cancel-run"
+            hitSlop={8}
+          >
+            <Text style={[type.mini, { fontWeight: '600', color: color.red }]}>Cancel</Text>
+          </Pressable>
+        ) : null}
       </View>
 
       <SectionHeader label="Steps" />

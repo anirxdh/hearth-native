@@ -206,4 +206,54 @@ test.describe('admin workflows', () => {
     await expect(saved).toContainText('record');
     expect(edited).toContain('EDITED');
   });
+
+  test('the canvas: nodes, edges, live run data on the flow', async ({ page }) => {
+    await openLibrary(page);
+    await openWorkflow(page, 'Claim Denial Appeal Builder');
+
+    // Static structure: every node card and the full edge layer render.
+    await page.getByText('View the flow').click();
+    for (const nodeTitle of [
+      'Upload the denial',
+      'Read the denial',
+      'Review every fact',
+      'Assemble the appeal',
+      'Appeal letter',
+    ]) {
+      await expect(page.getByText(nodeTitle).first()).toBeAttached();
+    }
+    const edgePaths = page.locator('svg path');
+    expect(await edgePaths.count()).toBeGreaterThanOrEqual(6);
+
+    // Live data: run to the gate, then view the run on the flow.
+    await page.goBack();
+    await expect(page.getByRole('button', { name: 'Run workflow' })).toBeVisible();
+    await pickRobert(page);
+    await fillByLabel(page, 'Denial reason (from the letter)', 'Not medically necessary');
+    await fillByLabel(page, 'Claim number', '88-431');
+    await useSampleDocument(page);
+    await runToConfirm(page);
+
+    await page.getByLabel('View this run on the flow').click();
+    const chip = page.getByLabel('View data from Read the denial').first();
+    await expect(chip).toBeVisible();
+    await chip.click();
+    // The inspector shows the extracted denial text carried on that edge.
+    await expect(page.getByText('per plan policy B-12').filter({ visible: true }).first()).toBeVisible();
+  });
+
+  test('a paused run can be canceled, and stays canceled', async ({ page }) => {
+    await openLibrary(page);
+    await openWorkflow(page, 'Claim Denial Appeal Builder');
+    await pickRobert(page);
+    await fillByLabel(page, 'Denial reason (from the letter)', 'Not medically necessary');
+    await fillByLabel(page, 'Claim number', '88-431');
+    await useSampleDocument(page);
+    await runToConfirm(page);
+
+    await page.getByTestId('cancel-run').click(); // window.confirm auto-accepted
+    await expect(page.getByText('Canceled').filter({ visible: true }).first()).toBeVisible();
+    await expect(page.getByTestId('confirm-continue')).toHaveCount(0);
+    await expect(page.getByTestId('cancel-run')).toHaveCount(0);
+  });
 });

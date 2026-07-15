@@ -139,6 +139,24 @@ export async function confirm(
   return resolveRun(env, w, executionId);
 }
 
+/**
+ * Cancel an in-flight run. Terminal states are left untouched (idempotent);
+ * a canceled run keeps its persisted node outputs for the audit trail but
+ * can never be confirmed or resumed into a document.
+ */
+export function cancel(env: RunnerEnv, executionId: string): void {
+  const execution = env.store.getExecution(executionId);
+  if (!execution) throw new Error(`no execution ${executionId}`);
+  if (execution.status === 'completed' || execution.status === 'failed' || execution.status === 'canceled') {
+    return;
+  }
+  env.store.updateExecution(executionId, {
+    status: 'canceled',
+    awaitingNodeId: null,
+    finishedAt: env.now(),
+  });
+}
+
 /** Resume any in-flight run after an app restart. */
 export async function resume(env: RunnerEnv, executionId: string): Promise<RunResult> {
   const execution = env.store.getExecution(executionId);

@@ -6,6 +6,7 @@ export { ConfirmPause, executors, type ExecContext, type Params, type RecordAcce
 export { MemoryStore, nodeById, type WorkflowStore } from './store';
 export { WorkflowBuilder, type TemplateMeta } from './builder';
 export {
+  cancel,
   confirm,
   execute,
   resume,
