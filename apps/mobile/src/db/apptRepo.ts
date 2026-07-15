@@ -179,10 +179,11 @@ export function archiveAppointment(id: string): void {
  */
 export function upcomingForDigest(
   today: LocalDate,
-): { patientName: string; provider: string; onDate: LocalDate } | null {
+): { id: string; patientName: string; provider: string; onDate: LocalDate } | null {
   const next = upcomingAppointments(today, 7)[0];
   if (!next) return null;
   return {
+    id: next.id,
     patientName: next.patient.preferredName ?? next.patient.fullName,
     provider: next.provider,
     onDate: next.onDate,

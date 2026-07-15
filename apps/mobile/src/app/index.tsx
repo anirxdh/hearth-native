@@ -5,6 +5,7 @@ import { BookOpen, CalendarDays, FolderOutput, ScanLine, Settings2, Workflow } f
 import { confirmLoadDemoFamily } from '../lib/demo';
 import {
   buildDigest,
+  daysBetween,
   type DigestItem,
   type DigestMedInput,
   type RunwayStatus,
@@ -27,6 +28,7 @@ import {
 import { lastTouchedAt, listAllMedications, listPatients } from '../db/repo';
 import { greetingFor, nowIso, today } from '../lib/clock';
 import { useData } from '../lib/useData';
+import { upcomingForDigest } from '../db/apptRepo';
 
 type CircleStatus = { status: 'red' | 'amber' | 'green'; label: string; line: string };
 
@@ -71,10 +73,17 @@ function LeadCard({ item, onGo }: { item: DigestItem; onGo: (route: string) => v
   );
 }
 
+function visitWhen(days: number, onDate: string): string {
+  if (days <= 0) return 'today';
+  if (days === 1) return 'tomorrow';
+  return `in ${days} days (${onDate})`;
+}
+
 export default function Home() {
   const router = useRouter();
   const data = useData(() => {
     const patients = listPatients();
+    const nextVisit = upcomingForDigest(today());
     const meds = listAllMedications();
     const digestMeds: DigestMedInput[] = meds.map((m) => ({
       medicationId: m.id,
@@ -96,7 +105,7 @@ export default function Home() {
       today(),
       nowIso(),
     );
-    return { patients, meds, digest };
+    return { patients, meds, digest, nextVisit };
   });
 
   const hour = new Date().getHours();
@@ -172,6 +181,27 @@ export default function Home() {
           </Text>
         </Card>
       )}
+      {data.nextVisit ? (
+        <View testID="digest-appointment">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Appointment: ${data.nextVisit.patientName} sees ${data.nextVisit.provider} ${visitWhen(daysBetween(today(), data.nextVisit.onDate), data.nextVisit.onDate)}`}
+            onPress={() => router.push(`/appointments/${data.nextVisit!.id}` as never)}
+            style={({ pressed }) => [
+              { flexDirection: 'row', alignItems: 'center', paddingVertical: 13, gap: 10 },
+              pressed ? { backgroundColor: color.hover } : null,
+            ]}
+          >
+            <StatusDot status="neutral" />
+            <Text style={[type.detail, { flex: 1, color: color.ink }]} numberOfLines={1}>
+              {data.nextVisit.patientName} sees {data.nextVisit.provider}{' '}
+              {visitWhen(daysBetween(today(), data.nextVisit.onDate), data.nextVisit.onDate)}
+            </Text>
+            <Text style={[type.mini, { fontWeight: '600' }]}>Prep sheet</Text>
+          </Pressable>
+          <Hairline />
+        </View>
+      ) : null}
       {data.digest.quiet
         .filter((q) => q.kind !== 'all-good' || data.digest.lead)
         .map((q, i, arr) => (

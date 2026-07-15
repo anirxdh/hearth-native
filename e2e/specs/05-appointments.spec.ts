@@ -49,8 +49,15 @@ test.describe('appointments', () => {
     await expect(row).toContainText('Maria drives');
     await expect(row).toContainText('Prep ready');
 
+    // While still scheduled, the home digest surfaces the visit as a calm row,
+    // and the row deep-links straight into the kit.
+    await page.getByLabel('Back to home').click();
+    const digestRow = page.getByTestId('digest-appointment');
+    await expect(digestRow).toContainText('Robert sees Dr. Chen in 3 days');
+    await expect(digestRow).toContainText('Prep sheet');
+    await digestRow.getByRole('button').click();
+
     // The kit: prep sheet lists current meds and drafts questions.
-    await row.click();
     await expect(page.getByText('Current medications')).toBeVisible();
     await expect(page.getByText('Metformin 500 mg')).toBeVisible();
     const questions = page.getByTestId('prep-question');
@@ -66,8 +73,11 @@ test.describe('appointments', () => {
     await expect(page.getByText('What happened')).toBeVisible();
     await expect(page.getByTestId('visit-recorded')).toBeAttached();
 
-    // Back on the list, the visit now lives under Past visits.
+    // Back on the list (via home, since the kit was entered from the digest),
+    // the visit now lives under Past visits and the digest row is gone.
     await page.getByLabel('Back to appointments').click();
+    await expect(page.getByTestId('digest-appointment')).toHaveCount(0);
+    await page.getByText('Appointments', { exact: true }).click();
     await expect(page.getByText('Past visits')).toBeVisible();
     const pastRow = page.getByTestId('past-row').filter({ hasText: 'Robert' });
     await expect(pastRow).toHaveCount(1);

@@ -7,10 +7,10 @@ name: E2E (iOS simulator)
 # it runs weekly and on demand. Run it locally for free with
 # scripts/e2e-local.sh before releases.
 
+# Playwright (e2e-web.yml) is the per-push E2E surface now; this workflow is
+# kept for on-demand device verification only, so no schedule.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 14 * * 1' # Mondays 14:00 UTC
 
 jobs:
   e2e:
