@@ -97,4 +97,33 @@ describe('HearthChart', () => {
     await render(<HearthChart data={data} unit="lb" />);
     expect(screen.getByLabelText('Chart, latest 183 lb, 2 readings')).toBeTruthy();
   });
+
+  test('two series (BP) summarize both latest values and show the legend', async () => {
+    const systolic: BucketedPoint[] = [
+      { label: 'Jul 1', value: 138, start: '2026-07-01' },
+      { label: 'Jul 13', value: 142, start: '2026-07-13' },
+    ];
+    const diastolic: BucketedPoint[] = [
+      { label: 'Jul 1', value: 82, start: '2026-07-01' },
+      { label: 'Jul 13', value: 88, start: '2026-07-13' },
+    ];
+    await render(
+      <HearthChart
+        data={systolic}
+        data2={diastolic}
+        unit="mmHg"
+        seriesLabel="systolic"
+        series2Label="diastolic"
+      />,
+    );
+    expect(
+      screen.getByLabelText('Chart, latest systolic 142 mmHg, diastolic 88 mmHg, 2 readings'),
+    ).toBeTruthy();
+    expect(screen.getByText('systolic (solid) / diastolic (dashed)')).toBeTruthy();
+  });
+
+  test('an empty second series keeps the single-series summary', async () => {
+    await render(<HearthChart data={data} data2={[]} unit="lb" />);
+    expect(screen.getByLabelText('Chart, latest 183 lb, 2 readings')).toBeTruthy();
+  });
 });

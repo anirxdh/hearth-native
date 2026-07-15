@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Platform, Pressable, Switch, Text, View } from 'react-native';
+import { Alert, Pressable, Switch, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import { ChevronLeft } from 'lucide-react-native';
@@ -22,6 +22,7 @@ import { useData } from '../lib/useData';
 import { ONBOARDING_DISCLAIMER } from '../lib/copy';
 import { seedDemoFamily } from '@hearth/schema';
 import { exportBackup, importBackup, validPassphrase } from '../lib/backup';
+import { infoDialog, promptDialog } from '../lib/dialogs';
 import { confirmLoadDemoFamily } from '../lib/demo';
 import { today } from '../lib/clock';
 import { bumpDataVersion } from '../lib/events';
@@ -83,18 +84,12 @@ export default function Settings() {
   }
 
   function askPassphrase(title: string, message: string, onOk: (p: string) => void) {
-    if (Platform.OS !== 'ios') return;
-    Alert.prompt(title, message, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Continue',
-        onPress: (p?: string) => {
-          const err = validPassphrase(p ?? '');
-          if (err) Alert.alert('Passphrase too short', err);
-          else onOk(p!);
-        },
-      },
-    ], 'secure-text');
+    void promptDialog({ title, message, secure: true }).then((p) => {
+      if (p === null) return;
+      const err = validPassphrase(p);
+      if (err) infoDialog('Passphrase too short', err);
+      else onOk(p);
+    });
   }
 
   function doExport() {

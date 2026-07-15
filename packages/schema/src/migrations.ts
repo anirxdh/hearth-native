@@ -34,6 +34,13 @@ export const journal = {
       "when": 1784065921000,
       "tag": "0002_mysterious_black_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1784099190076,
+      "tag": "0003_old_wraith",
+      "breakpoints": true
     }
   ]
 };
@@ -44,10 +51,13 @@ const m0001 = "CREATE TABLE `documents` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t
 
 const m0002 = "CREATE TABLE `appointments` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`patient_id` text NOT NULL,\n\t`provider` text NOT NULL,\n\t`specialty` text,\n\t`location` text,\n\t`phone` text,\n\t`on_date` text NOT NULL,\n\t`at_time` text,\n\t`driver` text,\n\t`bring` text,\n\t`purpose` text,\n\t`post_visit_notes` text,\n\t`status` text DEFAULT 'scheduled' NOT NULL,\n\t`created_at` text NOT NULL,\n\t`updated_at` text NOT NULL,\n\t`archived_at` text,\n\tFOREIGN KEY (`patient_id`) REFERENCES `patients`(`id`) ON UPDATE no action ON DELETE no action\n);\n--> statement-breakpoint\nCREATE INDEX `appointments_patient_idx` ON `appointments` (`patient_id`,`on_date`);--> statement-breakpoint\nCREATE TABLE `wf_execution_inputs` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`execution_id` text NOT NULL,\n\t`node_property_id` text NOT NULL,\n\t`values` text NOT NULL,\n\tFOREIGN KEY (`execution_id`) REFERENCES `wf_executions`(`id`) ON UPDATE no action ON DELETE no action\n);\n--> statement-breakpoint\nCREATE INDEX `wf_exec_inputs_idx` ON `wf_execution_inputs` (`execution_id`);--> statement-breakpoint\nCREATE TABLE `wf_execution_outputs` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`execution_id` text NOT NULL,\n\t`node_id` text NOT NULL,\n\t`output` text NOT NULL,\n\t`at` text NOT NULL,\n\tFOREIGN KEY (`execution_id`) REFERENCES `wf_executions`(`id`) ON UPDATE no action ON DELETE no action\n);\n--> statement-breakpoint\nCREATE INDEX `wf_exec_outputs_idx` ON `wf_execution_outputs` (`execution_id`,`node_id`);--> statement-breakpoint\nCREATE TABLE `wf_executions` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`workflow_id` text NOT NULL,\n\t`workflow_version` integer NOT NULL,\n\t`patient_id` text,\n\t`status` text NOT NULL,\n\t`awaiting_node_id` text,\n\t`error` text,\n\t`started_at` text NOT NULL,\n\t`finished_at` text,\n\tFOREIGN KEY (`workflow_id`) REFERENCES `wf_workflows`(`id`) ON UPDATE no action ON DELETE no action\n);\n--> statement-breakpoint\nCREATE INDEX `wf_exec_workflow_idx` ON `wf_executions` (`workflow_id`,`started_at`);--> statement-breakpoint\nCREATE TABLE `wf_node_properties` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`node_id` text NOT NULL,\n\t`name` text NOT NULL,\n\t`label` text,\n\t`input_node_id` text,\n\t`hidden` integer DEFAULT false NOT NULL,\n\t`values` text DEFAULT '[]' NOT NULL,\n\tFOREIGN KEY (`node_id`) REFERENCES `wf_nodes`(`id`) ON UPDATE no action ON DELETE no action\n);\n--> statement-breakpoint\nCREATE INDEX `wf_props_node_idx` ON `wf_node_properties` (`node_id`);--> statement-breakpoint\nCREATE TABLE `wf_nodes` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`workflow_id` text NOT NULL,\n\t`type` text NOT NULL,\n\t`description` text NOT NULL,\n\t`position_x` integer NOT NULL,\n\t`position_y` integer NOT NULL,\n\tFOREIGN KEY (`workflow_id`) REFERENCES `wf_workflows`(`id`) ON UPDATE no action ON DELETE no action\n);\n--> statement-breakpoint\nCREATE INDEX `wf_nodes_workflow_idx` ON `wf_nodes` (`workflow_id`);--> statement-breakpoint\nCREATE TABLE `wf_workflows` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`key` text NOT NULL,\n\t`name` text NOT NULL,\n\t`description` text NOT NULL,\n\t`category` text NOT NULL,\n\t`est_minutes` integer NOT NULL,\n\t`replaces_hours` text NOT NULL,\n\t`version` integer NOT NULL,\n\t`created_at` text NOT NULL\n);\n";
 
+const m0003 = "ALTER TABLE `patients` ADD `sex` text;";
+
 export const migrations: Record<string, string> = {
   m0000,
   m0001,
   m0002,
+  m0003,
 };
 
 export default { journal, migrations };

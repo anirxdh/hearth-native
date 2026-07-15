@@ -424,6 +424,18 @@ export function addDocument(input: Omit<NewDocument, 'id' | 'addedAt'>): Documen
   return row as DocumentRow;
 }
 
+export function updateDocument(
+  id: string,
+  patch: { title?: string; category?: DocumentRow['category'] },
+): DocumentRow {
+  const db = getDb();
+  const before = db.select().from(documents).where(eq(documents.id, id)).get();
+  if (!before) throw new Error('Document not found');
+  db.update(documents).set(patch).where(eq(documents.id, id)).run();
+  logChange('document', id, before.patientId, 'update', diff(before as Record<string, unknown>, patch));
+  return db.select().from(documents).where(eq(documents.id, id)).get()!;
+}
+
 export function archiveDocument(id: string): void {
   const db = getDb();
   const doc = db.select().from(documents).where(eq(documents.id, id)).get();

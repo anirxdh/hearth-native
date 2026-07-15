@@ -12,7 +12,7 @@ export function Seg<T extends string>({
   onChange,
   scroll = false,
 }: {
-  options: { key: T; label: string }[];
+  options: { key: T; label: string; testID?: string }[];
   value: T;
   onChange: (next: T) => void;
   scroll?: boolean;
@@ -38,6 +38,7 @@ export function Seg<T extends string>({
             accessibilityRole="tab"
             accessibilityState={{ selected: on }}
             accessibilityLabel={o.label}
+            {...(o.testID ? { testID: o.testID } : {})}
             hitSlop={6}
             style={{
               paddingHorizontal: 14,

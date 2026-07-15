@@ -1,0 +1,67 @@
+appId: com.anirudh.hearth
+---
+- launchApp
+- runFlow:
+    when:
+      visible: 'Set up Hearth'
+    commands:
+      - tapOn: 'Set up Hearth'
+- assertVisible: 'Welcome to Hearth'
+- runFlow:
+    when:
+      visible:
+        id: 'ob-name'
+    commands:
+      - tapOn:
+          id: 'ob-name'
+      - inputText: 'Maria Alvarez'
+      - tapOn:
+          id: 'ob-email'
+      - inputText: 'maria@example.com'
+- runFlow:
+    when:
+      visible: 'Create account'
+    commands:
+      - tapOn: 'Create account'
+- runFlow:
+    when:
+      visible: 'Continue'
+    commands:
+      - tapOn: 'Continue'
+- assertVisible:
+    text: '.*Face ID.*'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-2-security
+- tapOn: 'Skip for now'
+- tapOn:
+    id: 'ob-person-name'
+- inputText: 'Robert Alvarez'
+- tapOn:
+    id: 'ob-person-relationship'
+- inputText: 'Dad'
+- tapOn:
+    point: '50%,12%'
+- runFlow:
+    when:
+      visible:
+        id: 'ob-attest'
+    commands:
+      - tapOn:
+          id: 'ob-attest'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-3-person
+- tapOn:
+    text: 'Add Robert.*'
+- assertVisible:
+    text: '.*Insurance card.*'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-4-uploads
+- tapOn: 'Continue'
+- tapOn:
+    text: '.*demo band.*'
+- assertVisible:
+    text: '.*readings.*'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-5-band
+- tapOn: 'Continue'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-6-done
+- tapOn: 'Open Hearth'
+- assertVisible:
+    text: '.*Robert.*'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-7-arrived

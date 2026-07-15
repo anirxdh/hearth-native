@@ -65,13 +65,13 @@ split by who has to do it. Check items off as they land.
 
 ## 3. Known code debts (small, tracked, deliberate)
 
-- [ ] Sex field on the patient profile (one-pager nutrition currently infers from pronouns and says so; replace with an explicit optional field)
-- [ ] Document title editing + category picker in the vault (files land as "Untitled document"/filename today)
+- [x] Sex field on the patient profile: optional Male/Female/Prefer-not-to-say selector on add + edit; nutrition uses patient.sex when set (pronoun inference stays as the legacy fallback) and the one-pager note says which source was used
+- [x] Document title editing + category picker in the vault: pencil edit on each row opens an inline title + category editor, saved through updateDocument with the standard audit entry
 - [ ] Document viewer screen (vault items share out today; an in-app viewer with zoom would be better)
-- [ ] BP diastolic series on the Activity chart (systolic plots today, labeled as such)
+- [x] BP diastolic series on the Activity chart: HearthChart grew an optional second series (dashed, ink3) with a legend and a both-values accessibility summary; other kinds keep the single-series API
 - [ ] Observation kinds could feed the P24 prep sheet automatically (designed for it; wire when P24 lands)
-- [ ] `Alert.prompt` passphrase entry is iOS-only (fine for iOS-first; Android needs a small modal when it comes)
-- [ ] Migration test harness runs migrations forward only; add a downgrade-refusal test before P30 sync
+- [x] `Alert.prompt` passphrase entry is iOS-only: promptDialog in lib/dialogs.ts (native Alert.prompt, web window.prompt) now backs the backup flows; Android still wants a real modal when it comes
+- [x] Migration test harness runs migrations forward only: downgrade.test.ts pins that a database newer than the bundle is a clean no-op (nothing applied, dropped, or deleted); migrateSafely's snapshot/restore covers any future regression to throwing
 
 ## 4. Standing release gates (never skipped, each release)
 

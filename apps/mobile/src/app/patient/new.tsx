@@ -8,6 +8,7 @@ import {
   PillButton,
   Screen,
   SectionHeader,
+  Seg,
   space,
   type,
 } from '../../ds';
@@ -22,6 +23,7 @@ export default function NewPatient() {
   const [preferredName, setPreferredName] = useState('');
   const [relationship, setRelationship] = useState('');
   const [dob, setDob] = useState('');
+  const [sex, setSex] = useState<'male' | 'female' | null>(null);
   const [conditions, setConditions] = useState('');
   const [allergies, setAllergies] = useState('');
   const [attested, setAttested] = useState(false);
@@ -42,6 +44,7 @@ export default function NewPatient() {
       preferredName: preferredName.trim() || null,
       relationship: relationship.trim() || null,
       dob: dob || null,
+      sex,
       conditions: conditions
         .split(',')
         .map((c) => c.trim())
@@ -79,6 +82,21 @@ export default function NewPatient() {
         {...(errors.dob ? { error: errors.dob } : {})}
       />
       <SectionHeader label="Health basics" meta="optional" />
+      <View style={{ marginTop: space.lg }}>
+        <Text style={[type.label, { marginBottom: 6 }]}>Sex</Text>
+        <Seg
+          options={[
+            { key: 'male', label: 'Male', testID: 'patient-sex-male' },
+            { key: 'female', label: 'Female', testID: 'patient-sex-female' },
+            { key: 'unset', label: 'Prefer not to say' },
+          ]}
+          value={sex ?? 'unset'}
+          onChange={(k) => setSex(k === 'unset' ? null : k)}
+        />
+        <Text style={[type.mini, { marginTop: 4 }]}>
+          Only used to pick the right daily-needs table on the one-pager.
+        </Text>
+      </View>
       <FormField
         label="Conditions"
         value={conditions}

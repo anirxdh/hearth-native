@@ -26,6 +26,8 @@ const KIND_OPTIONS: { key: Vital['kind']; label: string; unit: string }[] = [
   { key: 'bp', label: 'BP', unit: 'mmHg' },
   { key: 'glucose', label: 'Glucose', unit: 'mg/dL' },
   { key: 'hr', label: 'Heart rate', unit: 'bpm' },
+  { key: 'steps', label: 'Steps', unit: 'steps' },
+  { key: 'sleep', label: 'Sleep', unit: 'min' },
 ];
 
 const RANGES: { key: ChartRange; label: string }[] = [
@@ -71,6 +73,15 @@ export function ActivityTab({
       .map((v) => ({ on: v.recordedOn as LocalDate, value: v.value }));
     return bucketSeries(pts, range, today);
   }, [vitals, kind, range, today]);
+  // BP stores systolic in value and diastolic in value2; every other kind
+  // plots a single series and this stays empty.
+  const bucketedDiastolic = useMemo(() => {
+    if (kind !== 'bp') return [];
+    const pts: SeriesPoint[] = vitals
+      .filter((v) => v.kind === 'bp' && v.value2 != null)
+      .map((v) => ({ on: v.recordedOn as LocalDate, value: v.value2! }));
+    return bucketSeries(pts, range, today);
+  }, [vitals, kind, range, today]);
   const summary = summarizeSeries(bucketed);
 
   const hasAny = vitals.length > 0;
@@ -101,10 +112,21 @@ export function ActivityTab({
             ) : null}
           </View>
           <View style={{ marginTop: space.lg }}>
-            <HearthChart data={bucketed} width={width - space.xl * 2} unit={activeKind.unit} />
+            <HearthChart
+              data={bucketed}
+              width={width - space.xl * 2}
+              unit={activeKind.unit}
+              {...(bucketedDiastolic.length > 0
+                ? { data2: bucketedDiastolic, seriesLabel: 'systolic', series2Label: 'diastolic' }
+                : {})}
+            />
           </View>
           {kind === 'bp' ? (
-            <Text style={[type.mini, { marginTop: 6 }]}>Showing systolic (top number). Each point is the day's reading.</Text>
+            <Text style={[type.mini, { marginTop: 6 }]}>
+              {bucketedDiastolic.length > 0
+                ? "Each point is the day's reading."
+                : "Showing systolic (top number). Each point is the day's reading."}
+            </Text>
           ) : null}
         </>
       )}

@@ -84,9 +84,10 @@ function nutritionFor(p: Patient): NutritionRow[] {
   const age = ageOf(p);
   if (age === null) return [];
   const weight = latestVitals(p.id).find((v) => v.kind === 'weight');
-  // Demo simplification, stated in the one-pager UI: sex defaults to female
-  // unless pronouns say otherwise. A profile field replaces this in P21+.
-  const sex = p.pronouns?.toLowerCase().startsWith('he') ? 'male' : 'female';
+  // The explicit profile field (patients.sex) wins. For records created
+  // before that field existed, fall back to the stated demo simplification:
+  // female unless pronouns say otherwise.
+  const sex = p.sex ?? (p.pronouns?.toLowerCase().startsWith('he') ? 'male' : 'female');
   return dailyNeeds({ ageYears: age, sex, ...(weight ? { weightLb: weight.value } : {}) });
 }
 

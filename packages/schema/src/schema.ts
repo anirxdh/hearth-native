@@ -21,6 +21,8 @@ export const patients = sqliteTable('patients', {
   dob: text('dob'), // YYYY-MM-DD
   relationship: text('relationship'), // e.g. "Dad", "Mom", "Aunt"
   pronouns: text('pronouns'),
+  /** Optional; drives the nutrition daily-needs rules (migration 0003). */
+  sex: text('sex', { enum: ['male', 'female'] }),
   conditions: text('conditions', { mode: 'json' }).$type<string[]>().notNull().default([]),
   allergies: text('allergies', { mode: 'json' })
     .$type<{ name: string; reaction: string; severe: boolean }[]>()

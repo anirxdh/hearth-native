@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { FormField, PillButton, Screen, SectionHeader, space } from '../../../ds';
+import { FormField, PillButton, Screen, SectionHeader, Seg, space, type } from '../../../ds';
 import { archivePatient, getPatient, updatePatient } from '../../../db/repo';
 import { isValidLocalDate } from '@hearth/core';
 
@@ -14,6 +14,7 @@ export default function EditPatient() {
   const [preferredName, setPreferredName] = useState(patient?.preferredName ?? '');
   const [relationship, setRelationship] = useState(patient?.relationship ?? '');
   const [dob, setDob] = useState(patient?.dob ?? '');
+  const [sex, setSex] = useState<'male' | 'female' | null>(patient?.sex ?? null);
   const [conditions, setConditions] = useState(patient?.conditions.join(', ') ?? '');
   const [allergies, setAllergies] = useState(
     patient?.allergies.map((a) => (a.reaction ? `${a.name} (${a.reaction})` : a.name)).join(', ') ?? '',
@@ -39,6 +40,7 @@ export default function EditPatient() {
       preferredName: preferredName.trim() || null,
       relationship: relationship.trim() || null,
       dob: dob || null,
+      sex,
       conditions: conditions.split(',').map((c) => c.trim()).filter(Boolean),
       allergies: allergies
         .split(',')
@@ -80,6 +82,21 @@ export default function EditPatient() {
       <FormField label="Relationship" value={relationship} onChangeText={setRelationship} />
       <FormField label="Date of birth" value={dob} onChangeText={setDob} hint="YYYY-MM-DD" autoCapitalize="none" />
       <SectionHeader label="Health basics" />
+      <View style={{ marginTop: space.lg }}>
+        <Text style={[type.label, { marginBottom: 6 }]}>Sex</Text>
+        <Seg
+          options={[
+            { key: 'male', label: 'Male', testID: 'patient-sex-male' },
+            { key: 'female', label: 'Female', testID: 'patient-sex-female' },
+            { key: 'unset', label: 'Prefer not to say' },
+          ]}
+          value={sex ?? 'unset'}
+          onChange={(k) => setSex(k === 'unset' ? null : k)}
+        />
+        <Text style={[type.mini, { marginTop: 4 }]}>
+          Only used to pick the right daily-needs table on the one-pager.
+        </Text>
+      </View>
       <FormField label="Conditions" value={conditions} onChangeText={setConditions} hint="Comma separated" />
       <FormField
         label="Allergies"

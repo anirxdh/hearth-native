@@ -9,22 +9,34 @@ import { color, type } from './tokens';
  * editorial line chart. Ink line, quiet grid, first/last axis labels only,
  * an optional reference band (e.g. BP target). Pure presentation; all
  * bucketing happens in @hearth/core so what you see is what the data says.
+ *
+ * An optional second series (BP diastolic) draws as a dashed ink3 line on
+ * the same scale, with a one-line legend when both series are named. The
+ * single-series API is unchanged for every other kind.
  */
 export function HearthChart({
   data,
+  data2,
   height = 160,
   width,
   unit,
   refLow,
   refHigh,
+  seriesLabel,
+  series2Label,
 }: {
   data: BucketedPoint[];
+  /** Optional second series, rendered dashed in ink3 on the same scale. */
+  data2?: BucketedPoint[];
   height?: number;
   /** Measured by parent; defaults to full-bleed 320. */
   width?: number;
   unit?: string;
   refLow?: number;
   refHigh?: number;
+  /** Names for the legend and accessibility summary when data2 is present. */
+  seriesLabel?: string;
+  series2Label?: string;
 }) {
   const w = width ?? 320;
   const h = height;
@@ -49,7 +61,8 @@ export function HearthChart({
     );
   }
 
-  const values = data.map((d) => d.value);
+  const second = data2 && data2.length > 0 ? data2 : null;
+  const values = [...data.map((d) => d.value), ...(second ? second.map((d) => d.value) : [])];
   let lo = Math.min(...values, refLow ?? Infinity);
   let hi = Math.max(...values, refHigh ?? -Infinity);
   if (hi - lo < 4) {
@@ -70,12 +83,29 @@ export function HearthChart({
     .map((d, i) => `${i === 0 ? 'M' : 'L'} ${x(i).toFixed(1)} ${y(d.value).toFixed(1)}`)
     .join(' ');
 
+  // The second series positions along its own index range so a stray point
+  // without a pair (e.g. a BP reading missing the diastolic) cannot skew it.
+  // Null-safe positioning for the optional second series: takes the array
+  // explicitly so no closure ever dereferences a null series.
+  const xIn = (arr: { length: number }, i: number) =>
+    padX + (arr.length === 1 ? innerW / 2 : (i / (arr.length - 1)) * innerW);
+  const path2 = second
+    ? second
+        .map((d, i) => `${i === 0 ? 'M' : 'L'} ${xIn(second, i).toFixed(1)} ${y(d.value).toFixed(1)}`)
+        .join(' ')
+    : null;
+
   const gridYs = [padTop, padTop + innerH / 2, padTop + innerH];
   const first = data[0]!;
   const last = data[data.length - 1]!;
+  const last2 = second ? second[second.length - 1]! : null;
+  const u = unit ? ` ${unit}` : '';
+  const summary = last2
+    ? `Chart, latest ${seriesLabel ?? 'first series'} ${last.value}${u}, ${series2Label ?? 'second series'} ${last2.value}${u}, ${data.length} readings`
+    : `Chart, latest ${last.value}${u}, ${data.length} readings`;
 
   return (
-    <View accessible accessibilityLabel={`Chart, latest ${last.value}${unit ? ` ${unit}` : ''}, ${data.length} readings`}>
+    <View accessible accessibilityLabel={summary}>
       <Svg width={w} height={h}>
         {refLow !== undefined && refHigh !== undefined ? (
           <Path
@@ -86,12 +116,26 @@ export function HearthChart({
         {gridYs.map((gy, i) => (
           <Line key={i} x1={padX} y1={gy} x2={w - padX} y2={gy} stroke={color.line} strokeWidth={1} />
         ))}
+        {path2 ? (
+          <Path
+            d={path2}
+            stroke={color.ink3}
+            strokeWidth={1.6}
+            strokeDasharray="5 4"
+            fill="none"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        ) : null}
         <Path d={path} stroke={color.ink} strokeWidth={1.8} fill="none" strokeLinejoin="round" strokeLinecap="round" />
         {data.length <= 32
           ? data.map((d, i) => (
               <Circle key={d.start + String(i)} cx={x(i)} cy={y(d.value)} r={2.4} fill={color.paper} stroke={color.ink} strokeWidth={1.4} />
             ))
           : null}
+        {second && last2 ? (
+          <Circle cx={xIn(second, second.length - 1)} cy={y(last2.value)} r={2.6} fill={color.ink3} />
+        ) : null}
         <Circle cx={x(data.length - 1)} cy={y(last.value)} r={3.4} fill={color.ink} />
         <SvgText x={padX} y={h - 8} fontSize={10.5} fill={color.ink3}>
           {first.label}
@@ -103,6 +147,11 @@ export function HearthChart({
           {`${last.value}${unit ? ` ${unit}` : ''}`}
         </SvgText>
       </Svg>
+      {second && seriesLabel && series2Label ? (
+        <Text style={[type.mini, { marginTop: 4 }]}>
+          {seriesLabel} (solid) / {series2Label} (dashed)
+        </Text>
+      ) : null}
     </View>
   );
 }

@@ -59,7 +59,9 @@ export default function OnePager() {
     ? Math.floor((Date.now() - new Date(patient.dob).getTime()) / (365.25 * 86400000))
     : null;
   const weight = vitals.find((v) => v.kind === 'weight');
-  const sex = patient.pronouns?.toLowerCase().startsWith('he') ? 'male' : 'female';
+  // Explicit profile field wins; pronoun inference remains the fallback for
+  // records created before the sex field existed.
+  const sex = patient.sex ?? (patient.pronouns?.toLowerCase().startsWith('he') ? 'male' : 'female');
   const nutrition =
     age !== null ? dailyNeeds({ ageYears: age, sex, ...(weight ? { weightLb: weight.value } : {}) }) : [];
 
@@ -188,8 +190,11 @@ export default function OnePager() {
           <Text style={[type.mini, { marginTop: space.md }]}>
             Based on published dietary reference values for {sex === 'male' ? 'men' : 'women'}
             {age !== null ? ` around ${age}` : ''}
-            {weight ? `, ${weight.value} lb` : ''}. General guidance, not a prescription; their clinician's advice
-            wins.
+            {weight ? `, ${weight.value} lb` : ''}.{' '}
+            {patient.sex
+              ? 'Sex comes from their profile.'
+              : 'No sex on their profile yet, so this is a best guess; set it in Edit to be sure.'}{' '}
+            General guidance, not a prescription; their clinician's advice wins.
           </Text>
         </>
       ) : null}
