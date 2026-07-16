@@ -54,13 +54,17 @@ export function Screen({
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {head}
-          {children}
+          <View style={styles.column}>
+            {head}
+            {children}
+          </View>
         </ScrollView>
       ) : (
         <View style={[styles.screenPad, { flex: 1 }]}>
-          {head}
-          {children}
+          <View style={[styles.column, { flex: 1 }]}>
+            {head}
+            {children}
+          </View>
         </View>
       )}
       {footer}
@@ -348,13 +352,17 @@ export function EmptyState({
   title,
   detail,
   action,
+  art,
 }: {
   title: string;
   detail?: string;
   action?: React.ReactNode;
+  /** Optional line-drawing pictogram (guides style) rendered above the title. */
+  art?: React.ReactNode;
 }) {
   return (
     <View style={styles.empty}>
+      {art ? <View style={{ marginBottom: space.lg, alignItems: 'center' }}>{art}</View> : null}
       <Text style={[type.heading, { textAlign: 'center' }]}>{title}</Text>
       {detail ? (
         <Text style={[type.detail, { textAlign: 'center', marginTop: 6 }]}>{detail}</Text>
@@ -374,6 +382,8 @@ export function DisclaimerFootnote({ children }: { children: string }) {
 }
 
 const styles = StyleSheet.create({
+  /** Readable measure on wide surfaces: full-bleed on phones, 720 centered beyond. */
+  column: { width: '100%', maxWidth: 720, alignSelf: 'center' },
   screen: { flex: 1, backgroundColor: color.paper },
   screenPad: { paddingHorizontal: space.xl, paddingTop: space.md, paddingBottom: 48 },
   secRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: space.md },

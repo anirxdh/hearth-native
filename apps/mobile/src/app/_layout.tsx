@@ -13,6 +13,7 @@ import { syncNotifications } from '../lib/notifications';
 import { syncWearables } from '../lib/wearables';
 import { PillButton, Screen, color, space, type } from '../ds';
 import { ErrorBoundary, Shields } from '../components/Shields';
+import { BreathingMark } from '../components/BreathingMark';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -116,7 +117,13 @@ export default function RootLayout() {
     return () => sub.remove();
   }, [router]);
 
-  if (!boot) return <View style={{ flex: 1, backgroundColor: color.paper }} />;
+  if (!boot) {
+    return (
+      <View style={{ flex: 1, backgroundColor: color.paper, alignItems: 'center', justifyContent: 'center' }}>
+        <BreathingMark size={56} />
+      </View>
+    );
+  }
 
   if (boot.kind !== 'ready') {
     return (
