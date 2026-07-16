@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import type { RunwayStatus } from '@hearth/core';
 import { EmptyState, ListRow, PillButton, RunwayBar, SectionHeader, color, space, type } from '../../ds';
 import type { MedWithRunway } from '../../db/repo';
+import { BottleArt } from '../../components/EmptyArt';
 
 function statusToColor(s: RunwayStatus): 'red' | 'amber' | 'green' {
   return s === 'overdue' || s === 'urgent' ? 'red' : s === 'soon' ? 'amber' : 'green';
@@ -22,6 +23,7 @@ export function MedsSection({ patientId, meds }: { patientId: string; meds: MedW
       <SectionHeader label="Medications" meta={`${meds.length}`} />
       {meds.length === 0 ? (
         <EmptyState
+          art={<BottleArt size={72} />}
           title="No medications yet"
           detail="Add each medication with its last fill date and day supply; Hearth computes the refill runway from there."
           action={<PillButton label="Add a medication" onPress={() => router.push(`/patient/${patientId}/med/new` as never)} />}

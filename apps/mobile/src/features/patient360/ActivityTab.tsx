@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Text, View, useWindowDimensions } from 'react-native';
+import { Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import {
@@ -20,6 +20,7 @@ import {
   space,
   type,
 } from '../../ds';
+import { ChartArt, NotebookArt } from '../../components/EmptyArt';
 
 const KIND_OPTIONS: { key: Vital['kind']; label: string; unit: string }[] = [
   { key: 'weight', label: 'Weight', unit: 'lb' },
@@ -62,7 +63,6 @@ export function ActivityTab({
   today: LocalDate;
 }) {
   const router = useRouter();
-  const { width } = useWindowDimensions();
   const [kind, setKind] = useState<Vital['kind']>('weight');
   const [range, setRange] = useState<ChartRange>('30d');
 
@@ -91,6 +91,7 @@ export function ActivityTab({
       {!hasAny ? (
         <View style={{ marginTop: space.lg }}>
           <EmptyState
+            art={<ChartArt size={72} />}
             title="No activity yet"
             detail="Readings you add appear here as trends: weight, blood pressure, glucose, heart rate."
             action={<PillButton label="Add a reading" onPress={() => router.push(`/patient/${patientId}/vital/new` as never)} />}
@@ -99,7 +100,7 @@ export function ActivityTab({
       ) : (
         <>
           <View style={{ marginTop: space.lg }}>
-            <Seg options={KIND_OPTIONS.map(({ key, label }) => ({ key, label }))} value={kind} onChange={setKind} />
+            <Seg options={KIND_OPTIONS.map(({ key, label }) => ({ key, label }))} value={kind} onChange={setKind} scroll />
           </View>
           <View style={{ marginTop: space.md, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Seg options={RANGES} value={range} onChange={setRange} />
@@ -114,7 +115,6 @@ export function ActivityTab({
           <View style={{ marginTop: space.lg }}>
             <HearthChart
               data={bucketed}
-              width={width - space.xl * 2}
               unit={activeKind.unit}
               {...(bucketedDiastolic.length > 0
                 ? { data2: bucketedDiastolic, seriesLabel: 'systolic', series2Label: 'diastolic' }
@@ -134,6 +134,7 @@ export function ActivityTab({
       <SectionHeader label="Observations" meta={observations.length ? `${observations.length}` : 'the soft signals'} />
       {observations.length === 0 ? (
         <EmptyState
+          art={<NotebookArt size={72} />}
           title="Nothing logged yet"
           detail="Short notes about mood, appetite, sleep, and incidents. These become the questions for the next visit."
           action={

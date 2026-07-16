@@ -24,6 +24,7 @@ import {
 import { jsonVal, valToText, type InterNodeVal, type NodeWithProperties } from '@hearth/workflows';
 import { getWorkflowStore } from '../../../db/workflowStore';
 import { getPatient } from '../../../db/repo';
+import { FlowArt } from '../../../components/EmptyArt';
 import { useData } from '../../../lib/useData';
 import { confirmDialog, infoDialog } from '../../../lib/dialogs';
 import {
@@ -126,7 +127,7 @@ export default function WorkflowRun() {
     return (
       <Screen title="Not found">
         <BackLink label="Workflows" />
-        <EmptyState title="This run is not available" detail="It may belong to a workflow that was removed." />
+        <EmptyState art={<FlowArt size={72} />} title="This run is not available" detail="It may belong to a workflow that was removed." />
       </Screen>
     );
   }

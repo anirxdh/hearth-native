@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Image, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { isValidLocalDate } from '@hearth/core';
@@ -13,6 +14,7 @@ import {
   space,
   type,
 } from '../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import { createPatient } from '../../db/repo';
 import { infoDialog } from '../../lib/dialogs';
 import { nowIso } from '../../lib/clock';
@@ -82,74 +84,84 @@ export default function OnboardingPerson() {
       subline="Start with one person. You can add more detail, and more people, any time."
     >
       <OnboardingSteps step={3} />
-      <FormField
-        label="Full name"
-        value={fullName}
-        onChangeText={setFullName}
-        placeholder="Robert Alvarez"
-        testID="ob-person-name"
-        {...(errors.name ? { error: errors.name } : {})}
-      />
-      <FormField
-        label="Relationship"
-        value={relationship}
-        onChangeText={setRelationship}
-        placeholder="Dad"
-        testID="ob-person-relationship"
-      />
-      <FormField
-        label="Date of birth"
-        value={dob}
-        onChangeText={setDob}
-        placeholder="1945-02-14"
-        hint="YYYY-MM-DD, optional"
-        autoCapitalize="none"
-        testID="ob-person-dob"
-        {...(errors.dob ? { error: errors.dob } : {})}
-      />
+      <Animated.View entering={enterLead}>
+        <FormField
+          label="Full name"
+          value={fullName}
+          onChangeText={setFullName}
+          placeholder="Robert Alvarez"
+          testID="ob-person-name"
+          {...(errors.name ? { error: errors.name } : {})}
+        />
+        <FormField
+          label="Relationship"
+          value={relationship}
+          onChangeText={setRelationship}
+          placeholder="Dad"
+          testID="ob-person-relationship"
+        />
+        <FormField
+          label="Date of birth"
+          value={dob}
+          onChangeText={setDob}
+          placeholder="1945-02-14"
+          hint="YYYY-MM-DD, optional"
+          autoCapitalize="none"
+          testID="ob-person-dob"
+          {...(errors.dob ? { error: errors.dob } : {})}
+        />
+      </Animated.View>
 
-      {photoUri ? (
-        <View
-          testID="ob-photo-set"
-          style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.lg }}
-        >
-          <Image
-            source={{ uri: photoUri }}
-            accessibilityLabel="Photo preview"
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 22,
-              borderWidth: 1,
-              borderColor: color.lineStrong,
-            }}
-          />
-          <Text style={type.mini}>Photo added</Text>
-        </View>
-      ) : (
-        <View style={{ marginTop: space.lg }} testID="ob-photo">
-          <PillButton label="Add a photo" variant="outline" size="sm" onPress={() => void pickPhoto()} />
-        </View>
-      )}
+      <Animated.View entering={enterRow(1)}>
+        {photoUri ? (
+          <View
+            testID="ob-photo-set"
+            style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.lg }}
+          >
+            <Image
+              source={{ uri: photoUri }}
+              accessibilityLabel="Photo preview"
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                borderWidth: 1,
+                borderColor: color.lineStrong,
+              }}
+            />
+            <Text style={type.mini}>Photo added</Text>
+          </View>
+        ) : (
+          <View style={{ marginTop: space.lg }} testID="ob-photo">
+            <PillButton label="Add a photo" variant="outline" size="sm" onPress={() => void pickPhoto()} />
+          </View>
+        )}
+      </Animated.View>
 
-      <View testID="ob-attest">
-        <CheckRow checked={attested} onToggle={() => setAttested(!attested)} label={ATTESTATION_TEXT} />
-      </View>
-      <Text style={[type.mini, { marginTop: 8 }]}>{ATTESTATION_EXPLAINER}</Text>
+      <Animated.View entering={enterRow(2)}>
+        <View testID="ob-attest">
+          <CheckRow checked={attested} onToggle={() => setAttested(!attested)} label={ATTESTATION_TEXT} />
+        </View>
+        <Text style={[type.mini, { marginTop: 8 }]}>{ATTESTATION_EXPLAINER}</Text>
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
-        <View testID="ob-person-save">
-          <PillButton label={fullName.trim() ? `Add ${firstName}` : 'Add person'} onPress={save} />
+      <Animated.View entering={enterRow(3)}>
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+          <View testID="ob-person-save">
+            <PillButton label={fullName.trim() ? `Add ${firstName}` : 'Add person'} onPress={save} />
+          </View>
+          <View testID="ob-skip-person">
+            <PillButton
+              label="Skip"
+              variant="outline"
+              onPress={() => router.push('/onboarding/uploads' as never)}
+            />
+          </View>
         </View>
-        <View testID="ob-skip-person">
-          <PillButton
-            label="Skip"
-            variant="outline"
-            onPress={() => router.push('/onboarding/uploads' as never)}
-          />
-        </View>
-      </View>
-      <DisclaimerFootnote>{ONBOARDING_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>{ONBOARDING_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

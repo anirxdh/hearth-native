@@ -19,6 +19,7 @@ import { listPatients } from '../../db/repo';
 import { useData } from '../../lib/useData';
 import { today } from '../../lib/clock';
 import { confirmLoadDemoFamily } from '../../lib/demo';
+import { CalendarArt } from '../../components/EmptyArt';
 
 function tagFor(a: AppointmentWithPatient, todayDate: string): { status: 'green' | 'amber' | 'neutral'; label: string } {
   const days = daysBetween(todayDate, a.onDate);
@@ -155,6 +156,7 @@ export default function Appointments() {
           />
           {data.upcoming.length === 0 ? (
             <EmptyState
+              art={<CalendarArt size={72} />}
               title="No upcoming appointments"
               detail="Add the next visit and Hearth drafts the prep sheet from the record."
             />

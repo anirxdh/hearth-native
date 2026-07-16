@@ -33,6 +33,7 @@ import {
 } from '@hearth/workflows';
 import { getWorkflowStore } from '../../../db/workflowStore';
 import { listPatients } from '../../../db/repo';
+import { FlowArt } from '../../../components/EmptyArt';
 import { useData } from '../../../lib/useData';
 import { infoDialog } from '../../../lib/dialogs';
 import { confirmLoadDemoFamily } from '../../../lib/demo';
@@ -69,7 +70,7 @@ export default function WorkflowPreview() {
     return (
       <Screen title="Not found">
         <BackLink label="Workflows" />
-        <EmptyState title="This workflow is not available" detail="It may have been replaced by a newer version." />
+        <EmptyState art={<FlowArt size={72} />} title="This workflow is not available" detail="It may have been replaced by a newer version." />
       </Screen>
     );
   }

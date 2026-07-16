@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Platform, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Card, PillButton, Screen, StatusDot, space, type } from '../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import { setSetting } from '../../db/repo';
 import { OnboardingSteps } from './ui';
 
@@ -43,37 +45,43 @@ export default function OnboardingSecurity() {
   return (
     <Screen title="Lock it to your face" subline="One more layer between care records and anyone who picks up the phone.">
       <OnboardingSteps step={2} />
-      <Card>
-        <Text style={type.heading}>Face ID</Text>
-        <Text style={[type.detail, { marginTop: 6 }]}>
-          Require Face ID to open Hearth. Also used to sign you back in quietly when your session expires.
-        </Text>
-        {enabled ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.lg }}>
-            <StatusDot status="green" />
-            <Text style={type.mini}>Face ID is on</Text>
-          </View>
-        ) : isWeb ? (
-          <Text style={[type.mini, { marginTop: space.lg }]}>
-            Not available in the browser preview. On the phone, Hearth asks for Face ID here.
+      <Animated.View entering={enterLead}>
+        <Card>
+          <Text style={type.heading}>Face ID</Text>
+          <Text style={[type.detail, { marginTop: 6 }]}>
+            Require Face ID to open Hearth. Also used to sign you back in quietly when your session expires.
           </Text>
-        ) : (
-          <View style={{ marginTop: space.lg }} testID="ob-faceid">
-            <PillButton label="Turn on Face ID" onPress={() => void turnOn()} loading={busy} />
+          {enabled ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.lg }}>
+              <StatusDot status="green" />
+              <Text style={type.mini}>Face ID is on</Text>
+            </View>
+          ) : isWeb ? (
+            <Text style={[type.mini, { marginTop: space.lg }]}>
+              Not available in the browser preview. On the phone, Hearth asks for Face ID here.
+            </Text>
+          ) : (
+            <View style={{ marginTop: space.lg }} testID="ob-faceid">
+              <PillButton label="Turn on Face ID" onPress={() => void turnOn()} loading={busy} />
+            </View>
+          )}
+        </Card>
+      </Animated.View>
+      <Animated.View entering={enterRow(1)}>
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+          <View testID="ob-continue-security">
+            <PillButton label="Continue" onPress={next} />
           </View>
-        )}
-      </Card>
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
-        <View testID="ob-continue-security">
-          <PillButton label="Continue" onPress={next} />
+          <View testID="ob-skip-security">
+            <PillButton label="Skip for now" variant="outline" onPress={next} />
+          </View>
         </View>
-        <View testID="ob-skip-security">
-          <PillButton label="Skip for now" variant="outline" onPress={next} />
-        </View>
-      </View>
-      <Text style={[type.mini, { marginTop: space.lg }]}>
-        You can turn this on or off any time in Settings.
-      </Text>
+      </Animated.View>
+      <Animated.View entering={enterQuiet}>
+        <Text style={[type.mini, { marginTop: space.lg }]}>
+          You can turn this on or off any time in Settings.
+        </Text>
+      </Animated.View>
     </Screen>
   );
 }

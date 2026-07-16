@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Platform, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import type { DocumentRow } from '@hearth/schema';
 import { Card, PillButton, Screen, StatusDot, space, type } from '../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import { addDocument, getPatient } from '../../db/repo';
 import { importDocumentFile, importDocumentPhoto } from '../../lib/vault';
 import { infoDialog } from '../../lib/dialogs';
@@ -102,15 +104,19 @@ export default function OnboardingUploads() {
         subline="Insurance cards, medication lists, discharge papers: photographed once, at hand at every visit."
       >
         <OnboardingSteps step={4} />
-        <Card>
-          <Text style={type.detail}>
-            Documents attach to a person's record, and you have not added anyone yet. You can add papers
-            any time from a person's Documents tab.
-          </Text>
-        </Card>
-        <View style={{ marginTop: space.xl }} testID="ob-continue-uploads">
-          <PillButton label="Continue" onPress={next} />
-        </View>
+        <Animated.View entering={enterLead}>
+          <Card>
+            <Text style={type.detail}>
+              Documents attach to a person's record, and you have not added anyone yet. You can add papers
+              any time from a person's Documents tab.
+            </Text>
+          </Card>
+        </Animated.View>
+        <Animated.View entering={enterRow(1)}>
+          <View style={{ marginTop: space.xl }} testID="ob-continue-uploads">
+            <PillButton label="Continue" onPress={next} />
+          </View>
+        </Animated.View>
       </Screen>
     );
   }
@@ -124,64 +130,72 @@ export default function OnboardingUploads() {
     >
       <OnboardingSteps step={4} />
 
-      <Card>
-        <Text style={type.heading}>Insurance card</Text>
-        <Text style={[type.detail, { marginTop: 6 }]}>
-          A photo of the card, front is enough. It is there when the front desk asks.
-        </Text>
-        {insuranceDoc ? (
-          <View
-            testID="ob-insurance-done"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.lg }}
-          >
-            <StatusDot status="green" />
-            <Text style={type.mini}>{insuranceDoc.fileName}</Text>
-          </View>
-        ) : (
-          <View style={{ marginTop: space.lg }} testID="ob-upload-insurance">
-            <PillButton
-              label="Add the card"
-              variant="outline"
-              size="sm"
-              onPress={() => void pickInsurance()}
-              disabled={busy}
-            />
-          </View>
-        )}
-      </Card>
+      <Animated.View entering={enterLead}>
+        <Card>
+          <Text style={type.heading}>Insurance card</Text>
+          <Text style={[type.detail, { marginTop: 6 }]}>
+            A photo of the card, front is enough. It is there when the front desk asks.
+          </Text>
+          {insuranceDoc ? (
+            <View
+              testID="ob-insurance-done"
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.lg }}
+            >
+              <StatusDot status="green" />
+              <Text style={type.mini}>{insuranceDoc.fileName}</Text>
+            </View>
+          ) : (
+            <View style={{ marginTop: space.lg }} testID="ob-upload-insurance">
+              <PillButton
+                label="Add the card"
+                variant="outline"
+                size="sm"
+                onPress={() => void pickInsurance()}
+                disabled={busy}
+              />
+            </View>
+          )}
+        </Card>
+      </Animated.View>
 
-      <Card style={{ marginTop: space.md }}>
-        <Text style={type.heading}>Medication list or records</Text>
-        <Text style={[type.detail, { marginTop: 6 }]}>
-          A pharmacy printout, a discharge summary, or any PDF or photo worth keeping close.
-        </Text>
-        {recordsDoc ? (
-          <View
-            testID="ob-records-done"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.lg }}
-          >
-            <StatusDot status="green" />
-            <Text style={type.mini}>{recordsDoc.fileName}</Text>
-          </View>
-        ) : (
-          <View style={{ marginTop: space.lg }} testID="ob-upload-records">
-            <PillButton
-              label="Add a file"
-              variant="outline"
-              size="sm"
-              onPress={() => void pickRecords()}
-              disabled={busy}
-            />
-          </View>
-        )}
-      </Card>
+      <Animated.View entering={enterRow(1)}>
+        <Card style={{ marginTop: space.md }}>
+          <Text style={type.heading}>Medication list or records</Text>
+          <Text style={[type.detail, { marginTop: 6 }]}>
+            A pharmacy printout, a discharge summary, or any PDF or photo worth keeping close.
+          </Text>
+          {recordsDoc ? (
+            <View
+              testID="ob-records-done"
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.lg }}
+            >
+              <StatusDot status="green" />
+              <Text style={type.mini}>{recordsDoc.fileName}</Text>
+            </View>
+          ) : (
+            <View style={{ marginTop: space.lg }} testID="ob-upload-records">
+              <PillButton
+                label="Add a file"
+                variant="outline"
+                size="sm"
+                onPress={() => void pickRecords()}
+                disabled={busy}
+              />
+            </View>
+          )}
+        </Card>
+      </Animated.View>
 
-      <View style={{ marginTop: space.xl }} testID="ob-continue-uploads">
-        <PillButton label="Continue" onPress={next} />
-      </View>
-      <Text style={[type.mini, { marginTop: space.lg }]}>
-        Both are optional. Everything lands in {name}'s Documents tab, protected by this phone's passcode.
-      </Text>
+      <Animated.View entering={enterRow(2)}>
+        <View style={{ marginTop: space.xl }} testID="ob-continue-uploads">
+          <PillButton label="Continue" onPress={next} />
+        </View>
+      </Animated.View>
+      <Animated.View entering={enterQuiet}>
+        <Text style={[type.mini, { marginTop: space.lg }]}>
+          Both are optional. Everything lands in {name}'s Documents tab, protected by this phone's passcode.
+        </Text>
+      </Animated.View>
     </Screen>
   );
 }

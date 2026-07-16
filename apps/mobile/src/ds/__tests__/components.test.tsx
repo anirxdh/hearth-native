@@ -126,4 +126,18 @@ describe('HearthChart', () => {
     await render(<HearthChart data={data} data2={[]} unit="lb" />);
     expect(screen.getByLabelText('Chart, latest 183 lb, 2 readings')).toBeTruthy();
   });
+
+  test('an explicit width prop still pins the drawing width', async () => {
+    await render(<HearthChart data={data} unit="lb" width={280} />);
+    expect(screen.getByTestId('hearth-chart-svg').props.width).toBe(280);
+  });
+
+  test('without a width prop, the chart measures its container and fills it', async () => {
+    await render(<HearthChart data={data} unit="lb" />);
+    const container = screen.getByLabelText('Chart, latest 183 lb, 2 readings');
+    // Before layout reports, the chart holds space instead of guessing a width.
+    expect(screen.queryByTestId('hearth-chart-svg')).toBeNull();
+    await fireEvent(container, 'layout', { nativeEvent: { layout: { width: 672, height: 160 } } });
+    expect(screen.getByTestId('hearth-chart-svg').props.width).toBe(672);
+  });
 });

@@ -97,7 +97,9 @@ export default function WorkflowCanvas() {
 
   const initialView = useMemo(() => {
     if (!layout) return { tx: 0, ty: 0, scale: 1 };
-    const viewportW = Math.max(240, windowW - space.xl * 2);
+    // The Screen column caps at a 720 readable measure on wide surfaces, so
+    // the visible viewport is the smaller of the window and that column.
+    const viewportW = Math.max(240, Math.min(windowW - space.xl * 2, 720));
     const scale = Math.min(1, viewportW / layout.contentW);
     // Scaling happens about the content center; shift so the top-left lands
     // back at the viewport origin with a small margin.

@@ -12,6 +12,7 @@ import {
 } from '../../lib/vault';
 import { updateDocument } from '../../db/repo';
 import { bumpDataVersion } from '../../lib/events';
+import { FolderArt } from '../../components/EmptyArt';
 
 const CATEGORY_LABEL: Record<DocumentRow['category'], string> = {
   insurance: 'Insurance',
@@ -109,6 +110,7 @@ export function DocumentsTab({
       <SectionHeader label="Vault" meta="stored only on this phone" />
       {documents.length === 0 ? (
         <EmptyState
+          art={<FolderArt size={72} />}
           title="Nothing in the vault yet"
           detail="Insurance cards, the POLST or advance directive, discharge papers. Photograph them once; have them at every visit."
           action={<PillButton label="Add a document" onPress={pickSource} disabled={busy} />}

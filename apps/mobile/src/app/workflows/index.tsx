@@ -44,20 +44,24 @@ export default function WorkflowLibrary() {
       <BackLink label="Home" />
 
       <SectionHeader label="Paperwork, automated" meta={`${data.workflows.length} available`} top={space.md} />
-      {data.workflows.map((w) => (
-        <Card
-          key={w.id}
-          onPress={() => router.push(`/workflows/${w.id}` as never)}
-          style={{ marginTop: space.md }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
-            <Text style={[type.heading, { flex: 1 }]}>{w.name}</Text>
-            <WorkflowGlyph />
-          </View>
-          <Text style={[type.detail, { marginTop: 6 }]}>{w.description}</Text>
-          <Text style={[type.mini, { marginTop: 10 }]}>{workflowMetaLine(w)}</Text>
-        </Card>
-      ))}
+      {/* One column on phones; cards wrap into two columns once the readable
+          measure offers room for a pair of 300pt cards (about 680 and up). */}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.md, marginTop: space.md }}>
+        {data.workflows.map((w) => (
+          <Card
+            key={w.id}
+            onPress={() => router.push(`/workflows/${w.id}` as never)}
+            style={{ flexGrow: 1, flexShrink: 1, flexBasis: 300 }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+              <Text style={[type.heading, { flex: 1 }]}>{w.name}</Text>
+              <WorkflowGlyph />
+            </View>
+            <Text style={[type.detail, { marginTop: 6 }]}>{w.description}</Text>
+            <Text style={[type.mini, { marginTop: 10 }]}>{workflowMetaLine(w)}</Text>
+          </Card>
+        ))}
+      </View>
 
       <SectionHeader label="Past runs" meta={data.runs.length > 0 ? `newest ${data.runs.length}` : undefined} />
       {data.runs.length === 0 ? (

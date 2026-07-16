@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { LayoutChangeEvent, Text, View } from 'react-native';
 import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
 import type { BucketedPoint } from '@hearth/core';
 import { color, type } from './tokens';
@@ -13,6 +13,10 @@ import { color, type } from './tokens';
  * An optional second series (BP diastolic) draws as a dashed ink3 line on
  * the same scale, with a one-line legend when both series are named. The
  * single-series API is unchanged for every other kind.
+ *
+ * Width: by default the chart measures its container with onLayout and fills
+ * it, so it works at phone, iPad, and the 720 readable column on web alike.
+ * Passing `width` still pins it for callers that manage their own layout.
  */
 export function HearthChart({
   data,
@@ -29,7 +33,7 @@ export function HearthChart({
   /** Optional second series, rendered dashed in ink3 on the same scale. */
   data2?: BucketedPoint[];
   height?: number;
-  /** Measured by parent; defaults to full-bleed 320. */
+  /** Optional fixed width; omit to fill the container (measured via onLayout). */
   width?: number;
   unit?: string;
   refLow?: number;
@@ -38,7 +42,12 @@ export function HearthChart({
   seriesLabel?: string;
   series2Label?: string;
 }) {
-  const w = width ?? 320;
+  const [measured, setMeasured] = useState<number | null>(null);
+  const onLayout = (e: LayoutChangeEvent) => {
+    const lw = Math.round(e.nativeEvent.layout.width);
+    if (lw > 0 && lw !== measured) setMeasured(lw);
+  };
+  const w = width ?? measured ?? 320;
   const h = height;
   const padX = 8;
   const padTop = 18;
@@ -104,9 +113,16 @@ export function HearthChart({
     ? `Chart, latest ${seriesLabel ?? 'first series'} ${last.value}${u}, ${series2Label ?? 'second series'} ${last2.value}${u}, ${data.length} readings`
     : `Chart, latest ${last.value}${u}, ${data.length} readings`;
 
+  // Until the container reports a width, hold the vertical space quietly
+  // instead of drawing at a guessed width and reflowing a frame later.
+  const ready = width != null || measured != null;
+
   return (
-    <View accessible accessibilityLabel={summary}>
-      <Svg width={w} height={h}>
+    <View accessible accessibilityLabel={summary} style={{ width: '100%' }} onLayout={onLayout}>
+      {!ready ? (
+        <View style={{ height: h }} />
+      ) : (
+      <Svg width={w} height={h} testID="hearth-chart-svg">
         {refLow !== undefined && refHigh !== undefined ? (
           <Path
             d={`M ${padX} ${y(refHigh)} H ${w - padX} V ${y(refLow)} H ${padX} Z`}
@@ -147,6 +163,7 @@ export function HearthChart({
           {`${last.value}${unit ? ` ${unit}` : ''}`}
         </SvgText>
       </Svg>
+      )}
       {second && seriesLabel && series2Label ? (
         <Text style={[type.mini, { marginTop: 4 }]}>
           {seriesLabel} (solid) / {series2Label} (dashed)

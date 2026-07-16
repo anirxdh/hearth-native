@@ -60,7 +60,7 @@ export default function NewTimelineEvent() {
       subline={`${name}'s story, the version a new clinician needs in one glance.`}
     >
       <SectionHeader label="What kind" />
-      <Seg options={KINDS} value={kind} onChange={setKind} />
+      <Seg options={KINDS} value={kind} onChange={setKind} scroll />
 
       <View style={{ marginTop: space.lg, gap: space.md }}>
         <FormField
