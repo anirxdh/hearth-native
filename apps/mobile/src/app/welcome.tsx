@@ -65,14 +65,14 @@ export default function Welcome() {
         </Text>
         <Text style={[type.mini, { color: color.ink3 }]}>Press and hold to begin</Text>
 
-        <View style={{ alignItems: 'center', gap: 14, marginTop: space.md }}>
+        <View style={{ alignItems: 'center', gap: 12, marginTop: space.lg }}>
           <Pressable
             onPress={enter}
             accessibilityRole="button"
             testID="threshold-continue"
             hitSlop={8}
           >
-            <Text style={[type.mini, { textDecorationLine: 'underline' }]}>
+            <Text style={[type.detail, { textDecorationLine: 'underline', color: color.ink2 }]}>
               Continue without holding
             </Text>
           </Pressable>

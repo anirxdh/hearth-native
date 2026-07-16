@@ -23,6 +23,11 @@ import { color } from '../ds';
 const DOTS = 170;
 const HOLD_MS = 1600;
 const IDLE_REV_SECONDS = 26;
+/** Idle breath: a slow inhale/exhale so the sphere reads as alive. */
+const BREATH_SECONDS = 6.5;
+const BREATH_DEPTH = 0.016;
+/** The payoff: on completion the sphere blooms open as you are let in. */
+const BLOOM_MS = 360;
 
 type Dot = { x: number; y: number; z: number };
 
@@ -49,7 +54,7 @@ export function ThresholdSphere({
   testID?: string;
 }) {
   const base = useMemo(() => unitSphere(DOTS), []);
-  const [frame, setFrame] = useState({ angle: 0, hold: 0 }); // hold: 0..1
+  const [frame, setFrame] = useState({ angle: 0, hold: 0, breath: 0, bloom: 0 });
   const [reduceMotion, setReduceMotion] = useState(false);
 
   const holdStart = useRef<number | null>(null);
@@ -59,6 +64,7 @@ export function ThresholdSphere({
   const lastTick = useRef(0);
   const lastPulse = useRef(-1);
   const entered = useRef(false);
+  const bloomStart = useRef<number | null>(null);
 
   useEffect(() => {
     AccessibilityInfo.isReduceMotionEnabled()
@@ -98,17 +104,28 @@ export function ThresholdSphere({
 
       if (holding && target >= 1 && !entered.current) {
         entered.current = true;
+        bloomStart.current = now;
         if (Platform.OS !== 'web') {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
         }
-        onEnter();
-        return; // stop the loop; the screen is transitioning
       }
+
+      // the bloom: dots expand outward and dissolve, then the door opens
+      let bloom = 0;
+      if (bloomStart.current !== null) {
+        bloom = Math.min(1, (now - bloomStart.current) / BLOOM_MS);
+        if (bloom >= 1) {
+          onEnter();
+          return; // stop the loop; the screen is transitioning
+        }
+      }
+
+      const breath = reduceMotion ? 0 : Math.sin((now / (BREATH_SECONDS * 1000)) * Math.PI * 2);
 
       // ~30fps re-render, and only while something is visibly changing
       if (now - lastTick.current > 33) {
         lastTick.current = now;
-        setFrame({ angle: angleRef.current, hold: holdRef.current });
+        setFrame({ angle: angleRef.current, hold: holdRef.current, breath, bloom });
       }
       raf.current = requestAnimationFrame(loop);
     };
@@ -120,7 +137,12 @@ export function ThresholdSphere({
   }, [reduceMotion]);
 
   const half = size / 2;
-  const sphereR = half * (0.78 - frame.hold * 0.1); // contracts as the hold builds
+  // idle breath expands and contracts gently; the hold draws inward;
+  // the bloom throws the dots outward as the door opens
+  const sphereR =
+    half *
+    (0.78 + frame.breath * BREATH_DEPTH - frame.hold * 0.1 + frame.bloom * 0.55);
+  const dissolve = 1 - frame.bloom;
   const cos = Math.cos(frame.angle);
   const sin = Math.sin(frame.angle);
 
@@ -181,7 +203,7 @@ export function ThresholdSphere({
                   cy={half + p.y * sphereR}
                   r={0.9 + depth * (1.5 + wake * 0.5)}
                   fill={color.ink}
-                  opacity={0.12 + depth * (0.55 + wake * 0.33)}
+                  opacity={(0.12 + depth * (0.55 + wake * 0.33)) * dissolve}
                 />
               );
             })}

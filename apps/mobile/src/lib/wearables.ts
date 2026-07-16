@@ -51,16 +51,23 @@ export function setPatientWearableSource(patientId: string, source: WearableSour
 
 /** Deterministic pseudo-band: same patient + date always yields the same numbers. */
 function demoSummary(patientId: string, date: LocalDate): DailySummary {
+  // avalanche-mixed hash: a one-character date change reshuffles every bit,
+  // so consecutive days genuinely vary (charts looked like dead plateaus
+  // when the low bits carried all the daily signal and got shifted away)
   let h = 0;
   const s = `${patientId}:${date}`;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  const pick = (span: number, base: number, shift: number) =>
-    base + ((h >>> shift) % span);
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 2654435761) >>> 0;
+  h ^= h >>> 15;
+  h = Math.imul(h, 2246822519) >>> 0;
+  h ^= h >>> 13;
+  // a gentle weekly rhythm on top so trends read as human, not as noise
+  const dayIndex = Math.floor(Date.parse(`${date}T00:00:00Z`) / 86400000);
+  const weekly = Math.sin((dayIndex / 7) * Math.PI * 2);
   return {
     date,
-    restingHr: pick(18, 64, 3), // 64-81 bpm
-    steps: 1800 + ((h >>> 7) % 4800), // 1800-6599
-    sleepMinutes: 330 + ((h >>> 11) % 180), // 5.5h-8.5h
+    restingHr: 66 + Math.round(weekly * 3) + (h % 7), // 63-76 bpm
+    steps: 3100 + Math.round(weekly * 900) + ((h >>> 3) % 1900), // ~2200-5900
+    sleepMinutes: 390 + Math.round(weekly * -35) + ((h >>> 7) % 90), // 5.9h-8.5h
   };
 }
 

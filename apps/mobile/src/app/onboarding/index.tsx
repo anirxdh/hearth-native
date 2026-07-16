@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Animated from 'react-native-reanimated';
+import { enterLead } from '../../ds/motion';
 import { Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Card, FormField, PillButton, Screen, space, type } from '../../ds';
@@ -53,7 +55,8 @@ export default function OnboardingWelcome() {
       </Text>
 
       {existing ? (
-        <Card style={{ marginTop: space.xl }}>
+        <Animated.View entering={enterLead}>
+      <Card style={{ marginTop: space.xl }}>
           <Text style={type.heading}>Welcome back, {existing.name}</Text>
           <Text style={[type.detail, { marginTop: 6 }]}>
             Your account is already on this device. Pick up the setup where you left off.
@@ -62,6 +65,7 @@ export default function OnboardingWelcome() {
             <PillButton label="Continue" onPress={next} />
           </View>
         </Card>
+      </Animated.View>
       ) : (
         <Card style={{ marginTop: space.xl }}>
           <Text style={type.heading}>Your account</Text>
