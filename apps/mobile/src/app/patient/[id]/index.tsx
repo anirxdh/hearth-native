@@ -125,7 +125,9 @@ export default function Patient360() {
         {patient.allergies.length > 0 ? (
           <View
             accessible
-            accessibilityLabel={`Allergies: ${patient.allergies.map((a) => a.name).join(', ')}`}
+            accessibilityLabel={`Allergies: ${patient.allergies
+              .map((a) => a.name + (a.reaction ? `, ${a.reaction}` : ''))
+              .join('; ')}`}
             style={{
               marginTop: space.lg,
               borderWidth: 1,

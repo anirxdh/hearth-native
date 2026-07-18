@@ -1,8 +1,11 @@
 # E2E: the record is complete and the emergency paper is two taps away.
-# Self-sufficient: seeds the demo family first if the circle is empty.
+# Owns its state: flows run in RANDOM order, and this one needs the demo
+# family's Robert (penicillin allergy), not whichever Robert a previous
+# flow left behind - so it always starts clean and seeds the demo.
 appId: com.anirudh.hearth
 ---
 - launchApp:
+    clearState: true
     permissions:
       notifications: allow
 - runFlow:
@@ -10,6 +13,29 @@ appId: com.anirudh.hearth
       visible: 'Start fresh'
     commands:
       - tapOn: 'Start fresh'
+# Self-sufficiency covers both empty states: the fresh-install threshold
+# (orb -> onboarding -> demo link) and the account-no-patients empty home.
+- runFlow:
+    when:
+      visible: 'Press and hold to begin'
+    commands:
+      - openLink: 'hearth:///welcome?enter=1'
+      - waitForAnimationToEnd:
+          timeout: 2500
+      - tapOn:
+          id: 'ob-demo'
+      - runFlow:
+          when:
+            notVisible: 'Load demo'
+          commands:
+            - tapOn:
+                id: 'ob-demo'
+      - tapOn: 'Load demo'
+      - runFlow:
+          when:
+            visible: 'Cancel'
+          commands:
+            - tapOn: 'Cancel'
 - runFlow:
     when:
       visible: 'Start your care circle'
@@ -17,15 +43,34 @@ appId: com.anirudh.hearth
       - runFlow: shared/load-demo.yaml
 
 # Into Robert's record: the allergy banner must be there, on every tab.
-- tapOn: 'Robert'
-- assertVisible:
-    text: 'ALLERGY: Penicillin.*'
+# (The circle card reads as one VoiceOver sentence, "RA, Robert, Dad ...";
+# match it whole so the tap cannot land on the digest headline instead.)
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    text: 'RA, Robert.*'
+# A tap right after a warm relaunch can land before the page is
+# interactive; if the record did not open, tap once more.
+- runFlow:
+    when:
+      notVisible: 'Robert Alvarez'
+    commands:
+      - tapOn:
+          text: 'RA, Robert.*'
+# The record is a large, living hierarchy; the first accessibility
+# snapshot after arrival is sometimes incomplete. Settle, then wait long.
+- waitForAnimationToEnd:
+    timeout: 3000
+- extendedWaitUntil:
+    visible:
+      text: 'Allergies: Penicillin.*'
+    timeout: 15000
 - assertVisible: 'Robert Alvarez'
 
 # Tabs: Activity has the chart controls, History has the timeline.
 - tapOn: 'Activity'
 - assertVisible:
-    text: 'ALLERGY: Penicillin.*'
+    text: 'Allergies: Penicillin.*'
 - assertVisible: '30d'
 - assertVisible: 'OBSERVATIONS'
 - tapOn: 'History'
@@ -36,7 +81,7 @@ appId: com.anirudh.hearth
 - tapOn: 'Overview'
 - tapOn: 'ER sheet'
 - assertVisible:
-    text: 'ALLERGY: Penicillin.*'
+    text: '.*ALLERGY: Penicillin.*'
 - assertVisible: 'Current medications'
 - assertVisible:
     text: '.*Apixaban.*'
@@ -49,8 +94,9 @@ appId: com.anirudh.hearth
     commands:
       - tapOn: 'Open'
 - assertVisible: 'Open this when something happens'
-- assertVisible: 'After a fall'
-- tapOn: 'After a fall'
-- assertVisible: 'Keep them still at first'
+- assertVisible: 'Open guide: After a fall'
+- tapOn: 'Open guide: After a fall'
+- assertVisible:
+    text: 'Step 1: Keep them still at first.*'
 - assertVisible:
     text: '.*blood thinner.*'

@@ -12,6 +12,14 @@ import { Platform, View, type StyleProp, type ViewStyle } from 'react-native';
  * surfaces (records, one-pagers, guides) stay paper. `interactive`
  * turns on the OS's own touch-responsive shimmer; LiquidGlassRow lets
  * nearby glass shapes melt into each other as they approach.
+ *
+ * Hard-won on-device rules (iOS 26.3 simulator):
+ * - NEVER give the glass's wrapper a reanimated `entering` animation:
+ *   the layout-animation snapshot keeps the material from compositing,
+ *   permanently - the view renders fully transparent (home dock bug).
+ * - GlassContainer (LiquidGlassRow) did not composite GlassView children
+ *   at all in this setup; prefer standalone GlassViews until a newer
+ *   expo-glass-effect proves the merge effect on-device.
  */
 
 type GlassProps = {

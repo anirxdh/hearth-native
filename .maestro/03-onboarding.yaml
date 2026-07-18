@@ -1,6 +1,14 @@
 appId: com.anirudh.hearth
 ---
-- launchApp
+- launchApp:
+    clearState: true
+    permissions:
+      notifications: allow
+- runFlow:
+    when:
+      visible: 'Start fresh'
+    commands:
+      - tapOn: 'Start fresh'
 # The threshold is orb-only (3s hold, not expressible in Maestro);
 # dev builds accept the automation hook. The hold itself is covered by
 # the Playwright ritual spec.
@@ -9,37 +17,84 @@ appId: com.anirudh.hearth
       visible: 'Press and hold to begin'
     commands:
       - openLink: 'hearth:///welcome?enter=1'
-- runFlow:
-    when:
-      visible: 'Set up Hearth'
-    commands:
-      - tapOn: 'Set up Hearth'
 - assertVisible: 'Welcome to Hearth'
 - runFlow:
     when:
       visible:
         id: 'ob-name'
     commands:
+      # Values deliberately differ from the placeholders so we can verify
+      # the text truly landed (a ghosted focus tap leaves the field empty
+      # and the placeholder would fake a match).
       - tapOn:
           id: 'ob-name'
-      - inputText: 'Maria Alvarez'
+      - inputText: 'Maria Rivera'
+      - runFlow:
+          when:
+            notVisible: 'Maria Rivera'
+          commands:
+            - tapOn:
+                id: 'ob-name'
+            - inputText: 'Maria Rivera'
+      # Dismiss the keyboard before switching fields: with it open, the
+      # email field sits under the keys and the tap types instead.
+      - tapOn:
+          point: '50%,12%'
       - tapOn:
           id: 'ob-email'
-      - inputText: 'maria@example.com'
+      - inputText: 'maria@rivera.com'
+      - runFlow:
+          when:
+            notVisible: 'maria@rivera.com'
+          commands:
+            - tapOn:
+                id: 'ob-email'
+            - inputText: 'maria@rivera.com'
+      - tapOn:
+          point: '50%,12%'
+# Dismiss the keyboard first: a tap on a button the keyboard covers
+# lands on the keys and types into the field instead.
+- tapOn:
+    point: '50%,12%'
 - runFlow:
     when:
       visible: 'Create account'
     commands:
       - tapOn: 'Create account'
+      # The auto-advancing carousel above can invalidate the tree mid-tap
+      # and swallow the press; if the account card is still here, press again.
+      - runFlow:
+          when:
+            visible: 'Create account'
+          commands:
+            - tapOn: 'Create account'
+      - runFlow:
+          when:
+            visible: 'Create account'
+          commands:
+            - tapOn: 'Create account'
+# Returning-account branch only (fresh runs never render this id).
 - runFlow:
     when:
-      visible: 'Continue'
+      visible:
+        id: 'ob-continue-account'
     commands:
-      - tapOn: 'Continue'
-- assertVisible:
-    text: '.*Face ID.*'
-- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-2-security
-- tapOn: 'Skip for now'
+      - tapOn:
+          id: 'ob-continue-account'
+# Face ID and notifications arrive as NATIVE sheets right after the account
+# exists (no form screens). The simulator usually has no Face ID enrolled and
+# notifications were pre-granted above, so both are conditional.
+- runFlow:
+    when:
+      visible: 'Not now'
+    commands:
+      - tapOn: 'Not now'
+- runFlow:
+    when:
+      visible: 'Allow'
+    commands:
+      - tapOn: 'Allow'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-2-person
 - tapOn:
     id: 'ob-person-name'
 - inputText: 'Robert Alvarez'
@@ -62,10 +117,21 @@ appId: com.anirudh.hearth
     text: '.*Insurance card.*'
 - takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-4-uploads
 - tapOn: 'Continue'
+# The card's copy also says "demo band"; the id is unambiguous.
 - tapOn:
-    text: '.*demo band.*'
-- assertVisible:
-    text: '.*readings.*'
+    id: 'ob-connect-band'
+- runFlow:
+    when:
+      notVisible:
+        id: 'ob-band-done'
+    commands:
+      - tapOn:
+          id: 'ob-connect-band'
+# The demo band backfills 30 days of readings; give the sync room.
+- extendedWaitUntil:
+    visible:
+      text: '.*readings arrived.*'
+    timeout: 20000
 - takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-5-band
 - tapOn: 'Continue'
 - takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-ob-6-done

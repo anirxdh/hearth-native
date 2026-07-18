@@ -1,6 +1,7 @@
-# E2E: first run -> demo family seeded -> digest tells the story.
-# Runs on the iOS simulator via Maestro (https://maestro.mobile.dev), locally
-# with scripts/e2e-local.sh or in CI via .github/workflows/e2e-ios.yml.
+# E2E: first run -> through the threshold -> demo family seeded -> digest
+# tells the story. Runs on the iOS simulator via Maestro, locally with
+# scripts/e2e-local.sh (the 3s orb hold itself is covered by Playwright;
+# dev builds accept the automation hook).
 appId: com.anirudh.hearth
 ---
 - launchApp:
@@ -16,14 +17,38 @@ appId: com.anirudh.hearth
     commands:
       - tapOn: 'Start fresh'
 
-# Empty state: the calm onboarding.
-- assertVisible: 'Start your care circle'
-- assertVisible: 'Add a person'
+# Fresh state lands on the threshold: the orb is the only door.
+- assertVisible: 'Press and hold to begin'
+- openLink: 'hearth:///welcome?enter=1'
 
-# Load the demo family from Settings (shared steps).
-- runFlow: shared/load-demo.yaml
+# The landing: carousel + account card + the just-looking path.
+- assertVisible: 'Welcome to Hearth'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-01-landing
+# Let the entrance choreography finish before touching the link (a tap on a
+# still-translating element can land off-target); retry once if the confirm
+# dialog did not open, and clear a stray second dialog if both taps landed.
+- waitForAnimationToEnd:
+    timeout: 2500
+- tapOn:
+    id: 'ob-demo'
+- runFlow:
+    when:
+      notVisible: 'Load demo'
+    commands:
+      - tapOn:
+          id: 'ob-demo'
+- tapOn: 'Load demo'
+- runFlow:
+    when:
+      visible: 'Cancel'
+    commands:
+      - tapOn: 'Cancel'
 
 # The digest must lead with Robert's metformin, the circle shows all three.
+# (Entrances settle first; the perpetual pulse loops are tiny and survive
+# the accessibility snapshot, but mid-entrance layouts can truncate it.)
+- waitForAnimationToEnd:
+    timeout: 3000
 - assertVisible: 'NEEDS ACTION'
 - assertVisible:
     text: '.*Metformin.*'
@@ -34,4 +59,7 @@ appId: com.anirudh.hearth
     text: '.*Ellie.*'
 - assertVisible:
     text: '.*Rosa.*'
-- assertVisible: 'Act now'
+# The circle card reads as one VoiceOver sentence; match inside it.
+- assertVisible:
+    text: '.*Act now.*'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-01-digest

@@ -98,10 +98,12 @@ export default function ErSheet() {
       {/* Critical band: what a triage nurse needs in the first ten seconds.
           It arrives with the stagger and then holds absolutely still: no loop
           on safety copy, ever. */}
+      {/* accessible WITHOUT an explicit label: VoiceOver must read the
+          actual facts (allergy, blood thinner), not a heading that hides
+          them. RN concatenates the child texts. */}
       <Animated.View
         entering={enterRow(2)}
         accessible
-        accessibilityLabel="Critical facts"
         style={{
           marginTop: space.xl,
           borderRadius: radius.md,

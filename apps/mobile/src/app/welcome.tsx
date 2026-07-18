@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
-import Animated, { FadeIn, ZoomIn, ReduceMotion } from 'react-native-reanimated';
+import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ThresholdSphere } from '../components/ThresholdSphere';
 import { hasAccount } from '../lib/auth';
@@ -45,16 +45,11 @@ export default function Welcome() {
         HEARTH
       </Animated.Text>
 
+      {/* No entering animation around the sphere: the Liquid Glass disc it
+          shows during the hold never composites inside a layout-animated
+          subtree (see LiquidGlass.tsx). Its own breath is the arrival. */}
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Animated.View
-          entering={ZoomIn.duration(duration.slow * 2)
-            .springify()
-            .damping(26)
-            .stiffness(140)
-            .reduceMotion(ReduceMotion.System)}
-        >
-          <ThresholdSphere size={sphereSize} onEnter={enter} testID="threshold-sphere" />
-        </Animated.View>
+        <ThresholdSphere size={sphereSize} onEnter={enter} testID="threshold-sphere" />
       </View>
 
       <Animated.View

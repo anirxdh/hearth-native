@@ -1,0 +1,52 @@
+# E2E: the paperwork engine surfaces - library, preview, canvas - render
+# on the phone. Running a workflow end-to-end (gates, outputs) is covered
+# by the Playwright suite; this flow proves the native screens.
+appId: com.anirudh.hearth
+---
+- launchApp:
+    permissions:
+      notifications: allow
+- runFlow:
+    when:
+      visible: 'Start fresh'
+    commands:
+      - tapOn: 'Start fresh'
+- runFlow:
+    when:
+      visible: 'Press and hold to begin'
+    commands:
+      - openLink: 'hearth:///welcome?enter=1'
+      - waitForAnimationToEnd:
+          timeout: 2500
+      - tapOn:
+          id: 'ob-demo'
+      - runFlow:
+          when:
+            notVisible: 'Load demo'
+          commands:
+            - tapOn:
+                id: 'ob-demo'
+      - tapOn: 'Load demo'
+      - runFlow:
+          when:
+            visible: 'Cancel'
+          commands:
+            - tapOn: 'Cancel'
+
+# The library: six letters, one card each.
+- openLink: 'hearth:///workflows'
+- assertVisible:
+    text: '.*appeal.*'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-04-library
+
+# Preview: inputs and the door to the flow.
+- tapOn:
+    text: '.*appeal.*'
+- assertVisible: 'View the flow'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-04-preview
+
+# Canvas: the vertical mobile re-layout of nodes and rails.
+- tapOn: 'View the flow'
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-04-canvas

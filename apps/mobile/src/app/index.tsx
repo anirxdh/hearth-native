@@ -3,7 +3,6 @@ import { Platform, Pressable, Text, View } from 'react-native';
 import { Redirect, useRouter } from 'expo-router';
 import { BookOpen, CalendarDays, FolderOutput, ScanLine, Settings2, Workflow } from 'lucide-react-native';
 import Animated, {
-  FadeInUp,
   ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
@@ -13,8 +12,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { confirmLoadDemoFamily } from '../lib/demo';
 import { currentUser, hasAccount } from '../lib/auth';
-import { LiquidGlass, LiquidGlassRow, liquidGlassAvailable } from '../components/LiquidGlass';
-import { duration, enterLead, enterRow } from '../ds/motion';
+import { LiquidGlass, liquidGlassAvailable } from '../components/LiquidGlass';
+import { enterLead, enterRow } from '../ds/motion';
 import {
   buildDigest,
   daysBetween,
@@ -94,14 +93,6 @@ function visitWhen(days: number, onDate: string): string {
   return `in ${days} days (${onDate})`;
 }
 
-/** The dock surfaces last, after the page's own choreography has settled. */
-const enterDock = FadeInUp.duration(duration.slow)
-  .delay(450)
-  .springify()
-  .damping(26)
-  .stiffness(220)
-  .reduceMotion(ReduceMotion.System);
-
 /** One glass circle in the dock: a tiny press shrink and a light tap haptic. */
 function DockButton({
   icon: Icon,
@@ -121,33 +112,31 @@ function DockButton({
     });
   };
   const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  // Standalone GlassView, same recipe as the onboarding capsules (which
+  // render); GlassContainer refused to composite these on iOS 26.3, so the
+  // circles sit close without the melt. Press feedback lives inside.
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      onPressIn={() => press(true)}
-      onPressOut={() => press(false)}
-      onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-        onPress();
-      }}
+    <LiquidGlass
+      effect="regular"
+      interactive
+      style={{ width: 56, height: 56, borderRadius: 999 }}
     >
-      <Animated.View style={style}>
-        <LiquidGlass
-          effect="regular"
-          interactive
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: 999,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPressIn={() => press(true)}
+        onPressOut={() => press(false)}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+          onPress();
+        }}
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Animated.View style={style}>
           <Icon size={22} color={color.ink} strokeWidth={1.8} />
-        </LiquidGlass>
-      </Animated.View>
-    </Pressable>
+        </Animated.View>
+      </Pressable>
+    </LiquidGlass>
   );
 }
 
@@ -388,8 +377,9 @@ export default function Home() {
   return (
     <View style={{ flex: 1 }}>
       {home}
-      <Animated.View
-        entering={enterDock}
+      {/* No reanimated entering here: layout animations snapshot the
+          subtree and the glass material never composites inside one. */}
+      <View
         pointerEvents="box-none"
         style={{
           position: 'absolute',
@@ -399,12 +389,12 @@ export default function Home() {
           alignItems: 'center',
         }}
       >
-        <LiquidGlassRow spacing={26} style={{ flexDirection: 'row', gap: 14 }}>
+        <View style={{ flexDirection: 'row', gap: 14 }}>
           <DockButton icon={ScanLine} label="Scan a label" onPress={() => router.push('/scan' as never)} />
           <DockButton icon={CalendarDays} label="Appointments" onPress={() => router.push('/appointments' as never)} />
           <DockButton icon={BookOpen} label="Emergency guides" onPress={() => router.push('/guides' as never)} />
-        </LiquidGlassRow>
-      </Animated.View>
+        </View>
+      </View>
     </View>
   );
 }
