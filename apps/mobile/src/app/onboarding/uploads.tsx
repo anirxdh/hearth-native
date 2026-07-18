@@ -103,7 +103,7 @@ export default function OnboardingUploads() {
         title="Bring the paper along"
         subline="Insurance cards, medication lists, discharge papers: photographed once, at hand at every visit."
       >
-        <OnboardingSteps step={4} />
+        <OnboardingSteps step={3} />
         <Animated.View entering={enterLead}>
           <Card>
             <Text style={type.detail}>
@@ -128,7 +128,7 @@ export default function OnboardingUploads() {
       title="Bring the paper along"
       subline={`The papers that follow ${name} everywhere can live here instead: stored only on this phone.`}
     >
-      <OnboardingSteps step={4} />
+      <OnboardingSteps step={3} />
 
       <Animated.View entering={enterLead}>
         <Card>

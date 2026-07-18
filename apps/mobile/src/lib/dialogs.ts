@@ -9,17 +9,20 @@ export function confirmDialog(opts: {
   title: string;
   message: string;
   confirmText: string;
+  cancelText?: string;
   destructive?: boolean;
   onConfirm: () => void;
+  onCancel?: () => void;
 }): void {
   if (Platform.OS === 'web') {
     // eslint-disable-next-line no-alert
     const ok = typeof window !== 'undefined' && window.confirm(`${opts.title}\n\n${opts.message}`);
     if (ok) opts.onConfirm();
+    else opts.onCancel?.();
     return;
   }
   Alert.alert(opts.title, opts.message, [
-    { text: 'Cancel', style: 'cancel' },
+    { text: opts.cancelText ?? 'Cancel', style: 'cancel', onPress: () => opts.onCancel?.() },
     {
       text: opts.confirmText,
       style: opts.destructive ? 'destructive' : 'default',

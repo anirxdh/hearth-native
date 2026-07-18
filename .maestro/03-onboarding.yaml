@@ -1,14 +1,14 @@
 appId: com.anirudh.hearth
 ---
 - launchApp
-# Brand-new installs land on the threshold sphere; enter via the
-# accessible door (the 1.6s hold is covered by the web E2E ritual).
+# The threshold is orb-only (3s hold, not expressible in Maestro);
+# dev builds accept the automation hook. The hold itself is covered by
+# the Playwright ritual spec.
 - runFlow:
     when:
       visible: 'Press and hold to begin'
     commands:
-      - tapOn:
-          id: 'threshold-continue'
+      - openLink: 'hearth:///welcome?enter=1'
 - runFlow:
     when:
       visible: 'Set up Hearth'

@@ -46,7 +46,7 @@ export default function OnboardingWearables() {
         title="The daily rhythm"
         subline="Bands and watches can feed steps, sleep, and resting heart rate into a person's record."
       >
-        <OnboardingSteps step={5} />
+        <OnboardingSteps step={4} />
         <Animated.View entering={enterLead}>
           <Card>
             <Text style={type.detail}>
@@ -71,7 +71,7 @@ export default function OnboardingWearables() {
       title="The daily rhythm"
       subline="Awareness trends, never clinical alerts: steps, sleep, and resting heart rate."
     >
-      <OnboardingSteps step={5} />
+      <OnboardingSteps step={4} />
       <Animated.View entering={enterLead}>
         <Card>
           <Text style={type.heading}>A band or watch</Text>

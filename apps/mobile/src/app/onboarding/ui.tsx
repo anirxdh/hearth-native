@@ -3,14 +3,14 @@ import { Text, View } from 'react-native';
 import { Redirect } from 'expo-router';
 import { color, space, type } from '../../ds';
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 4;
 
 /**
  * The quiet progress indicator shared by every wizard step: a mini
- * "Step n of 5" line with a row of thin ink ticks. Deliberately small;
+ * "Step n of 4" line with a row of thin ink ticks. Deliberately small;
  * the step content carries the screen.
  */
-export function OnboardingSteps({ step }: { step: 1 | 2 | 3 | 4 | 5 }) {
+export function OnboardingSteps({ step }: { step: 1 | 2 | 3 | 4 }) {
   return (
     <View
       style={{

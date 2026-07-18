@@ -28,19 +28,27 @@ export async function loadApp(page: Page): Promise<void> {
  * fall back to the testid.
  */
 export async function seedDemo(page: Page): Promise<void> {
-  // The demo link lives on the threshold for brand-new visitors and on the
-  // empty home for account holders; both confirm via window.confirm.
-  const thresholdDemo = page.getByTestId('threshold-demo');
-  const exploreLink = page.getByText('Explore with a demo family');
+  // The threshold is orb-only now: hold it through the ritual, then use the
+  // demo door inside onboarding. Account holders' empty home keeps its link.
   page.once('dialog', (d) => {
     d.accept().catch(() => {});
   });
-  if (await thresholdDemo.isVisible()) {
-    await thresholdDemo.click();
-  } else if (await exploreLink.isVisible()) {
-    await exploreLink.click();
+  const hint = page.getByText('Press and hold to begin');
+  if (await hint.isVisible()) {
+    const sphere = page.getByTestId('threshold-sphere');
+    const box = (await sphere.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(3600);
+    await page.mouse.up();
+    await page.getByTestId('ob-demo').click();
   } else {
-    return; // dashboard already has people
+    const exploreLink = page.getByText('Explore with a demo family');
+    if (await exploreLink.isVisible()) {
+      await exploreLink.click();
+    } else {
+      return; // dashboard already has people
+    }
   }
   await page.getByText('NEEDS ACTION').waitFor({ timeout: 10_000 });
 }

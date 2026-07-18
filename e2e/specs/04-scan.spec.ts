@@ -29,18 +29,19 @@ function daysAgo(n: number): Date {
  * the page dialog handler registered in beforeEach).
  */
 async function seedDemoFamily(page: Page): Promise<void> {
-  const explore = page.getByText('Explore with a demo family');
-  if (await explore.isVisible().catch(() => false)) {
-    await explore.click();
-    const confirm = page
-      .getByRole('button', { name: 'Load demo' })
-      .or(page.getByTestId('confirm-load-demo'))
-      .first();
-    await confirm.click({ timeout: 4_000 }).catch(() => {
-      // window.confirm path: the dialog handler already accepted it.
-    });
+  // Orb-only threshold: hold through the ritual, then the demo door inside
+  // onboarding seeds the family and lands on the digest.
+  const hint = page.getByText('Press and hold to begin');
+  if (await hint.isVisible().catch(() => false)) {
+    const sphere = page.getByTestId('threshold-sphere');
+    const box = (await sphere.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(3600);
+    await page.mouse.up();
+    await page.getByTestId('ob-demo').click();
   }
-  await expect(page.getByText("Today's digest")).toBeVisible();
+  await expect(page.getByText("Today's digest")).toBeVisible({ timeout: 10_000 });
 }
 
 /**
@@ -87,11 +88,18 @@ test.describe('scan a label', () => {
     await page.getByText('Robert Alvarez', { exact: true }).click();
     await page.getByTestId('scan-sample').click();
 
+    // The illustrated scanning moment plays before confirm opens.
+    await expect(page.getByText('SCANNING LABEL')).toBeVisible();
+
     // Verification-first confirm: the raw label line each field was read
     // from is visible, and the drug name resolved against RxNorm.
     await expect(page.getByText('Check what was read')).toBeVisible();
     await expect(page.getByText('METFORMIN HCL 500 MG TABLETS').first()).toBeVisible();
     await expect(page.getByTestId('rxnorm-status')).toContainText('metformin');
+
+    // The result card sums up what the save will create, live from the fields.
+    await expect(page.getByTestId('scan-result-card')).toBeVisible();
+    await expect(page.getByTestId('scan-result-card')).toContainText('Metformin');
 
     await page.getByTestId('scan-save').getByRole('button').click();
     await dismissInfoDialog(page);

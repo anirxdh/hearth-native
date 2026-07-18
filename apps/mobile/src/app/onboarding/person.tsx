@@ -83,7 +83,7 @@ export default function OnboardingPerson() {
       title="Who do you care for?"
       subline="Start with one person. You can add more detail, and more people, any time."
     >
-      <OnboardingSteps step={3} />
+      <OnboardingSteps step={2} />
       <Animated.View entering={enterLead}>
         <FormField
           label="Full name"

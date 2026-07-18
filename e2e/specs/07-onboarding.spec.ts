@@ -46,31 +46,26 @@ test.describe('first-time onboarding', () => {
 
     // The threshold: the sphere, its hint, and both dignified alternatives.
     await expect(page.getByText('Press and hold to begin')).toBeVisible();
-    await expect(page.getByTestId('threshold-continue')).toBeVisible();
-    await expect(page.getByTestId('threshold-demo')).toBeVisible();
+    // orb-only: no links below the sphere anymore
     // THE RITUAL: press and hold the threshold sphere until the ring fills.
     const sphere = page.getByTestId('threshold-sphere');
     await expect(sphere).toBeVisible();
     const box = (await sphere.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
-    await page.waitForTimeout(1900);
+    await page.waitForTimeout(3600);
     await page.mouse.up();
 
     // Step 1: welcome and the account.
-    await expect(page.getByText('Step 1 of 5')).toBeVisible();
-    await expect(page.getByText('Everything you enter stays on this phone, encrypted.')).toBeVisible();
+    await expect(page.getByText('Step 1 of 4')).toBeVisible();
+    await expect(page.getByText('One glance, every medication')).toBeVisible(); // the hero carousel
     await page.getByTestId('ob-name').fill('Maria Alvarez');
     await page.getByTestId('ob-email').fill('maria@example.com');
     await page.getByTestId('ob-create').getByRole('button').click();
+    // Face ID and notifications are native sheets now (web skips them).
 
-    // Step 2: Face ID is honest about the browser preview; skip.
-    await expect(page.getByText('Step 2 of 5')).toBeVisible();
-    await expect(page.getByText(/Not available in the browser preview/)).toBeVisible();
-    await page.getByTestId('ob-skip-security').getByRole('button').click();
-
-    // Step 3: the first person, with a photo from the (web) file input.
-    await expect(page.getByText('Step 3 of 5')).toBeVisible();
+    // Step 2: the first person, with a photo from the (web) file input.
+    await expect(page.getByText('Step 2 of 4')).toBeVisible();
     await page.getByTestId('ob-person-name').fill('Robert Alvarez');
     await page.getByTestId('ob-person-relationship').fill('Dad');
     await page.getByTestId('ob-person-dob').fill('1945-02-14');
@@ -88,7 +83,7 @@ test.describe('first-time onboarding', () => {
     await page.getByTestId('ob-person-save').getByRole('button').click();
 
     // Step 4: papers. Insurance card via the image picker...
-    await expect(page.getByText('Step 4 of 5')).toBeVisible();
+    await expect(page.getByText('Step 3 of 4')).toBeVisible();
     const insuranceChooser = page.waitForEvent('filechooser');
     await page.getByTestId('ob-upload-insurance').getByRole('button').click();
     await (await insuranceChooser).setFiles({
@@ -113,7 +108,7 @@ test.describe('first-time onboarding', () => {
     await page.getByTestId('ob-continue-uploads').getByRole('button').click();
 
     // Step 5: the demo band backfills daily readings into the vitals table.
-    await expect(page.getByText('Step 5 of 5')).toBeVisible();
+    await expect(page.getByText('Step 4 of 4')).toBeVisible();
     await page.getByTestId('ob-connect-band').getByRole('button').click();
     await expect(page.getByTestId('ob-band-done')).toContainText('readings');
 

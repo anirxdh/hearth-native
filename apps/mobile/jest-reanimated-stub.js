@@ -33,4 +33,6 @@ module.exports = {
   useAnimatedStyle: () => ({}),
   withSpring: (v) => v,
   withTiming: (v) => v,
+  withRepeat: (v) => v,
+  cancelAnimation: () => {},
 };

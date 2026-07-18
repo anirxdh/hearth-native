@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { AccessibilityInfo, Pressable, Text, View } from 'react-native';
+import Animated, {
+  cancelAnimation,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, Check, ChevronLeft, Images } from 'lucide-react-native';
@@ -14,9 +21,12 @@ import {
   Screen,
   SectionHeader,
   color,
+  radius,
   space,
   type,
 } from '../../ds';
+import { enterQuiet } from '../../ds/motion';
+import { ScanBottle } from '../../components/ScanBottle';
 import { listPatients } from '../../db/repo';
 import { useData } from '../../lib/useData';
 import { infoDialog } from '../../lib/dialogs';
@@ -58,11 +68,78 @@ function sampleLabelText(): string {
   ].join('\n');
 }
 
+/** How long the illustrated scanning moment holds before confirm opens. */
+const SCAN_MOMENT_MS = 1800;
+
+/** The web MVP's .scanchip: an ink pill with a small pulsing dot. */
+function ScanningChip() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((v) => {
+        if (alive) setReduced(v);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const pulse = useSharedValue(1);
+  useEffect(() => {
+    if (reduced) {
+      pulse.value = 1;
+      return undefined;
+    }
+    pulse.value = withRepeat(withTiming(0.35, { duration: 550 }), -1, true);
+    return () => {
+      cancelAnimation(pulse);
+    };
+  }, [reduced, pulse]);
+  const dotStyle = useAnimatedStyle(() => ({ opacity: pulse.value }));
+
+  return (
+    <View
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityLabel="Scanning the label"
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 7,
+        backgroundColor: color.ink,
+        borderRadius: radius.pill,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+      }}
+    >
+      <Animated.View
+        style={[
+          { width: 7, height: 7, borderRadius: 3.5, backgroundColor: color.paper },
+          dotStyle,
+        ]}
+      />
+      <Text style={[type.label, { color: color.paper, letterSpacing: 0.8 }]}>SCANNING LABEL</Text>
+    </View>
+  );
+}
+
 export default function ScanCapture() {
   const router = useRouter();
   const patients = useData(() => listPatients());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  /** Non-null while the illustrated scanning moment plays for the sample label. */
+  const [scanText, setScanText] = useState<string | null>(null);
+  const scanTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (scanTimer.current != null) clearTimeout(scanTimer.current);
+    },
+    [],
+  );
 
   const selected = patients.find((p) => p.id === selectedId) ?? patients[0];
 
@@ -136,11 +213,19 @@ export default function ScanCapture() {
   function useSample() {
     // A test or demo can plant its own fixture on the OCR hook first; the
     // bundled sample is the default. Either way the same text flows through
-    // the pipeline a native camera read would use.
+    // the pipeline a native camera read would use. Unlike a real photo, the
+    // sample gets the illustrated scanning moment before confirm opens.
     const g = globalThis as { __hearthOcrFixture?: unknown };
     const text = typeof g.__hearthOcrFixture === 'string' ? g.__hearthOcrFixture : sampleLabelText();
     g.__hearthOcrFixture = text;
-    proceed(text);
+    if (!selected) return;
+    setScanText(text);
+    if (scanTimer.current != null) clearTimeout(scanTimer.current);
+    scanTimer.current = setTimeout(() => {
+      scanTimer.current = null;
+      setScanText(null);
+      proceed(text);
+    }, SCAN_MOMENT_MS);
   }
 
   if (patients.length === 0) {
@@ -151,6 +236,22 @@ export default function ScanCapture() {
           detail="Add the first person you care for, then their bottle labels are one photo away."
           action={<PillButton label="Add a person" onPress={() => router.push('/patient/new')} />}
         />
+      </Screen>
+    );
+  }
+
+  if (scanText != null) {
+    return (
+      <Screen>
+        <Animated.View entering={enterQuiet} style={{ alignItems: 'center', paddingTop: space.xl }}>
+          <ScanningChip />
+          <View style={{ marginTop: space.xl }}>
+            <ScanBottle size={230} animate />
+          </View>
+          <Text style={[type.mini, { marginTop: space.xxl, textAlign: 'center' }]}>
+            Read on this device. The photo never leaves your phone.
+          </Text>
+        </Animated.View>
       </Screen>
     );
   }

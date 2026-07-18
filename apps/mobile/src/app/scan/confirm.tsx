@@ -3,7 +3,7 @@ import { Platform, Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, TriangleAlert } from 'lucide-react-native';
 import { matchRxNorm, normalizeName } from '@hearth/label-parser';
-import { highAlertMatch, isValidLocalDate } from '@hearth/core';
+import { computeRunway, highAlertMatch, isValidLocalDate, type RunwayStatus } from '@hearth/core';
 import {
   Card,
   CheckRow,
@@ -12,8 +12,10 @@ import {
   PillButton,
   Screen,
   SectionHeader,
+  StatusDot,
   StatusTag,
   color,
+  hairline,
   radius,
   space,
   type,
@@ -44,6 +46,108 @@ const mono = {
   lineHeight: 17,
   color: color.ink2,
 } as const;
+
+const statusToColor = (s: RunwayStatus): 'red' | 'amber' | 'green' =>
+  s === 'overdue' || s === 'urgent' ? 'red' : s === 'soon' ? 'amber' : 'green';
+
+/** 'YYYY-MM-DD' at UTC noon-free midnight, safe for calendar formatting. */
+function localDateToUtc(d: string): Date {
+  const [y, m, day] = d.split('-').map(Number);
+  return new Date(Date.UTC(y ?? 1970, (m ?? 1) - 1, day ?? 1));
+}
+
+/** 'Jun 29' */
+const shortDate = (d: string): string =>
+  localDateToUtc(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+
+/** 'Thu, Jul 16' */
+const weekdayDate = (d: string): string =>
+  localDateToUtc(d).toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+
+/**
+ * The web MVP's .scanflow strip in editorial form: where this screen sits
+ * in the scan story, with the middle step current.
+ */
+const STRIP_STEPS = [
+  { n: 1, label: 'Scan the label', state: 'done' },
+  { n: 2, label: 'Confirm the fields', state: 'current' },
+  { n: 3, label: 'Added to their medications', state: 'todo' },
+] as const;
+
+function StepStrip() {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: space.lg }}>
+      {STRIP_STEPS.map((s, i) => (
+        <View key={s.n} style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', height: 8 }}>
+            <View
+              style={{
+                flex: 1,
+                height: hairline,
+                backgroundColor: i === 0 ? 'transparent' : color.line,
+              }}
+            />
+            {s.state === 'current' ? (
+              <View
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: 3.5,
+                  backgroundColor: color.ink,
+                  marginHorizontal: 5,
+                }}
+              />
+            ) : (
+              <View style={{ marginHorizontal: 5 }}>
+                <StatusDot status={s.state === 'done' ? 'green' : 'neutral'} />
+              </View>
+            )}
+            <View
+              style={{
+                flex: 1,
+                height: hairline,
+                backgroundColor: i === STRIP_STEPS.length - 1 ? 'transparent' : color.line,
+              }}
+            />
+          </View>
+          <Text
+            style={[
+              type.label,
+              {
+                fontSize: 9.5,
+                letterSpacing: 0.6,
+                lineHeight: 14,
+                textAlign: 'center',
+                marginTop: 6,
+                paddingHorizontal: 2,
+              },
+              s.state === 'current' ? { color: color.ink } : null,
+            ]}
+          >
+            {`${s.n} · ${s.label}`}
+          </Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+/** One cell of the result-card grid: small caps key, bold value. */
+function ResultCell({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={{ flexBasis: '47%', flexGrow: 1 }}>
+      <Text style={type.label}>{label}</Text>
+      <Text style={[type.body, { fontSize: 13.5, lineHeight: 18, fontWeight: '600', marginTop: 3 }]}>
+        {value}
+      </Text>
+    </View>
+  );
+}
 
 /**
  * Does the name printed on the label belong to the selected patient?
@@ -160,6 +264,29 @@ export default function ScanConfirm() {
   const mismatch = labelName ? !namesMatch(labelName, patient.fullName) : false;
   const saveBlocked = mismatch && !patientOverride;
 
+  // The result card mirrors the web MVP's .scanresult: what the save will
+  // create, recomputed live from the editable fields above it.
+  const supplyNum = Number(daySupply);
+  const supplyOk = Number.isInteger(supplyNum) && supplyNum > 0 && supplyNum <= 365;
+  const runway =
+    !prn && supplyOk && isValidLocalDate(fillDate)
+      ? computeRunway({ fillDate, daySupply: supplyNum }, today())
+      : null;
+  const medLine = [name.trim(), strength.trim()].filter(Boolean).join(' ') || 'Add the drug name';
+  const whenLine = sig.trim()
+    ? sig.trim()
+    : prn
+      ? 'As needed'
+      : dosesPerDay.trim()
+        ? `${dosesPerDay.trim()} ${dosesPerDay.trim() === '1' ? 'dose' : 'doses'} per day`
+        : 'Not read from the label';
+  const supplyLine = supplyOk
+    ? `${supplyNum} days${isValidLocalDate(fillDate) ? ` · filled ${shortDate(fillDate)}` : ''}`
+    : 'Check the day supply';
+  const refillsLine =
+    [pharmacy.trim(), prescriber.trim()].filter(Boolean).join(' · ') ||
+    (rxNumber.trim() ? `Rx ${rxNumber.trim()}` : 'Not read from the label');
+
   const rxMatch = name.trim() ? matchRxNorm(name) : null;
   const alert = name.trim() ? highAlertMatch(`${name} ${strength}`) : null;
   const highAlert = alert !== null || rxMatch?.entry.highAlertClass != null;
@@ -247,6 +374,8 @@ export default function ScanConfirm() {
         <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
         <Text style={type.mini}>Scan</Text>
       </Pressable>
+
+      <StepStrip />
 
       <Text style={type.title} accessibilityRole="header">
         Check what was read
@@ -398,6 +527,61 @@ export default function ScanConfirm() {
           </View>
         </View>
       ) : null}
+
+      {/* The link between Scan and Medications (web MVP .scanresult): what
+          this save creates, live from the fields above. */}
+      <View testID="scan-result-card" style={{ marginTop: space.xl }}>
+        <Card style={{ borderColor: color.lineStrong }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <StatusDot status="green" size={8} />
+            <Text style={[type.detail, { color: color.ink, fontWeight: '600', flex: 1 }]}>
+              {`Once confirmed, this is added to ${displayName}'s medications`}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              columnGap: space.lg,
+              rowGap: space.md,
+              marginTop: space.lg,
+            }}
+          >
+            <ResultCell label="Medication" value={medLine} />
+            <ResultCell label="For" value={patient.fullName} />
+            <ResultCell label="When to take" value={whenLine} />
+            <ResultCell label="Supply" value={supplyLine} />
+            <ResultCell label="Refills from" value={refillsLine} />
+            <View style={{ flexBasis: '47%', flexGrow: 1 }}>
+              <Text style={type.label}>Runway</Text>
+              {runway ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                  <StatusDot status={statusToColor(runway.status)} />
+                  <Text
+                    style={[
+                      type.body,
+                      { fontSize: 13.5, lineHeight: 18, fontWeight: '600' },
+                      runway.status !== 'ok'
+                        ? { color: color[statusToColor(runway.status)] }
+                        : null,
+                    ]}
+                  >
+                    {runway.daysRemaining <= 0
+                      ? `ran out ${weekdayDate(runway.runOutDate)}`
+                      : `runs out ${weekdayDate(runway.runOutDate)}`}
+                  </Text>
+                </View>
+              ) : (
+                <Text style={[type.mini, { marginTop: 4 }]}>
+                  {prn
+                    ? 'No forecast for as-needed medications'
+                    : 'Needs a valid fill date and day supply'}
+                </Text>
+              )}
+            </View>
+          </View>
+        </Card>
+      </View>
 
       {saveBlocked ? (
         <View

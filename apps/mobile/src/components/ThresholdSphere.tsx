@@ -2,17 +2,19 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AccessibilityInfo, Platform, Pressable, View } from 'react-native';
 import Svg, { Circle, G } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
+import { LiquidGlass, liquidGlassAvailable } from './LiquidGlass';
 import { color } from '../ds';
 
 /**
  * The threshold: a dotted sphere that turns slowly, forever, until it is
- * held. Holding wakes it - the turn quickens, the dots draw inward and
- * brighten, gentle haptic pulses build under the finger, and a hairline
- * ring fills. Complete the hold and you are let in.
+ * held. Holding compacts it - the sphere visibly draws inward and
+ * brightens, the turn quickens, haptic pulses build under the finger,
+ * and a hairline ring fills over three seconds. Release early and it
+ * springs back; complete the hold and it blooms open.
  *
  * Design intent: entering a space that holds someone's health should feel
  * deliberate, not incidental. A press-and-hold is a small ritual: it cannot
- * happen by accident, it takes exactly long enough to arrive (1.6s), and
+ * happen by accident, it takes exactly long enough to arrive (3s), and
  * the response under the finger is calm rather than gamified.
  *
  * Accessibility is part of the design, not an exception: Reduce Motion
@@ -21,7 +23,7 @@ import { color } from '../ds';
  */
 
 const DOTS = 170;
-const HOLD_MS = 1600;
+const HOLD_MS = 3000;
 const IDLE_REV_SECONDS = 26;
 /** Idle breath: a slow inhale/exhale so the sphere reads as alive. */
 const BREATH_SECONDS = 6.5;
@@ -82,23 +84,23 @@ export function ThresholdSphere({
       const holding = holdStart.current !== null;
       const target = holding ? Math.min(1, (now - holdStart.current!) / HOLD_MS) : 0;
       // ease the ring: fills with the hold, drains quickly on release
-      holdRef.current = holding ? target : Math.max(0, holdRef.current - dt * 2.2);
+      holdRef.current = holding ? target : Math.max(0, holdRef.current - dt * 3.4);
 
       const speed = ((2 * Math.PI) / IDLE_REV_SECONDS) * (1 + holdRef.current * 2.2);
       if (!reduceMotion) angleRef.current += speed * dt;
 
-      // escalating pulses under the finger at 0%, 30%, 60%, 90%
+      // pulses build under the finger every 15% of the hold, light to heavy
       if (holding && Platform.OS !== 'web') {
-        const step = Math.floor(target / 0.3);
+        const step = Math.floor(target / 0.15);
         if (step > lastPulse.current) {
           lastPulse.current = step;
-          const styles = [
-            Haptics.ImpactFeedbackStyle.Light,
-            Haptics.ImpactFeedbackStyle.Light,
-            Haptics.ImpactFeedbackStyle.Medium,
-            Haptics.ImpactFeedbackStyle.Heavy,
-          ] as const;
-          Haptics.impactAsync(styles[Math.min(step, 3)]!).catch(() => {});
+          const style =
+            step < 3
+              ? Haptics.ImpactFeedbackStyle.Light
+              : step < 5
+                ? Haptics.ImpactFeedbackStyle.Medium
+                : Haptics.ImpactFeedbackStyle.Heavy;
+          Haptics.impactAsync(style).catch(() => {});
         }
       }
 
@@ -141,7 +143,7 @@ export function ThresholdSphere({
   // the bloom throws the dots outward as the door opens
   const sphereR =
     half *
-    (0.78 + frame.breath * BREATH_DEPTH - frame.hold * 0.1 + frame.bloom * 0.55);
+    (0.78 + frame.breath * BREATH_DEPTH - frame.hold * 0.22 + frame.bloom * 0.55);
   const dissolve = 1 - frame.bloom;
   const cos = Math.cos(frame.angle);
   const sin = Math.sin(frame.angle);
@@ -154,7 +156,14 @@ export function ThresholdSphere({
       testID={testID}
       accessibilityRole="button"
       accessibilityLabel="Hold to enter Hearth"
-      accessibilityHint="Press and keep holding for about two seconds"
+      accessibilityHint="Press and keep holding for three seconds, or double tap with VoiceOver"
+      accessibilityActions={[{ name: 'activate', label: 'Enter Hearth' }]}
+      onAccessibilityAction={(e) => {
+        if (e.nativeEvent.actionName === 'activate' && !entered.current) {
+          entered.current = true;
+          onEnter();
+        }
+      }}
       onPressIn={() => {
         holdStart.current = Date.now();
         lastPulse.current = -1;
@@ -165,6 +174,24 @@ export function ThresholdSphere({
       style={{ width: size, height: size }}
     >
       <View pointerEvents="none">
+        {liquidGlassAvailable() && frame.hold > 0.02 ? (
+          // the liquid: a glass disc that surfaces under the finger,
+          // refracting the dots as the hold builds
+          <LiquidGlass
+            effect="clear"
+            pointerEvents="none"
+            style={{
+              position: 'absolute',
+              left: size * 0.09,
+              top: size * 0.09,
+              width: size * 0.82,
+              height: size * 0.82,
+              borderRadius: (size * 0.82) / 2,
+              opacity: Math.min(1, frame.hold * 1.4),
+              zIndex: 1,
+            }}
+          />
+        ) : null}
         <Svg width={size} height={size}>
           {/* the filling ring: hairline, only present while held */}
           <Circle
