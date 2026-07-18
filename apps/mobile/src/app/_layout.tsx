@@ -9,6 +9,7 @@ import { bootDatabase, destroyAllData, type BootState } from '../db/client';
 import { seedWorkflowTemplates } from '../db/workflowStore';
 import { ensureFreshSession, hasAccount } from '../lib/auth';
 import { infoDialog } from '../lib/dialogs';
+import { onAppReboot } from '../lib/reboot';
 import { syncNotifications } from '../lib/notifications';
 import { syncWearables } from '../lib/wearables';
 import { PillButton, Screen, color, space, type } from '../ds';
@@ -80,6 +81,18 @@ export default function RootLayout() {
   }, []);
 
   useEffect(doBoot, [doBoot]);
+
+  // The wipe (and any future handle-invalidating flow) reboots the app
+  // through here: boot goes null, the whole Stack unmounts, and the fresh
+  // boot lands on the threshold instead of screens reading a dead handle.
+  useEffect(
+    () =>
+      onAppReboot(() => {
+        setBoot(null);
+        doBoot();
+      }),
+    [doBoot],
+  );
 
   // Foreground upkeep: recompute pending alerts, and when an account exists,
   // silently refresh the session (Face ID gates an expired token; see

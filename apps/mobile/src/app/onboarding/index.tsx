@@ -25,7 +25,6 @@ import { ensureNotificationPermission } from '../../lib/notifications';
 import { setSetting } from '../../db/repo';
 import { BottleArt, ChartArt, FlowArt } from '../../components/EmptyArt';
 import { LiquidGlass, liquidGlassAvailable } from '../../components/LiquidGlass';
-import { PortraitPresence } from '../../components/PortraitPresence';
 import { OnboardingSteps } from './ui';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,12 +42,6 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 
 const SLIDES = [
-  {
-    key: 'presence',
-    Art: PortraitPresence,
-    title: 'Built around a person',
-    line: 'Not charts first. Someone you love, held gently in one place.',
-  },
   {
     key: 'meds',
     Art: BottleArt,

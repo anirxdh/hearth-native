@@ -17,8 +17,12 @@ appId: com.anirudh.hearth
     commands:
       - tapOn: 'Start fresh'
 
-# Fresh state lands on the threshold: the orb is the only door.
-- assertVisible: 'Press and hold to begin'
+# Fresh state lands on the threshold: the orb is the only door. A cold
+# dev-client boot re-fetches the JS bundle from Metro and can hold the
+# splash well past the default lookup window on a loaded host.
+- extendedWaitUntil:
+    visible: 'Press and hold to begin'
+    timeout: 30000
 - openLink: 'hearth:///welcome?enter=1'
 
 # The landing: carousel + account card + the just-looking path.

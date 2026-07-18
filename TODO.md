@@ -44,6 +44,9 @@ split by who has to do it. Check items off as they land.
 ### Clerk integration (the swap is pre-wired)
 - [ ] apps/mobile/src/lib/auth.ts defines the provider interface the whole app consumes; onboarding, silent refresh, and the Face ID gate are already wired against it. To integrate Clerk: install @clerk/clerk-expo, implement ClerkAuthProvider (signUp/signIn via Clerk flows, refresh(oldToken) becomes session.getToken({ skipCache: true }), signOut -> clerk signOut), swap the one authProvider export, delete the local token minting. The 30-minute TTL + Face-ID-gated silent re-login semantics match Clerk session behavior by design.
 
+### Companion LLM swap (the seam is pre-wired)
+- [ ] apps/mobile/src/lib/companion.ts is the single seam the Companion tab consumes: answerFor(text, ctx) is pure, local, and returns { text, action }, knowing nothing about the UI. To swap in a real model later: keep answerFor as the offline fallback, add a provider that sends the same ctx snapshot to a clinician-reviewed LLM with a user-supplied API key (Keychain-stored, never bundled, no key of ours to leak), and map replies back into the same { text, action } shape. The 911-first rule and dose-question refusals stay enforced locally on both sides of any model call, by design.
+
 ### Wearables (band data: how it actually works)
 - [ ] Package the HearthHealthKit Expo Module (Swift: HKStatisticsQuery daily resting HR, steps, sleep) next to HearthVision; lib/wearables.ts already calls it optionally. HealthKit is DEVICE-OWNER ONLY: valid when the patient's own iPhone/Watch runs Hearth. Requires the HealthKit entitlement + purpose strings + a dev-client rebuild.
 - [ ] Cross-person band data (caregiver views patient's numbers): Fitbit / Withings / Oura cloud APIs with patient-consented OAuth; needs the P29 backend for token custody. Slots into lib/wearables.ts as another adapter. There is no MCP path for this (MCP is a desktop agent protocol, not an on-device health API).

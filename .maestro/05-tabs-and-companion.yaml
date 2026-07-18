@@ -1,0 +1,103 @@
+# E2E: the tab shell and the Companion. Seed the demo family, ask the
+# Companion for a ride, follow the answer, then walk Home -> Settings on
+# the tab bar. Owns its state like every other flow (random order safe).
+appId: com.anirudh.hearth
+---
+- launchApp:
+    clearState: true
+    permissions:
+      notifications: allow
+
+# clearState wipes app data but the Keychain key can survive a reinstall;
+# the P1 recovery screen offers "Start fresh" in that case. Handle both.
+- runFlow:
+    when:
+      visible: 'Start fresh'
+    commands:
+      - tapOn: 'Start fresh'
+
+# Fresh state lands on the threshold: the orb is the only door (the 3s
+# hold is covered by Playwright; dev builds accept the automation hook).
+# A cold dev-client boot can hold the splash well past the default
+# lookup window on a loaded host; wait for the threshold properly.
+- extendedWaitUntil:
+    visible: 'Press and hold to begin'
+    timeout: 30000
+- openLink: 'hearth:///welcome?enter=1'
+- assertVisible: 'Welcome to Hearth'
+# Let the entrance choreography finish before touching the link (a tap on a
+# still-translating element can land off-target); retry once if the confirm
+# dialog did not open, and clear a stray second dialog if both taps landed.
+- waitForAnimationToEnd:
+    timeout: 2500
+- tapOn:
+    id: 'ob-demo'
+# The auto-advancing carousel invalidates the tree mid-tap and can swallow
+# the press (same failure flow 03 documents for Create account); press
+# again, up to twice, until the confirm dialog is actually up.
+- runFlow:
+    when:
+      notVisible: 'Load demo'
+    commands:
+      - tapOn:
+          id: 'ob-demo'
+- runFlow:
+    when:
+      notVisible: 'Load demo'
+    commands:
+      - waitForAnimationToEnd:
+          timeout: 2000
+      - tapOn:
+          id: 'ob-demo'
+- tapOn: 'Load demo'
+- runFlow:
+    when:
+      visible: 'Cancel'
+    commands:
+      - tapOn: 'Cancel'
+
+# Home, with the tab bar: Companion, Home, Settings.
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    id: 'tab-chat'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-05-tabbar
+
+# The Companion: ask for a ride, the answer points at Get there.
+- tapOn:
+    id: 'tab-chat'
+- tapOn:
+    id: 'chat-input'
+- inputText: 'ride to the doctor'
+- tapOn:
+    id: 'chat-send'
+- extendedWaitUntil:
+    visible:
+      text: '.*Get there.*'
+    timeout: 8000
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-05-companion
+
+# The keyboard stays up after Send and covers the floating tab capsule,
+# so a tab tap would land on the keys. A tap on the message list blurs
+# the input (keyboardShouldPersistTaps=handled) and drops the keyboard,
+# exactly what a person does before reaching for the bar.
+- tapOn:
+    point: '50%,30%'
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Back Home on the bar, then into Settings: the wipe lives there.
+- tapOn:
+    id: 'tab-home'
+- assertVisible: 'NEEDS ACTION'
+- tapOn:
+    id: 'tab-settings'
+# The wipe lives in the danger section at the bottom of the scrolling
+# settings screen; bring it into view the way a person would.
+- scrollUntilVisible:
+    element:
+      text: 'Delete everything'
+    direction: DOWN
+    timeout: 15000
+- assertVisible: 'Delete everything'
+- takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-05-settings

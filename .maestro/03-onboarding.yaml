@@ -12,6 +12,12 @@ appId: com.anirudh.hearth
 # The threshold is orb-only (3s hold, not expressible in Maestro);
 # dev builds accept the automation hook. The hold itself is covered by
 # the Playwright ritual spec.
+# A cold dev-client boot re-fetches the JS bundle from Metro, and the
+# splash can outlive the one-shot conditional below; clearState always
+# lands on the threshold, so wait for it properly first.
+- extendedWaitUntil:
+    visible: 'Press and hold to begin'
+    timeout: 30000
 - runFlow:
     when:
       visible: 'Press and hold to begin'

@@ -15,6 +15,12 @@ appId: com.anirudh.hearth
       - tapOn: 'Start fresh'
 # Self-sufficiency covers both empty states: the fresh-install threshold
 # (orb -> onboarding -> demo link) and the account-no-patients empty home.
+# A cold dev-client boot re-fetches the JS bundle from Metro, and the
+# splash can outlive one-shot conditionals; clearState always lands on
+# the threshold, so wait for it properly before choosing a door.
+- extendedWaitUntil:
+    visible: 'Press and hold to begin'
+    timeout: 30000
 - runFlow:
     when:
       visible: 'Press and hold to begin'

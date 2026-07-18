@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Pressable, Switch, Text, View } from 'react-native';
+import { Alert, Platform, Switch, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import * as Notifications from 'expo-notifications';
-import { ChevronLeft } from 'lucide-react-native';
 import {
   DisclaimerFootnote,
   FormField,
@@ -15,19 +14,20 @@ import {
   color,
   space,
   type,
-} from '../ds';
-import { enterLead, enterQuiet, enterRow } from '../ds/motion';
-import { getNotificationPrefs, getSetting, listPatients, setNotificationPrefs, setSetting } from '../db/repo';
-import { destroyAllData, getDb } from '../db/client';
-import { syncNotifications } from '../lib/notifications';
-import { useData } from '../lib/useData';
-import { ONBOARDING_DISCLAIMER } from '../lib/copy';
+} from '../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
+import { getNotificationPrefs, getSetting, listPatients, setNotificationPrefs, setSetting } from '../../db/repo';
+import { destroyAllData, getDb } from '../../db/client';
+import { requestAppReboot } from '../../lib/reboot';
+import { syncNotifications } from '../../lib/notifications';
+import { useData } from '../../lib/useData';
+import { ONBOARDING_DISCLAIMER } from '../../lib/copy';
 import { seedDemoFamily } from '@hearth/schema';
-import { exportBackup, importBackup, validPassphrase } from '../lib/backup';
-import { infoDialog, promptDialog } from '../lib/dialogs';
-import { confirmLoadDemoFamily } from '../lib/demo';
-import { today } from '../lib/clock';
-import { bumpDataVersion } from '../lib/events';
+import { exportBackup, importBackup, validPassphrase } from '../../lib/backup';
+import { infoDialog, promptDialog } from '../../lib/dialogs';
+import { confirmLoadDemoFamily } from '../../lib/demo';
+import { today } from '../../lib/clock';
+import { bumpDataVersion } from '../../lib/events';
 
 export default function Settings() {
   const router = useRouter();
@@ -78,7 +78,9 @@ export default function Settings() {
           onPress: () =>
             destroyAllData().then(async () => {
               await Notifications.cancelAllScheduledNotificationsAsync();
-              Alert.alert('Erased', 'Hearth will restart empty.', [{ text: 'OK' }]);
+              // Unmounts every screen and boots again; the app returns to
+              // the threshold. No alert needed - the reset IS the feedback.
+              requestAppReboot();
             }),
         },
       ],
@@ -132,10 +134,6 @@ export default function Settings() {
 
   return (
     <Screen>
-      <Pressable onPress={() => router.back()} hitSlop={10} accessibilityRole="button" accessibilityLabel="Back" style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-        <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
-        <Text style={type.mini}>Home</Text>
-      </Pressable>
       <Animated.View entering={enterLead}>
         <Text style={type.title}>Settings</Text>
       </Animated.View>
@@ -249,6 +247,10 @@ export default function Settings() {
       </Text>
       <DisclaimerFootnote>{ONBOARDING_DISCLAIMER}</DisclaimerFootnote>
       </Animated.View>
+      {Platform.OS === 'ios' ? (
+        // Breathing room so the floating tab capsule never traps the last row.
+        <View style={{ height: 128 }} />
+      ) : null}
     </Screen>
   );
 }

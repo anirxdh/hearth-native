@@ -1,19 +1,11 @@
 import React from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
 import { Redirect, useRouter } from 'expo-router';
-import { BookOpen, CalendarDays, FolderOutput, ScanLine, Settings2, Workflow } from 'lucide-react-native';
-import Animated, {
-  ReduceMotion,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import * as Haptics from 'expo-haptics';
-import { confirmLoadDemoFamily } from '../lib/demo';
-import { currentUser, hasAccount } from '../lib/auth';
-import { LiquidGlass, liquidGlassAvailable } from '../components/LiquidGlass';
-import { enterLead, enterRow } from '../ds/motion';
+import { BookOpen, CalendarDays, FolderOutput, ScanLine, Workflow } from 'lucide-react-native';
+import Animated from 'react-native-reanimated';
+import { confirmLoadDemoFamily } from '../../lib/demo';
+import { currentUser, hasAccount } from '../../lib/auth';
+import { enterLead, enterRow } from '../../ds/motion';
 import {
   buildDigest,
   daysBetween,
@@ -35,11 +27,11 @@ import {
   color,
   space,
   type,
-} from '../ds';
-import { lastTouchedAt, listAllMedications, listPatients } from '../db/repo';
-import { greetingFor, nowIso, today } from '../lib/clock';
-import { useData } from '../lib/useData';
-import { upcomingForDigest } from '../db/apptRepo';
+} from '../../ds';
+import { lastTouchedAt, listAllMedications, listPatients } from '../../db/repo';
+import { greetingFor, nowIso, today } from '../../lib/clock';
+import { useData } from '../../lib/useData';
+import { upcomingForDigest } from '../../db/apptRepo';
 
 type CircleStatus = { status: 'red' | 'amber' | 'green'; label: string; line: string };
 
@@ -93,53 +85,6 @@ function visitWhen(days: number, onDate: string): string {
   return `in ${days} days (${onDate})`;
 }
 
-/** One glass circle in the dock: a tiny press shrink and a light tap haptic. */
-function DockButton({
-  icon: Icon,
-  label,
-  onPress,
-}: {
-  icon: typeof ScanLine;
-  label: string;
-  onPress: () => void;
-}) {
-  const scale = useSharedValue(1);
-  const press = (down: boolean) => {
-    scale.value = withSpring(down ? 0.92 : 1, {
-      damping: 22,
-      stiffness: 420,
-      reduceMotion: ReduceMotion.System,
-    });
-  };
-  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
-  // Standalone GlassView, same recipe as the onboarding capsules (which
-  // render); GlassContainer refused to composite these on iOS 26.3, so the
-  // circles sit close without the melt. Press feedback lives inside.
-  return (
-    <LiquidGlass
-      effect="regular"
-      interactive
-      style={{ width: 56, height: 56, borderRadius: 999 }}
-    >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        onPressIn={() => press(true)}
-        onPressOut={() => press(false)}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-          onPress();
-        }}
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-      >
-        <Animated.View style={style}>
-          <Icon size={22} color={color.ink} strokeWidth={1.8} />
-        </Animated.View>
-      </Pressable>
-    </LiquidGlass>
-  );
-}
-
 export default function Home() {
   const router = useRouter();
   const data = useData(() => {
@@ -170,9 +115,6 @@ export default function Home() {
   });
 
   const hour = new Date().getHours();
-  const insets = useSafeAreaInsets();
-  // The glass dock: iOS 26 only. Web and fallback devices keep today's page.
-  const dock = Platform.OS === 'ios' && liquidGlassAvailable();
 
   // The threshold rule: nobody gets greeted before Hearth knows someone.
   // Brand-new visitors (no account, no people) meet the sphere instead.
@@ -183,21 +125,11 @@ export default function Home() {
   if (data.patients.length === 0) {
     return (
       <Screen>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-          <View style={{ flex: 1 }}>
-            <Text style={type.greet}>{greetingFor(hour, currentUser()?.name.split(' ')[0] ?? null)}</Text>
-            <Text style={[type.detail, { marginTop: 6 }]}>
-              Hearth is a calm command center for everyone you care for.
-            </Text>
-          </View>
-          <Pressable
-            onPress={() => router.push('/settings')}
-            accessibilityLabel="Settings"
-            hitSlop={10}
-            style={{ paddingTop: 6 }}
-          >
-            <Settings2 size={21} color={color.ink2} strokeWidth={1.8} />
-          </Pressable>
+        <View>
+          <Text style={type.greet}>{greetingFor(hour, currentUser()?.name.split(' ')[0] ?? null)}</Text>
+          <Text style={[type.detail, { marginTop: 6 }]}>
+            Hearth is a calm command center for everyone you care for.
+          </Text>
         </View>
         <EmptyState
           title="Start your care circle"
@@ -222,23 +154,13 @@ export default function Home() {
     );
   }
 
-  const home = (
+  return (
     <Screen>
-      <Animated.View entering={enterLead} style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-        <View style={{ flex: 1 }}>
-          <Text style={type.greet}>{greetingFor(hour, currentUser()?.name.split(' ')[0] ?? null)}</Text>
-          <Text style={[type.detail, { marginTop: 5 }]}>
-            Here is the one thing that needs you, and the calm around it.
-          </Text>
-        </View>
-        <Pressable
-          onPress={() => router.push('/settings')}
-          accessibilityLabel="Settings"
-          hitSlop={10}
-          style={{ paddingTop: 6 }}
-        >
-          <Settings2 size={21} color={color.ink2} strokeWidth={1.8} />
-        </Pressable>
+      <Animated.View entering={enterLead}>
+        <Text style={type.greet}>{greetingFor(hour, currentUser()?.name.split(' ')[0] ?? null)}</Text>
+        <Text style={[type.detail, { marginTop: 5 }]}>
+          Here is the one thing that needs you, and the calm around it.
+        </Text>
       </Animated.View>
 
       <SectionHeader label="Today's digest" meta={today()} />
@@ -363,38 +285,11 @@ export default function Home() {
           left={<FolderOutput size={19} color={color.ink2} strokeWidth={1.8} />}
         />
       </Animated.View>
-      {dock ? (
-        // Breathing room so the last Tools row is never trapped under the dock.
-        <View style={{ height: 110 }} />
+      {Platform.OS === 'ios' ? (
+        // Breathing room so the floating tab capsule never traps the last
+        // Tools row.
+        <View style={{ height: 96 }} />
       ) : null}
     </Screen>
-  );
-
-  if (!dock) return home;
-
-  // The showpiece: three glass circles floating over the page, close enough
-  // that the container lets them melt toward each other.
-  return (
-    <View style={{ flex: 1 }}>
-      {home}
-      {/* No reanimated entering here: layout animations snapshot the
-          subtree and the glass material never composites inside one. */}
-      <View
-        pointerEvents="box-none"
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: insets.bottom + 18,
-          alignItems: 'center',
-        }}
-      >
-        <View style={{ flexDirection: 'row', gap: 14 }}>
-          <DockButton icon={ScanLine} label="Scan a label" onPress={() => router.push('/scan' as never)} />
-          <DockButton icon={CalendarDays} label="Appointments" onPress={() => router.push('/appointments' as never)} />
-          <DockButton icon={BookOpen} label="Emergency guides" onPress={() => router.push('/guides' as never)} />
-        </View>
-      </View>
-    </View>
   );
 }
