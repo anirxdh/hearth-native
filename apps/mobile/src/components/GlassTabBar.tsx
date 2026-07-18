@@ -3,7 +3,7 @@ import { Platform, Pressable, Text, View } from 'react-native';
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { House, MessageCircle, Settings2 } from 'lucide-react-native';
+import { House, MessageCircle, Settings } from 'lucide-react-native';
 import { LiquidGlass } from './LiquidGlass';
 import { color, hairline } from '../ds';
 
@@ -22,7 +22,7 @@ import { color, hairline } from '../ds';
 const ITEMS: Record<string, { Icon: typeof House; label: string; testID: string }> = {
   chat: { Icon: MessageCircle, label: 'Companion', testID: 'tab-chat' },
   index: { Icon: House, label: 'Home', testID: 'tab-home' },
-  settings: { Icon: Settings2, label: 'Settings', testID: 'tab-settings' },
+  settings: { Icon: Settings, label: 'Settings', testID: 'tab-settings' },
 };
 
 function TabItem({

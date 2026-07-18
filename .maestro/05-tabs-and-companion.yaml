@@ -56,16 +56,16 @@ appId: com.anirudh.hearth
     commands:
       - tapOn: 'Cancel'
 
-# Home, with the tab bar: Companion, Home, Settings.
+# Home, with the tab bar: Companion, Home, Settings. On iOS the bar is
+# the SYSTEM tab bar (native tabs), so items are found by their labels,
+# not by testIDs.
 - waitForAnimationToEnd:
     timeout: 3000
-- assertVisible:
-    id: 'tab-chat'
+- assertVisible: 'Companion'
 - takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-05-tabbar
 
 # The Companion: ask for a ride, the answer points at Get there.
-- tapOn:
-    id: 'tab-chat'
+- tapOn: 'Companion'
 - tapOn:
     id: 'chat-input'
 - inputText: 'ride to the doctor'
@@ -87,11 +87,9 @@ appId: com.anirudh.hearth
     timeout: 2000
 
 # Back Home on the bar, then into Settings: the wipe lives there.
-- tapOn:
-    id: 'tab-home'
+- tapOn: 'Home'
 - assertVisible: 'NEEDS ACTION'
-- tapOn:
-    id: 'tab-settings'
+- tapOn: 'Settings'
 # The wipe lives in the danger section at the bottom of the scrolling
 # settings screen; bring it into view the way a person would.
 - scrollUntilVisible:
