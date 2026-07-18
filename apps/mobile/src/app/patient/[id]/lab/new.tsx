@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { isValidLocalDate } from '@hearth/core';
 import { CheckRow, FormField, PillButton, Screen, space } from '../../../../ds';
+import { enterLead, enterRow } from '../../../../ds/motion';
 import { addLab, getPatient } from '../../../../db/repo';
 import { today } from '../../../../lib/clock';
 
@@ -60,7 +62,7 @@ export default function NewLab() {
       title="Add a lab result"
       subline={`For ${displayName}. Type the handful of numbers that matter from the report.`}
     >
-      <View style={{ gap: space.md }}>
+      <Animated.View entering={enterLead} style={{ gap: space.md }}>
         <FormField label="Test name" value={name} onChangeText={setName} placeholder="HbA1c" />
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <View style={{ flex: 1 }}>
@@ -92,12 +94,12 @@ export default function NewLab() {
           placeholder="Dr. Okafor said to recheck in three months."
           multiline
         />
-      </View>
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+      <Animated.View entering={enterRow(1)} style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
         <PillButton label="Save result" onPress={save} />
         <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
+      </Animated.View>
     </Screen>
   );
 }

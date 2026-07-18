@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import {
@@ -20,6 +21,7 @@ import {
   space,
   type,
 } from '../../ds';
+import { enterQuiet, enterRow } from '../../ds/motion';
 import { ChartArt, NotebookArt } from '../../components/EmptyArt';
 
 const KIND_OPTIONS: { key: Vital['kind']; label: string; unit: string }[] = [
@@ -89,20 +91,23 @@ export function ActivityTab({
   return (
     <View>
       {!hasAny ? (
-        <View style={{ marginTop: space.lg }}>
+        <Animated.View entering={enterRow(0)} style={{ marginTop: space.lg }}>
           <EmptyState
             art={<ChartArt size={72} />}
             title="No activity yet"
             detail="Readings you add appear here as trends: weight, blood pressure, glucose, heart rate."
             action={<PillButton label="Add a reading" onPress={() => router.push(`/patient/${patientId}/vital/new` as never)} />}
           />
-        </View>
+        </Animated.View>
       ) : (
         <>
-          <View style={{ marginTop: space.lg }}>
+          <Animated.View entering={enterRow(0)} style={{ marginTop: space.lg }}>
             <Seg options={KIND_OPTIONS.map(({ key, label }) => ({ key, label }))} value={kind} onChange={setKind} scroll />
-          </View>
-          <View style={{ marginTop: space.md, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          </Animated.View>
+          <Animated.View
+            entering={enterRow(1)}
+            style={{ marginTop: space.md, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+          >
             <Seg options={RANGES} value={range} onChange={setRange} />
             {summary ? (
               <Text style={type.mini}>
@@ -111,8 +116,8 @@ export function ActivityTab({
                   : `${summary.direction === 'up' ? 'up' : 'down'} ${Math.abs(summary.delta)} ${activeKind.unit}`}
               </Text>
             ) : null}
-          </View>
-          <View style={{ marginTop: space.lg }}>
+          </Animated.View>
+          <Animated.View entering={enterRow(2)} style={{ marginTop: space.lg }}>
             <HearthChart
               data={bucketed}
               unit={activeKind.unit}
@@ -120,32 +125,39 @@ export function ActivityTab({
                 ? { data2: bucketedDiastolic, seriesLabel: 'systolic', series2Label: 'diastolic' }
                 : {})}
             />
-          </View>
-          {kind === 'bp' ? (
-            <Text style={[type.mini, { marginTop: 6 }]}>
-              {bucketedDiastolic.length > 0
-                ? "Each point is the day's reading."
-                : "Showing systolic (top number). Each point is the day's reading."}
-            </Text>
-          ) : null}
+          </Animated.View>
+          <Animated.View entering={enterQuiet}>
+            {kind === 'bp' ? (
+              <Text style={[type.mini, { marginTop: 6 }]}>
+                {bucketedDiastolic.length > 0
+                  ? "Each point is the day's reading."
+                  : "Showing systolic (top number). Each point is the day's reading."}
+              </Text>
+            ) : null}
+          </Animated.View>
         </>
       )}
 
-      <SectionHeader label="Observations" meta={observations.length ? `${observations.length}` : 'the soft signals'} />
+      <Animated.View entering={enterRow(3)}>
+        <SectionHeader label="Observations" meta={observations.length ? `${observations.length}` : 'the soft signals'} />
+      </Animated.View>
       {observations.length === 0 ? (
-        <EmptyState
-          art={<NotebookArt size={72} />}
-          title="Nothing logged yet"
-          detail="Short notes about mood, appetite, sleep, and incidents. These become the questions for the next visit."
-          action={
-            <PillButton label="Log an observation" onPress={() => router.push(`/patient/${patientId}/observation/new` as never)} />
-          }
-        />
+        <Animated.View entering={enterRow(4)}>
+          <EmptyState
+            art={<NotebookArt size={72} />}
+            title="Nothing logged yet"
+            detail="Short notes about mood, appetite, sleep, and incidents. These become the questions for the next visit."
+            action={
+              <PillButton label="Log an observation" onPress={() => router.push(`/patient/${patientId}/observation/new` as never)} />
+            }
+          />
+        </Animated.View>
       ) : (
         <>
           {observations.slice(0, 20).map((o, i) => (
-            <View
+            <Animated.View
               key={o.id}
+              entering={enterRow(4 + i)}
               style={{
                 paddingVertical: 12,
                 borderBottomWidth: i === Math.min(observations.length, 20) - 1 ? 0 : 1,
@@ -159,9 +171,9 @@ export function ActivityTab({
                 <Text style={type.mini}>{fmtObsDay(o.at)}</Text>
               </View>
               <Text style={[type.body, { marginTop: 4 }]}>{o.text}</Text>
-            </View>
+            </Animated.View>
           ))}
-          <View style={{ marginTop: space.lg, flexDirection: 'row' }}>
+          <Animated.View entering={enterRow(5)} style={{ marginTop: space.lg, flexDirection: 'row' }}>
             <PillButton
               label="Log an observation"
               variant="outline"
@@ -169,7 +181,7 @@ export function ActivityTab({
               icon={<Plus size={14} color={color.ink} strokeWidth={2} />}
               onPress={() => router.push(`/patient/${patientId}/observation/new` as never)}
             />
-          </View>
+          </Animated.View>
         </>
       )}
     </View>

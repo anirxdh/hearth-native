@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, Printer, Share2 } from 'lucide-react-native';
 import {
@@ -13,6 +14,7 @@ import {
   space,
   type,
 } from '../ds';
+import { enterLead, enterQuiet, enterRow } from '../ds/motion';
 import { listMedications, listPatients } from '../db/repo';
 import { useData } from '../lib/useData';
 import { outputPortfolio } from '../lib/print';
@@ -66,66 +68,75 @@ export default function Portfolio() {
         <Text style={type.mini}>Home</Text>
       </Pressable>
 
-      <Text style={type.title}>Everyone, one pack</Text>
-      <Text style={[type.detail, { marginTop: 4 }]}>
-        Every person's page bundled into a single printable set. For the drawer, the glovebox, and the sibling who
-        asks "so where do things stand?"
-      </Text>
+      <Animated.View entering={enterLead}>
+        <Text style={type.title}>Everyone, one pack</Text>
+        <Text style={[type.detail, { marginTop: 4 }]}>
+          Every person's page bundled into a single printable set. For the drawer, the glovebox, and the sibling who
+          asks "so where do things stand?"
+        </Text>
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
-        <PillButton
-          label="Print all"
-          icon={<Printer size={14} color={color.paper} strokeWidth={2} />}
-          onPress={() => void run('print')}
-          loading={busy === 'print'}
-          disabled={rows.length === 0}
-        />
-        <PillButton
-          label="Share PDF"
-          variant="outline"
-          icon={<Share2 size={14} color={color.ink} strokeWidth={2} />}
-          onPress={() => void run('share')}
-          loading={busy === 'share'}
-          disabled={rows.length === 0}
-        />
-      </View>
+      <Animated.View entering={enterRow(1)}>
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
+          <PillButton
+            label="Print all"
+            icon={<Printer size={14} color={color.paper} strokeWidth={2} />}
+            onPress={() => void run('print')}
+            loading={busy === 'print'}
+            disabled={rows.length === 0}
+          />
+          <PillButton
+            label="Share PDF"
+            variant="outline"
+            icon={<Share2 size={14} color={color.ink} strokeWidth={2} />}
+            onPress={() => void run('share')}
+            loading={busy === 'share'}
+            disabled={rows.length === 0}
+          />
+        </View>
+      </Animated.View>
 
-      <SectionHeader label="In this pack" meta={`${rows.length} ${rows.length === 1 ? 'person' : 'people'}`} />
+      <Animated.View entering={enterRow(2)}>
+        <SectionHeader label="In this pack" meta={`${rows.length} ${rows.length === 1 ? 'person' : 'people'}`} />
+      </Animated.View>
       {rows.map(({ patient: p, medCount, urgent, soon }, i) => (
-        <Pressable
-          key={p.id}
-          onPress={() => router.push(`/patient/${p.id}` as never)}
-          accessibilityRole="button"
-          accessibilityLabel={`Open ${p.fullName}`}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 12,
-            paddingVertical: 12,
-            borderBottomWidth: i === rows.length - 1 ? 0 : 1,
-            borderBottomColor: color.line,
-          }}
-        >
-          <Avatar name={p.fullName} size={38} />
-          <View style={{ flex: 1 }}>
-            <Text style={[type.body, { fontWeight: '600' }]}>{p.fullName}</Text>
-            <Text style={[type.mini, { marginTop: 2 }]}>
-              {[p.relationship, `${medCount} medication${medCount === 1 ? '' : 's'}`].filter(Boolean).join(' · ')}
-            </Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <StatusDot status={urgent > 0 ? 'red' : soon > 0 ? 'amber' : 'green'} />
-            <Text style={type.mini}>
-              {urgent > 0 ? `${urgent} urgent` : soon > 0 ? `${soon} soon` : 'on track'}
-            </Text>
-          </View>
-        </Pressable>
+        <Animated.View key={p.id} entering={enterRow(3 + i)}>
+          <Pressable
+            onPress={() => router.push(`/patient/${p.id}` as never)}
+            accessibilityRole="button"
+            accessibilityLabel={`Open ${p.fullName}`}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 12,
+              paddingVertical: 12,
+              borderBottomWidth: i === rows.length - 1 ? 0 : 1,
+              borderBottomColor: color.line,
+            }}
+          >
+            <Avatar name={p.fullName} size={38} />
+            <View style={{ flex: 1 }}>
+              <Text style={[type.body, { fontWeight: '600' }]}>{p.fullName}</Text>
+              <Text style={[type.mini, { marginTop: 2 }]}>
+                {[p.relationship, `${medCount} medication${medCount === 1 ? '' : 's'}`].filter(Boolean).join(' · ')}
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <StatusDot status={urgent > 0 ? 'red' : soon > 0 ? 'amber' : 'green'} />
+              <Text style={type.mini}>
+                {urgent > 0 ? `${urgent} urgent` : soon > 0 ? `${soon} soon` : 'on track'}
+              </Text>
+            </View>
+          </Pressable>
+        </Animated.View>
       ))}
 
-      <DisclaimerFootnote>
-        The printed pack contains each person's one-pager: conditions, medications, contacts, and allergies, with
-        severe allergies leading every page.
-      </DisclaimerFootnote>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>
+          The printed pack contains each person's one-pager: conditions, medications, contacts, and allergies, with
+          severe allergies leading every page.
+        </DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

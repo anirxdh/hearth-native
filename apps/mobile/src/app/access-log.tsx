@@ -1,8 +1,10 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { EmptyState, Screen, SectionHeader, color, space, type } from '../ds';
+import { enterLead, enterRow } from '../ds/motion';
 import { getPatient, listAccessLog } from '../db/repo';
 import { describeAccess } from '../lib/accessLabels';
 import { useData } from '../lib/useData';
@@ -39,24 +41,29 @@ export default function AccessLogScreen() {
         <Text style={type.mini}>Settings</Text>
       </Pressable>
 
-      <Text style={type.title}>Access log</Text>
-      <Text style={[type.detail, { marginTop: 4 }]}>
-        Every time care information leaves the app: printed, shared, or exported. The log is append-only; nothing
-        can be edited or removed.
-      </Text>
+      <Animated.View entering={enterLead}>
+        <Text style={type.title}>Access log</Text>
+        <Text style={[type.detail, { marginTop: 4 }]}>
+          Every time care information leaves the app: printed, shared, or exported. The log is append-only; nothing
+          can be edited or removed.
+        </Text>
+      </Animated.View>
 
-      <SectionHeader label="Recent" meta={entries.length ? `${entries.length}` : undefined} />
+      <Animated.View entering={enterRow(1)}>
+        <SectionHeader label="Recent" meta={entries.length ? `${entries.length}` : undefined} />
+      </Animated.View>
       {entries.length === 0 ? (
-        <EmptyState
-          title="Nothing yet"
-          detail="Print an ER sheet or share a one-pager and the event appears here with its time."
-        />
+        <Animated.View entering={enterRow(2)}>
+          <EmptyState
+            title="Nothing yet"
+            detail="Print an ER sheet or share a one-pager and the event appears here with its time."
+          />
+        </Animated.View>
       ) : (
         entries.map((e, i) => {
           const patient = e.patientId ? getPatient(e.patientId) : undefined;
-          return (
+          const row = (
             <View
-              key={e.id}
               style={{
                 paddingVertical: 11,
                 borderBottomWidth: i === entries.length - 1 ? 0 : 1,
@@ -76,6 +83,14 @@ export default function AccessLogScreen() {
               </View>
               <Text style={type.mini}>{fmtAt(e.at)}</Text>
             </View>
+          );
+          /* The first eight rows stagger in; deeper history renders at rest. */
+          return i < 8 ? (
+            <Animated.View key={e.id} entering={enterRow(2 + i)}>
+              {row}
+            </Animated.View>
+          ) : (
+            <View key={e.id}>{row}</View>
           );
         })
       )}

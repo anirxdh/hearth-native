@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Linking, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft, Pencil, Phone, TriangleAlert } from 'lucide-react-native';
 import {
@@ -19,6 +20,7 @@ import {
   type,
 } from '../../../../../ds';
 import { addFill, archiveMedication, getMedication, getPatient } from '../../../../../db/repo';
+import { enterLead, enterQuiet, enterRow } from '../../../../../ds/motion';
 import { syncNotifications } from '../../../../../lib/notifications';
 import { useData } from '../../../../../lib/useData';
 import { RUNWAY_DISCLAIMER } from '../../../../../lib/copy';
@@ -90,45 +92,50 @@ export default function MedicationDetail() {
 
   return (
     <Screen>
-      <Pressable onPress={() => router.back()} hitSlop={10} accessibilityRole="button" accessibilityLabel="Back" style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-        <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
-        <Text style={type.mini}>{displayName}</Text>
-      </Pressable>
-
-      <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-        <View style={{ flex: 1 }}>
-          <Text style={type.title}>
-            {med.name}
-            {med.strength ? <Text style={{ color: color.ink2 }}>{`  ${med.strength}`}</Text> : null}
-          </Text>
-          {med.sig ? <Text style={[type.detail, { marginTop: 5 }]}>{med.sig}</Text> : null}
-        </View>
-        <Pressable onPress={() => router.push(`/patient/${id}/med/${medId}/edit` as never)} hitSlop={10} accessibilityLabel="Edit medication">
-          <Pencil size={19} color={color.ink2} strokeWidth={1.8} />
+      <Animated.View entering={enterLead}>
+        <Pressable onPress={() => router.back()} hitSlop={10} accessibilityRole="button" accessibilityLabel="Back" style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+          <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
+          <Text style={type.mini}>{displayName}</Text>
         </Pressable>
-      </View>
 
-      {med.highAlert ? (
-        <View
-          style={{
-            marginTop: space.lg,
-            borderWidth: 1,
-            borderColor: color.red,
-            borderRadius: radius.md,
-            paddingHorizontal: 14,
-            paddingVertical: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 8,
-          }}
-        >
-          <TriangleAlert size={15} color={color.red} strokeWidth={2} />
-          <Text style={[type.mini, { color: color.red, fontWeight: '600', flex: 1 }]}>
-            High-alert medication. Changes deserve a second look against the label.
-          </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+          <View style={{ flex: 1 }}>
+            <Text style={type.title}>
+              {med.name}
+              {med.strength ? <Text style={{ color: color.ink2 }}>{`  ${med.strength}`}</Text> : null}
+            </Text>
+            {med.sig ? <Text style={[type.detail, { marginTop: 5 }]}>{med.sig}</Text> : null}
+          </View>
+          <Pressable onPress={() => router.push(`/patient/${id}/med/${medId}/edit` as never)} hitSlop={10} accessibilityLabel="Edit medication">
+            <Pencil size={19} color={color.ink2} strokeWidth={1.8} />
+          </Pressable>
         </View>
-      ) : null}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(1)}>
+        {med.highAlert ? (
+          <View
+            style={{
+              marginTop: space.lg,
+              borderWidth: 1,
+              borderColor: color.red,
+              borderRadius: radius.md,
+              paddingHorizontal: 14,
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            <TriangleAlert size={15} color={color.red} strokeWidth={2} />
+            <Text style={[type.mini, { color: color.red, fontWeight: '600', flex: 1 }]}>
+              High-alert medication. Changes deserve a second look against the label.
+            </Text>
+          </View>
+        ) : null}
+      </Animated.View>
+
+      <Animated.View entering={enterRow(2)}>
       <SectionHeader label="Runway" />
       {med.prn ? (
         <Card>
@@ -173,35 +180,38 @@ export default function MedicationDetail() {
           </Text>
         </Card>
       )}
+      </Animated.View>
 
-      <SectionHeader label="Fill history" meta={med.fills.length ? `${med.fills.length}` : 'none yet'} />
-      {med.fills.map((f, i) => (
-        <ListRow
-          key={f.id}
-          title={`Filled ${f.fillDate}`}
-          detail={`${f.daySupply}-day supply${f.quantity ? ` · qty ${f.quantity}` : ''} · ${f.source === 'scan' ? 'from scan' : 'entered by hand'}`}
-          last={i === med.fills.length - 1}
-        />
-      ))}
-      {!med.prn ? (
-        showFill ? (
-          <View>
-            <FormField label="Fill date" value={fillDate} onChangeText={setFillDate} hint="YYYY-MM-DD" autoCapitalize="none" />
-            <FormField label="Day supply" value={daySupply} onChangeText={setDaySupply} keyboardType="number-pad" />
-            <View style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
-              <PillButton label="Save fill" onPress={saveFill} />
-              <PillButton label="Cancel" variant="outline" onPress={() => setShowFill(false)} />
+      <Animated.View entering={enterRow(3)}>
+        <SectionHeader label="Fill history" meta={med.fills.length ? `${med.fills.length}` : 'none yet'} />
+        {med.fills.map((f, i) => (
+          <ListRow
+            key={f.id}
+            title={`Filled ${f.fillDate}`}
+            detail={`${f.daySupply}-day supply${f.quantity ? ` · qty ${f.quantity}` : ''} · ${f.source === 'scan' ? 'from scan' : 'entered by hand'}`}
+            last={i === med.fills.length - 1}
+          />
+        ))}
+        {!med.prn ? (
+          showFill ? (
+            <View>
+              <FormField label="Fill date" value={fillDate} onChangeText={setFillDate} hint="YYYY-MM-DD" autoCapitalize="none" />
+              <FormField label="Day supply" value={daySupply} onChangeText={setDaySupply} keyboardType="number-pad" />
+              <View style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
+                <PillButton label="Save fill" onPress={saveFill} />
+                <PillButton label="Cancel" variant="outline" onPress={() => setShowFill(false)} />
+              </View>
             </View>
-          </View>
-        ) : (
-          <View style={{ marginTop: space.lg }}>
-            <PillButton label="Record a fill" variant="outline" size="sm" onPress={() => setShowFill(true)} />
-          </View>
-        )
-      ) : null}
+          ) : (
+            <View style={{ marginTop: space.lg }}>
+              <PillButton label="Record a fill" variant="outline" size="sm" onPress={() => setShowFill(true)} />
+            </View>
+          )
+        ) : null}
+      </Animated.View>
 
       {(med.prescriber || med.pharmacy) ? (
-        <>
+        <Animated.View entering={enterRow(4)}>
           <SectionHeader label="Refills come from" />
           {med.prescriber ? <ListRow title={med.prescriber} detail="Prescriber" last={!med.pharmacy} /> : null}
           {med.pharmacy ? (
@@ -223,16 +233,18 @@ export default function MedicationDetail() {
               }
             />
           ) : null}
-        </>
+        </Animated.View>
       ) : null}
 
-      <View style={{ marginTop: space.xxl }}>
+      <Animated.View entering={enterRow(5)} style={{ marginTop: space.xxl }}>
         <Hairline />
         <View style={{ marginTop: space.lg }}>
           <PillButton label="Archive medication" variant="danger" size="sm" onPress={archive} />
         </View>
-      </View>
-      <DisclaimerFootnote>{RUNWAY_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>{RUNWAY_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

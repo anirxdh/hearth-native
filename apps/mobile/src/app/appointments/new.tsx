@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { isValidLocalDate } from '@hearth/core';
 import { FormField, PillButton, Screen, SectionHeader, Seg, color, space, type } from '../../ds';
+import { enterLead, enterRow } from '../../ds/motion';
 import { createAppointment } from '../../db/apptRepo';
 import { listPatients } from '../../db/repo';
 import { today } from '../../lib/clock';
@@ -32,7 +34,9 @@ export default function NewAppointment() {
   if (patients.length === 0) {
     return (
       <Screen title="No one to book for" subline="Add a person to your circle first.">
-        <PillButton label="Back" variant="outline" onPress={() => router.back()} />
+        <Animated.View entering={enterLead}>
+          <PillButton label="Back" variant="outline" onPress={() => router.back()} />
+        </Animated.View>
       </Screen>
     );
   }
@@ -76,21 +80,26 @@ export default function NewAppointment() {
         <Text style={type.mini}>Appointments</Text>
       </Pressable>
 
-      <Text style={type.title} accessibilityRole="header">
-        Add appointment
-      </Text>
-      <Text style={[type.detail, { marginTop: 6, marginBottom: space.lg }]}>
-        Hearth drafts the prep sheet from the record as the visit gets close.
-      </Text>
+      <Animated.View entering={enterLead}>
+        <Text style={type.title} accessibilityRole="header">
+          Add appointment
+        </Text>
+        <Text style={[type.detail, { marginTop: 6, marginBottom: space.lg }]}>
+          Hearth drafts the prep sheet from the record as the visit gets close.
+        </Text>
+      </Animated.View>
 
-      <Text style={[type.label, { marginBottom: 8 }]}>For</Text>
-      <Seg
-        options={patients.map((p) => ({ key: p.id, label: p.preferredName ?? p.fullName }))}
-        value={patientId}
-        onChange={setPatientId}
-        scroll
-      />
+      <Animated.View entering={enterRow(1)}>
+        <Text style={[type.label, { marginBottom: 8 }]}>For</Text>
+        <Seg
+          options={patients.map((p) => ({ key: p.id, label: p.preferredName ?? p.fullName }))}
+          value={patientId}
+          onChange={setPatientId}
+          scroll
+        />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(2)}>
       <FormField
         label="Provider"
         value={provider}
@@ -122,7 +131,9 @@ export default function NewAppointment() {
         keyboardType="phone-pad"
         testID="appt-phone"
       />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(3)}>
       <SectionHeader label="When" />
       <FormField
         label="Date"
@@ -143,7 +154,9 @@ export default function NewAppointment() {
         testID="appt-time"
         {...(errors.atTime ? { error: errors.atTime } : {})}
       />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(4)}>
       <SectionHeader label="Plan" meta="optional" />
       <FormField
         label="Who drives"
@@ -167,11 +180,14 @@ export default function NewAppointment() {
         placeholder="Heart rate has been creeping up"
         testID="appt-purpose"
       />
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
-        <PillButton label="Add appointment" onPress={save} />
-        <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
+      <Animated.View entering={enterRow(5)}>
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+          <PillButton label="Add appointment" onPress={save} />
+          <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
+        </View>
+      </Animated.View>
     </Screen>
   );
 }

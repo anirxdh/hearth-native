@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft, Printer, Share2 } from 'lucide-react-native';
 import { DisclaimerFootnote, PillButton, Screen, SectionHeader, color, radius, space, type } from '../../../ds';
 import { getPatient, latestVitals, listContacts, listMedications } from '../../../db/repo';
+import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { useData } from '../../../lib/useData';
 import { outputErSheet } from '../../../lib/print';
 
@@ -58,24 +60,26 @@ export default function ErSheet() {
 
   return (
     <Screen>
-      <Pressable
-        onPress={() => router.back()}
-        hitSlop={10}
-        accessibilityRole="button"
-        accessibilityLabel="Back"
-        style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2, minHeight: 32 }}
-      >
-        <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
-        <Text style={type.mini}>Back</Text>
-      </Pressable>
+      <Animated.View entering={enterLead}>
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel="Back"
+          style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2, minHeight: 32 }}
+        >
+          <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
+          <Text style={type.mini}>Back</Text>
+        </Pressable>
 
-      <Text style={type.title}>ER sheet</Text>
-      <Text style={[type.detail, { marginTop: 4 }]}>
-        {patient.fullName}
-        {age !== null ? `, ${age}` : ''} · generated fresh from the record, never stale.
-      </Text>
+        <Text style={type.title}>ER sheet</Text>
+        <Text style={[type.detail, { marginTop: 4 }]}>
+          {patient.fullName}
+          {age !== null ? `, ${age}` : ''} · generated fresh from the record, never stale.
+        </Text>
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
+      <Animated.View entering={enterRow(1)} style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
         <PillButton
           label="Print"
           icon={<Printer size={14} color={color.paper} strokeWidth={2} />}
@@ -89,10 +93,13 @@ export default function ErSheet() {
           onPress={() => void run('share')}
           loading={busy === 'share'}
         />
-      </View>
+      </Animated.View>
 
-      {/* Critical band: what a triage nurse needs in the first ten seconds. */}
-      <View
+      {/* Critical band: what a triage nurse needs in the first ten seconds.
+          It arrives with the stagger and then holds absolutely still: no loop
+          on safety copy, ever. */}
+      <Animated.View
+        entering={enterRow(2)}
         accessible
         accessibilityLabel="Critical facts"
         style={{
@@ -125,12 +132,15 @@ export default function ErSheet() {
             .filter(Boolean)
             .join(' · ')}
         </Text>
-      </View>
+      </Animated.View>
 
-      <SectionHeader label="Current medications" meta={`${meds.length}`} />
+      <Animated.View entering={enterRow(3)}>
+        <SectionHeader label="Current medications" meta={`${meds.length}`} />
+      </Animated.View>
       {meds.map((m, i) => (
-        <View
+        <Animated.View
           key={m.id}
+          entering={enterRow(4 + i)}
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -148,23 +158,27 @@ export default function ErSheet() {
           <Text style={[type.mini, { maxWidth: '45%' }]} numberOfLines={1}>
             {m.prn ? 'as needed' : (m.sig ?? '')}
           </Text>
-        </View>
+        </Animated.View>
       ))}
 
-      <SectionHeader label="Conditions" />
-      <Text style={type.body}>{patient.conditions.join(' · ') || 'None recorded'}</Text>
+      <Animated.View entering={enterRow(5)}>
+        <SectionHeader label="Conditions" />
+        <Text style={type.body}>{patient.conditions.join(' · ') || 'None recorded'}</Text>
+      </Animated.View>
 
-      <SectionHeader label="Emergency contacts" />
-      {emergency.map((c) => (
-        <Text key={c.id} style={[type.body, { paddingVertical: 4 }]}>
-          <Text style={{ fontWeight: '600' }}>{c.name}</Text>
-          {c.relation ? ` · ${c.relation}` : ''}
-          {c.phone ? ` · ${c.phone}` : ''}
-        </Text>
-      ))}
+      <Animated.View entering={enterRow(6)}>
+        <SectionHeader label="Emergency contacts" />
+        {emergency.map((c) => (
+          <Text key={c.id} style={[type.body, { paddingVertical: 4 }]}>
+            <Text style={{ fontWeight: '600' }}>{c.name}</Text>
+            {c.relation ? ` · ${c.relation}` : ''}
+            {c.phone ? ` · ${c.phone}` : ''}
+          </Text>
+        ))}
+      </Animated.View>
 
       {providers.length > 0 ? (
-        <>
+        <Animated.View entering={enterRow(7)}>
           <SectionHeader label="Care team" />
           {providers.map((c) => (
             <Text key={c.id} style={[type.body, { paddingVertical: 4 }]}>
@@ -173,13 +187,15 @@ export default function ErSheet() {
               {c.phone ? ` · ${c.phone}` : ''}
             </Text>
           ))}
-        </>
+        </Animated.View>
       ) : null}
 
-      <DisclaimerFootnote>
-        Hearth organizes information the caregiver entered. Verify medications against the bottles. This sheet is
-        not medical advice.
-      </DisclaimerFootnote>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>
+          Hearth organizes information the caregiver entered. Verify medications against the bottles. This sheet is
+          not medical advice.
+        </DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

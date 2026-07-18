@@ -25,7 +25,8 @@ import {
   space,
   type,
 } from '../../ds';
-import { enterQuiet } from '../../ds/motion';
+import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
+import { LiquidGlass, liquidGlassAvailable } from '../../components/LiquidGlass';
 import { ScanBottle } from '../../components/ScanBottle';
 import { listPatients } from '../../db/repo';
 import { useData } from '../../lib/useData';
@@ -99,7 +100,8 @@ function ScanningChip() {
   }, [reduced, pulse]);
   const dotStyle = useAnimatedStyle(() => ({ opacity: pulse.value }));
 
-  return (
+  const onGlass = liquidGlassAvailable();
+  const chip = (
     <View
       accessible
       accessibilityRole="progressbar"
@@ -108,7 +110,7 @@ function ScanningChip() {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 7,
-        backgroundColor: color.ink,
+        backgroundColor: onGlass ? 'transparent' : color.ink,
         borderRadius: radius.pill,
         paddingHorizontal: 12,
         paddingVertical: 6,
@@ -122,6 +124,13 @@ function ScanningChip() {
       />
       <Text style={[type.label, { color: color.paper, letterSpacing: 0.8 }]}>SCANNING LABEL</Text>
     </View>
+  );
+  if (!onGlass) return chip;
+  // The same ink pill, poured in glass: the beam reads as passing under it.
+  return (
+    <LiquidGlass effect="clear" tint={color.ink} style={{ borderRadius: radius.pill }}>
+      {chip}
+    </LiquidGlass>
   );
 }
 
@@ -231,11 +240,13 @@ export default function ScanCapture() {
   if (patients.length === 0) {
     return (
       <Screen title="Scan a label">
-        <EmptyState
-          title="No one to scan for yet"
-          detail="Add the first person you care for, then their bottle labels are one photo away."
-          action={<PillButton label="Add a person" onPress={() => router.push('/patient/new')} />}
-        />
+        <Animated.View entering={enterLead}>
+          <EmptyState
+            title="No one to scan for yet"
+            detail="Add the first person you care for, then their bottle labels are one photo away."
+            action={<PillButton label="Add a person" onPress={() => router.push('/patient/new')} />}
+          />
+        </Animated.View>
       </Screen>
     );
   }
@@ -269,18 +280,22 @@ export default function ScanCapture() {
         <Text style={type.mini}>Home</Text>
       </Pressable>
 
-      <Text style={type.title} accessibilityRole="header">
-        Scan a label
-      </Text>
-      <Text style={[type.detail, { marginTop: 6 }]}>
-        Photograph the bottle label. Reading happens on this device; the photo is never uploaded.
-      </Text>
+      <Animated.View entering={enterLead}>
+        <Text style={type.title} accessibilityRole="header">
+          Scan a label
+        </Text>
+        <Text style={[type.detail, { marginTop: 6 }]}>
+          Photograph the bottle label. Reading happens on this device; the photo is never uploaded.
+        </Text>
+      </Animated.View>
 
-      <SectionHeader label="Whose label is this" />
+      <Animated.View entering={enterRow(1)}>
+        <SectionHeader label="Whose label is this" />
+      </Animated.View>
       {patients.map((p, i) => {
         const on = selected?.id === p.id;
         return (
-          <View key={p.id}>
+          <Animated.View key={p.id} entering={enterRow(i + 2)}>
             <Pressable
               onPress={() => setSelectedId(p.id)}
               accessibilityRole="radio"
@@ -298,41 +313,45 @@ export default function ScanCapture() {
               {on ? <Check size={17} color={color.ink} strokeWidth={2.2} /> : null}
             </Pressable>
             {i < patients.length - 1 ? <Hairline /> : null}
-          </View>
+          </Animated.View>
         );
       })}
 
-      <SectionHeader label="Label" />
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-        <PillButton
-          label="Take a photo"
-          onPress={takePhoto}
-          loading={busy}
-          icon={<Camera size={16} color={color.paper} strokeWidth={1.8} />}
-        />
-        <PillButton
-          label="Choose from photos"
-          variant="outline"
-          onPress={choosePhoto}
-          loading={busy}
-          icon={<Images size={16} color={color.ink} strokeWidth={1.8} />}
-        />
-      </View>
-      <Pressable
-        onPress={useSample}
-        testID="scan-sample"
-        accessibilityRole="button"
-        accessibilityLabel="Use sample label"
-        hitSlop={8}
-        style={{ marginTop: space.lg, alignSelf: 'flex-start' }}
-      >
-        <Text style={[type.mini, { textDecorationLine: 'underline' }]}>Use sample label</Text>
-      </Pressable>
+      <Animated.View entering={enterRow(patients.length + 2)}>
+        <SectionHeader label="Label" />
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+          <PillButton
+            label="Take a photo"
+            onPress={takePhoto}
+            loading={busy}
+            icon={<Camera size={16} color={color.paper} strokeWidth={1.8} />}
+          />
+          <PillButton
+            label="Choose from photos"
+            variant="outline"
+            onPress={choosePhoto}
+            loading={busy}
+            icon={<Images size={16} color={color.ink} strokeWidth={1.8} />}
+          />
+        </View>
+        <Pressable
+          onPress={useSample}
+          testID="scan-sample"
+          accessibilityRole="button"
+          accessibilityLabel="Use sample label"
+          hitSlop={8}
+          style={{ marginTop: space.lg, alignSelf: 'flex-start' }}
+        >
+          <Text style={[type.mini, { textDecorationLine: 'underline' }]}>Use sample label</Text>
+        </Pressable>
+      </Animated.View>
 
-      <DisclaimerFootnote>
-        Hearth reads the printed text on the label and shows you every field to confirm before
-        anything is saved. Nothing is saved, and nothing leaves this phone, until you approve it.
-      </DisclaimerFootnote>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>
+          Hearth reads the printed text on the label and shows you every field to confirm before
+          anything is saved. Nothing is saved, and nothing leaves this phone, until you approve it.
+        </DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

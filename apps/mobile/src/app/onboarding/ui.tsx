@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Redirect } from 'expo-router';
+import { LiquidGlass, liquidGlassAvailable } from '../../components/LiquidGlass';
 import { color, space, type } from '../../ds';
 
 const TOTAL_STEPS = 4;
@@ -8,16 +9,18 @@ const TOTAL_STEPS = 4;
 /**
  * The quiet progress indicator shared by every wizard step: a mini
  * "Step n of 4" line with a row of thin ink ticks. Deliberately small;
- * the step content carries the screen.
+ * the step content carries the screen. On glass devices the row sits
+ * in a quiet floating capsule; elsewhere it stays plain paper.
  */
 export function OnboardingSteps({ step }: { step: 1 | 2 | 3 | 4 }) {
-  return (
+  const onGlass = liquidGlassAvailable();
+  const row = (
     <View
       style={{
         flexDirection: 'row',
         alignItems: 'center',
         gap: space.md,
-        marginBottom: space.lg,
+        marginBottom: onGlass ? 0 : space.lg,
       }}
       accessible
       accessibilityLabel={`Step ${step} of ${TOTAL_STEPS}`}
@@ -37,6 +40,21 @@ export function OnboardingSteps({ step }: { step: 1 | 2 | 3 | 4 }) {
         ))}
       </View>
     </View>
+  );
+  if (!onGlass) return row;
+  return (
+    <LiquidGlass
+      effect="regular"
+      style={{
+        alignSelf: 'flex-start',
+        marginBottom: space.lg,
+        borderRadius: 999,
+        paddingHorizontal: 12,
+        paddingVertical: 7,
+      }}
+    >
+      {row}
+    </LiquidGlass>
   );
 }
 

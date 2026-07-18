@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CheckRow, FormField, PillButton, Screen, SectionHeader, space } from '../../../../../ds';
+import { enterLead, enterRow } from '../../../../../ds/motion';
 import { getMedication, updateMedication } from '../../../../../db/repo';
 import { syncNotifications } from '../../../../../lib/notifications';
 
@@ -55,20 +57,24 @@ export default function EditMedication() {
 
   return (
     <Screen title={`Edit ${med.name}`}>
-      <FormField label="Name" value={name} onChangeText={setName} />
-      <FormField label="Strength" value={strength} onChangeText={setStrength} />
-      <FormField label="Schedule (from the label)" value={sig} onChangeText={setSig} />
-      <FormField label="Doses per day" value={dosesPerDay} onChangeText={setDosesPerDay} keyboardType="number-pad" />
-      <CheckRow checked={prn} onToggle={() => setPrn(!prn)} label="As needed (PRN)" />
-      <SectionHeader label="Refills" />
-      <FormField label="Prescriber" value={prescriber} onChangeText={setPrescriber} />
-      <FormField label="Pharmacy" value={pharmacy} onChangeText={setPharmacy} />
-      <FormField label="Pharmacy phone" value={pharmacyPhone} onChangeText={setPharmacyPhone} keyboardType="phone-pad" />
-      <FormField label="Notes" value={notes} onChangeText={setNotes} multiline />
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+      <Animated.View entering={enterLead}>
+        <FormField label="Name" value={name} onChangeText={setName} />
+        <FormField label="Strength" value={strength} onChangeText={setStrength} />
+        <FormField label="Schedule (from the label)" value={sig} onChangeText={setSig} />
+        <FormField label="Doses per day" value={dosesPerDay} onChangeText={setDosesPerDay} keyboardType="number-pad" />
+        <CheckRow checked={prn} onToggle={() => setPrn(!prn)} label="As needed (PRN)" />
+      </Animated.View>
+      <Animated.View entering={enterRow(1)}>
+        <SectionHeader label="Refills" />
+        <FormField label="Prescriber" value={prescriber} onChangeText={setPrescriber} />
+        <FormField label="Pharmacy" value={pharmacy} onChangeText={setPharmacy} />
+        <FormField label="Pharmacy phone" value={pharmacyPhone} onChangeText={setPharmacyPhone} keyboardType="phone-pad" />
+        <FormField label="Notes" value={notes} onChangeText={setNotes} multiline />
+      </Animated.View>
+      <Animated.View entering={enterRow(2)} style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
         <PillButton label="Save" onPress={save} />
         <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
+      </Animated.View>
     </Screen>
   );
 }

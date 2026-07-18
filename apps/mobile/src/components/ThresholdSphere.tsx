@@ -179,6 +179,7 @@ export function ThresholdSphere({
           // refracting the dots as the hold builds
           <LiquidGlass
             effect="clear"
+            interactive
             pointerEvents="none"
             style={{
               position: 'absolute',

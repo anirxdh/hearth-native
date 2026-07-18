@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { TriangleAlert } from 'lucide-react-native';
 import {
@@ -14,6 +15,7 @@ import {
   space,
   type,
 } from '../../../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../../../ds/motion';
 import { createMedication, getPatient } from '../../../../db/repo';
 import { RUNWAY_DISCLAIMER } from '../../../../lib/copy';
 import { highAlertMatch, isValidLocalDate } from '@hearth/core';
@@ -106,62 +108,70 @@ export default function NewMedication() {
       title="Add a medication"
       subline={`For ${patient.preferredName ?? patient.fullName}. Copy the label; Hearth does the arithmetic.`}
     >
-      <FormField label="Name" value={name} onChangeText={setName} placeholder="Metformin" autoFocus />
-      {alert ? (
-        <View
-          style={{
-            marginTop: 10,
-            borderWidth: 1,
-            borderColor: color.red,
-            borderRadius: radius.md,
-            paddingHorizontal: 12,
-            paddingVertical: 9,
-            flexDirection: 'row',
-            gap: 8,
-            alignItems: 'center',
-          }}
-        >
-          <TriangleAlert size={14} color={color.red} strokeWidth={2} />
-          <Text style={[type.mini, { color: color.red, fontWeight: '600', flex: 1 }]}>
-            {alert.label}. Hearth will ask for an extra confirmation.
-          </Text>
-        </View>
-      ) : null}
-      <FormField label="Strength" value={strength} onChangeText={setStrength} placeholder="500 mg" />
-      <FormField label="Schedule (from the label)" value={sig} onChangeText={setSig} placeholder="1 tablet, twice daily with meals" />
-      <FormField
-        label="Doses per day"
-        value={dosesPerDay}
-        onChangeText={setDosesPerDay}
-        placeholder="2"
-        keyboardType="number-pad"
-        hint="Used for med-sync math; leave blank if unsure"
-      />
-      <CheckRow checked={prn} onToggle={() => setPrn(!prn)} label="As needed (PRN). No runway is forecast for as-needed medications." />
+      <Animated.View entering={enterLead}>
+        <FormField label="Name" value={name} onChangeText={setName} placeholder="Metformin" autoFocus />
+        {alert ? (
+          <View
+            style={{
+              marginTop: 10,
+              borderWidth: 1,
+              borderColor: color.red,
+              borderRadius: radius.md,
+              paddingHorizontal: 12,
+              paddingVertical: 9,
+              flexDirection: 'row',
+              gap: 8,
+              alignItems: 'center',
+            }}
+          >
+            <TriangleAlert size={14} color={color.red} strokeWidth={2} />
+            <Text style={[type.mini, { color: color.red, fontWeight: '600', flex: 1 }]}>
+              {alert.label}. Hearth will ask for an extra confirmation.
+            </Text>
+          </View>
+        ) : null}
+        <FormField label="Strength" value={strength} onChangeText={setStrength} placeholder="500 mg" />
+        <FormField label="Schedule (from the label)" value={sig} onChangeText={setSig} placeholder="1 tablet, twice daily with meals" />
+        <FormField
+          label="Doses per day"
+          value={dosesPerDay}
+          onChangeText={setDosesPerDay}
+          placeholder="2"
+          keyboardType="number-pad"
+          hint="Used for med-sync math; leave blank if unsure"
+        />
+        <CheckRow checked={prn} onToggle={() => setPrn(!prn)} label="As needed (PRN). No runway is forecast for as-needed medications." />
+      </Animated.View>
 
-      {!prn ? (
-        <>
-          <SectionHeader label="Last fill" meta="drives the runway" />
-          <CheckRow checked={noFillYet} onToggle={() => setNoFillYet(!noFillYet)} label="I don't have the fill information yet" />
-          {!noFillYet ? (
-            <>
-              <FormField label="Fill date" value={fillDate} onChangeText={setFillDate} hint="YYYY-MM-DD, printed on the label" autoCapitalize="none" />
-              <FormField label="Day supply" value={daySupply} onChangeText={setDaySupply} keyboardType="number-pad" hint="Days on the label, e.g. 30 or 90" />
-            </>
-          ) : null}
-        </>
-      ) : null}
+      <Animated.View entering={enterRow(1)}>
+        {!prn ? (
+          <>
+            <SectionHeader label="Last fill" meta="drives the runway" />
+            <CheckRow checked={noFillYet} onToggle={() => setNoFillYet(!noFillYet)} label="I don't have the fill information yet" />
+            {!noFillYet ? (
+              <>
+                <FormField label="Fill date" value={fillDate} onChangeText={setFillDate} hint="YYYY-MM-DD, printed on the label" autoCapitalize="none" />
+                <FormField label="Day supply" value={daySupply} onChangeText={setDaySupply} keyboardType="number-pad" hint="Days on the label, e.g. 30 or 90" />
+              </>
+            ) : null}
+          </>
+        ) : null}
+      </Animated.View>
 
-      <SectionHeader label="Refills" meta="optional" />
-      <FormField label="Prescriber" value={prescriber} onChangeText={setPrescriber} placeholder="Dr. S. Chen" />
-      <FormField label="Pharmacy" value={pharmacy} onChangeText={setPharmacy} placeholder="CVS #2213" />
-      <FormField label="Pharmacy phone" value={pharmacyPhone} onChangeText={setPharmacyPhone} placeholder="(415) 555-0301" keyboardType="phone-pad" />
+      <Animated.View entering={enterRow(2)}>
+        <SectionHeader label="Refills" meta="optional" />
+        <FormField label="Prescriber" value={prescriber} onChangeText={setPrescriber} placeholder="Dr. S. Chen" />
+        <FormField label="Pharmacy" value={pharmacy} onChangeText={setPharmacy} placeholder="CVS #2213" />
+        <FormField label="Pharmacy phone" value={pharmacyPhone} onChangeText={setPharmacyPhone} placeholder="(415) 555-0301" keyboardType="phone-pad" />
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+      <Animated.View entering={enterRow(3)} style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
         <PillButton label="Add medication" onPress={save} />
         <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
-      <DisclaimerFootnote>{RUNWAY_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>{RUNWAY_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

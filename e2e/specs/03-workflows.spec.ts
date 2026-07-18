@@ -65,7 +65,14 @@ async function editConfirmField(page: Page, key: string): Promise<string> {
 }
 
 async function confirmAndContinue(page: Page): Promise<void> {
-  await page.getByTestId('confirm-continue').click();
+  // The Human Confirm card breathes (an infinite, sub-pixel scale loop that
+  // draws the eye while the run is paused), so Playwright's "stable" check
+  // never settles on anything inside it. Assert visibility, then click
+  // without the stability wait; at scale 1.008 the button center is still
+  // the button.
+  const button = page.getByTestId('confirm-continue');
+  await expect(button).toBeVisible();
+  await button.click({ force: true });
 }
 
 test.describe('admin workflows', () => {

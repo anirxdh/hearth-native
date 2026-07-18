@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import type { TimelineEvent } from '@hearth/schema';
 import { EmptyState, PillButton, SectionHeader, Seg, color, space, type } from '../../ds';
+import { enterRow } from '../../ds/motion';
 
 type Filter = 'all' | TimelineEvent['kind'];
 
@@ -53,30 +55,33 @@ export function HistoryTab({
 
   return (
     <View>
-      <View style={{ marginTop: space.lg }}>
+      <Animated.View entering={enterRow(0)} style={{ marginTop: space.lg }}>
         <Seg options={FILTERS} value={filter} onChange={setFilter} scroll />
-      </View>
+      </Animated.View>
 
-      {filtered.length === 0 ? (
-        <View style={{ marginTop: space.lg }}>
-          <EmptyState
-            title={filter === 'all' ? 'No history yet' : 'Nothing in this category'}
-            detail="Diagnoses, hospital stays, and procedures build the story a new clinician needs. Medication changes appear here automatically."
-            action={
-              filter === 'all' ? (
-                <PillButton label="Add an event" onPress={() => router.push(`/patient/${patientId}/event/new` as never)} />
-              ) : undefined
-            }
-          />
-        </View>
-      ) : (
+      <Animated.View entering={enterRow(1)}>
+        {filtered.length === 0 ? (
+          <View style={{ marginTop: space.lg }}>
+            <EmptyState
+              title={filter === 'all' ? 'No history yet' : 'Nothing in this category'}
+              detail="Diagnoses, hospital stays, and procedures build the story a new clinician needs. Medication changes appear here automatically."
+              action={
+                filter === 'all' ? (
+                  <PillButton label="Add an event" onPress={() => router.push(`/patient/${patientId}/event/new` as never)} />
+                ) : undefined
+              }
+            />
+          </View>
+        ) : null}
+      </Animated.View>
+      {filtered.length > 0 ? (
         <View style={{ marginTop: space.sm }}>
-          {filtered.map((e) => {
+          {filtered.map((e, i) => {
             const yr = yearOf(e.happenedOn);
             const showYear = yr !== lastYear;
             lastYear = yr;
             return (
-              <View key={e.id}>
+              <Animated.View key={e.id} entering={enterRow(2 + i)}>
                 {showYear ? <SectionHeader label={yr} /> : null}
                 <View style={{ flexDirection: 'row', gap: 12, paddingVertical: 10 }}>
                   <View style={{ width: 8, alignItems: 'center' }}>
@@ -102,13 +107,13 @@ export function HistoryTab({
                     </Text>
                   </View>
                 </View>
-              </View>
+              </Animated.View>
             );
           })}
         </View>
-      )}
+      ) : null}
 
-      <View style={{ marginTop: space.lg, flexDirection: 'row' }}>
+      <Animated.View entering={enterRow(3)} style={{ marginTop: space.lg, flexDirection: 'row' }}>
         <PillButton
           label="Add an event"
           variant="outline"
@@ -116,7 +121,7 @@ export function HistoryTab({
           icon={<Plus size={14} color={color.ink} strokeWidth={2} />}
           onPress={() => router.push(`/patient/${patientId}/event/new` as never)}
         />
-      </View>
+      </Animated.View>
     </View>
   );
 }

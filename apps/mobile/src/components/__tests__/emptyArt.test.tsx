@@ -18,6 +18,13 @@ const ARTS = [
   ['BottleArt', BottleArt],
 ] as const;
 
+type Rendered = { props: Record<string, unknown>; children: Rendered[] };
+
+/** The Frame is a float wrapper (Animated.View) around the Svg itself. */
+function svgOf(root: Rendered): Rendered {
+  return root.children[0]!;
+}
+
 describe('EmptyArt pictograms', () => {
   test.each(ARTS)('%s renders without crashing', async (_name, Art) => {
     await render(<Art />);
@@ -26,16 +33,16 @@ describe('EmptyArt pictograms', () => {
 
   test.each(ARTS)('%s draws in the default 72 box, hidden from screen readers', async (_name, Art) => {
     await render(<Art />);
-    const root = screen.toJSON() as { props: Record<string, unknown> };
-    expect(root.props['accessibilityElementsHidden']).toBe(true);
-    expect(root.props['width']).toBe(72);
-    expect(root.props['height']).toBe(72);
+    const svg = svgOf(screen.toJSON() as unknown as Rendered);
+    expect(svg.props['accessibilityElementsHidden']).toBe(true);
+    expect(svg.props['width']).toBe(72);
+    expect(svg.props['height']).toBe(72);
   });
 
   test.each(ARTS)('%s honors a custom size', async (_name, Art) => {
     await render(<Art size={40} />);
-    const root = screen.toJSON() as { props: Record<string, unknown> };
-    expect(root.props['width']).toBe(40);
-    expect(root.props['height']).toBe(40);
+    const svg = svgOf(screen.toJSON() as unknown as Rendered);
+    expect(svg.props['width']).toBe(40);
+    expect(svg.props['height']).toBe(40);
   });
 });

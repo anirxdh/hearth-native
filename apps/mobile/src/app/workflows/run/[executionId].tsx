@@ -6,6 +6,15 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
+import Animated, {
+  ReduceMotion,
+  cancelAnimation,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { GitBranch, Printer } from 'lucide-react-native';
 import {
@@ -22,6 +31,7 @@ import {
   type,
 } from '../../../ds';
 import { jsonVal, valToText, type InterNodeVal, type NodeWithProperties } from '@hearth/workflows';
+import { enterLead, enterRow } from '../../../ds/motion';
 import { getWorkflowStore } from '../../../db/workflowStore';
 import { getPatient } from '../../../db/repo';
 import { FlowArt } from '../../../components/EmptyArt';
@@ -53,11 +63,14 @@ function StepRow({
   state,
   summary,
   last,
+  pulse = false,
 }: {
   node: NodeWithProperties;
   state: 'done' | 'awaiting' | 'pending';
   summary: string | null;
   last: boolean;
+  /** Slow heartbeat on the dot while the engine is working this step. */
+  pulse?: boolean;
 }) {
   const dot = state === 'done' ? 'green' : state === 'awaiting' ? 'amber' : 'neutral';
   return (
@@ -68,7 +81,7 @@ function StepRow({
     >
       <View style={{ alignItems: 'center', width: 10 }}>
         <View style={{ paddingTop: 5 }}>
-          <StatusDot status={dot} />
+          <StatusDot status={dot} pulse={pulse} />
         </View>
         {!last ? <View style={{ flex: 1, width: 1, backgroundColor: color.line, marginTop: 4 }} /> : null}
       </View>
@@ -84,6 +97,30 @@ function StepRow({
       </View>
     </View>
   );
+}
+
+/**
+ * An almost imperceptible breath (scale 1 to 1.008, 3s period) that draws the
+ * eye to the Human Confirm card without alarm. Runs only while mounted, which
+ * is only while the run is paused for review.
+ */
+function Breathe({ children }: { children: React.ReactNode }) {
+  const scale = useSharedValue(1);
+  React.useEffect(() => {
+    scale.value = withRepeat(
+      withSequence(withTiming(1.008, { duration: 1500 }), withTiming(1, { duration: 1500 })),
+      -1,
+      false,
+      undefined,
+      ReduceMotion.System,
+    );
+    return () => {
+      cancelAnimation(scale);
+      scale.value = 1;
+    };
+  }, [scale]);
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  return <Animated.View style={style}>{children}</Animated.View>;
 }
 
 export default function WorkflowRun() {
@@ -134,6 +171,10 @@ export default function WorkflowRun() {
 
   const { execution, workflow, outputs, patient } = data;
   const ordered = orderNodes(workflow);
+  // While the engine is working, the first unfinished step is the live one;
+  // its dot carries the slow heartbeat.
+  const runningNodeId =
+    execution.status === 'running' ? (ordered.find((n) => !outputs.has(n.id))?.id ?? null) : null;
   const sink = sinkInfo(workflow);
   const status = runStatusMeta(execution.status);
   const finalValues = outputs.get(sink.node.id);
@@ -216,7 +257,10 @@ export default function WorkflowRun() {
     <Screen title={workflow.name} subline={`Started ${dayOf(execution.startedAt)}${patient ? ` · for ${patient.fullName}` : ''}`}>
       <BackLink label="Workflows" />
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+      <Animated.View
+        entering={enterLead}
+        style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}
+      >
         <StatusTag status={status.dot} label={status.label} />
         <View style={{ flex: 1 }} />
         <Pressable
@@ -240,22 +284,30 @@ export default function WorkflowRun() {
             <Text style={[type.mini, { fontWeight: '600', color: color.red }]}>Cancel</Text>
           </Pressable>
         ) : null}
-      </View>
+      </Animated.View>
 
-      <SectionHeader label="Steps" />
+      <Animated.View entering={enterRow(1)}>
+        <SectionHeader label="Steps" />
+      </Animated.View>
       {ordered.map((n, i) => (
-        <StepRow
-          key={n.id}
-          node={n}
-          state={outputs.has(n.id) ? 'done' : execution.awaitingNodeId === n.id ? 'awaiting' : 'pending'}
-          summary={summaryLine(outputs.get(n.id))}
-          last={i === ordered.length - 1}
-        />
+        <Animated.View key={n.id} entering={enterRow(i + 2)}>
+          <StepRow
+            node={n}
+            state={outputs.has(n.id) ? 'done' : execution.awaitingNodeId === n.id ? 'awaiting' : 'pending'}
+            summary={summaryLine(outputs.get(n.id))}
+            last={i === ordered.length - 1}
+            pulse={n.id === runningNodeId}
+          />
+        </Animated.View>
       ))}
 
+      {/* The wrappers below mount with the screen, so a status flip only
+          swaps their children and never replays an entrance. */}
+      <Animated.View entering={enterRow(3)}>
       {execution.status === 'awaiting_confirm' && gateId ? (
         <>
           <SectionHeader label="Review and confirm" />
+          <Breathe>
           <Card accent="amber">
             <Text style={type.detail}>{gatePrompt(workflow, gateId)}</Text>
             {Object.entries(edits).map(([key, value]) => (
@@ -273,9 +325,12 @@ export default function WorkflowRun() {
               <PillButton label="Confirm and continue" onPress={() => void onConfirm()} loading={busy} />
             </View>
           </Card>
+          </Breathe>
         </>
       ) : null}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(4)}>
       {execution.status === 'completed' && sink.kind === 'record' ? (
         <>
           <SectionHeader label="Done" />
@@ -297,7 +352,9 @@ export default function WorkflowRun() {
           </Card>
         </>
       ) : null}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(4)}>
       {execution.status === 'completed' && sink.kind === 'document' ? (
         <>
           <SectionHeader label="The finished document" meta={sink.title} />
@@ -331,7 +388,9 @@ export default function WorkflowRun() {
           </View>
         </>
       ) : null}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(4)}>
       {execution.status === 'failed' ? (
         <>
           <SectionHeader label="What happened" />
@@ -345,6 +404,7 @@ export default function WorkflowRun() {
           </Card>
         </>
       ) : null}
+      </Animated.View>
     </Screen>
   );
 }

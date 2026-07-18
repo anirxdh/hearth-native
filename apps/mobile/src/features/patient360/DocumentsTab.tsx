@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { ActionSheetIOS, Alert, Platform, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Camera, FileText, Image as ImageIcon, Pencil, Plus, Share2, Trash2 } from 'lucide-react-native';
 import type { DocumentRow } from '@hearth/schema';
 import { Card, EmptyState, FormField, PillButton, SectionHeader, Seg, color, radius, space, type } from '../../ds';
+import { enterQuiet, enterRow } from '../../ds/motion';
 import {
   captureDocumentPhoto,
   importDocumentFile,
@@ -107,18 +109,22 @@ export function DocumentsTab({
 
   return (
     <View>
-      <SectionHeader label="Vault" meta="stored only on this phone" />
+      <Animated.View entering={enterRow(0)}>
+        <SectionHeader label="Vault" meta="stored only on this phone" />
+      </Animated.View>
       {documents.length === 0 ? (
-        <EmptyState
-          art={<FolderArt size={72} />}
-          title="Nothing in the vault yet"
-          detail="Insurance cards, the POLST or advance directive, discharge papers. Photograph them once; have them at every visit."
-          action={<PillButton label="Add a document" onPress={pickSource} disabled={busy} />}
-        />
+        <Animated.View entering={enterRow(1)}>
+          <EmptyState
+            art={<FolderArt size={72} />}
+            title="Nothing in the vault yet"
+            detail="Insurance cards, the POLST or advance directive, discharge papers. Photograph them once; have them at every visit."
+            action={<PillButton label="Add a document" onPress={pickSource} disabled={busy} />}
+          />
+        </Animated.View>
       ) : (
         <>
           {documents.map((doc, i) => (
-            <View key={doc.id}>
+            <Animated.View key={doc.id} entering={enterRow(1 + i)}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -201,9 +207,12 @@ export function DocumentsTab({
                   </View>
                 </Card>
               ) : null}
-            </View>
+            </Animated.View>
           ))}
-          <View style={{ marginTop: space.lg, flexDirection: 'row', gap: 10 }}>
+          <Animated.View
+            entering={enterRow(documents.length + 1)}
+            style={{ marginTop: space.lg, flexDirection: 'row', gap: 10 }}
+          >
             <PillButton
               label="Add a document"
               variant="outline"
@@ -212,13 +221,15 @@ export function DocumentsTab({
               onPress={pickSource}
               disabled={busy}
             />
-          </View>
+          </Animated.View>
         </>
       )}
-      <Text style={[type.mini, { marginTop: space.lg }]}>
-        Files are protected by this phone's passcode and never leave it unless you share them. You can require Face
-        ID to open Hearth in Settings.
-      </Text>
+      <Animated.View entering={enterQuiet}>
+        <Text style={[type.mini, { marginTop: space.lg }]}>
+          Files are protected by this phone's passcode and never leave it unless you share them. You can require Face
+          ID to open Hearth in Settings.
+        </Text>
+      </Animated.View>
     </View>
   );
 }

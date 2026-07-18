@@ -1,8 +1,10 @@
 import React from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { FileText, Phone, Plus, ShieldAlert } from 'lucide-react-native';
 import type { Contact, Patient, Vital } from '@hearth/schema';
+import { enterRow } from '../../ds/motion';
 import {
   EmptyState,
   ListRow,
@@ -64,7 +66,7 @@ export function OverviewTab({
   return (
     <View>
       {/* Paper layer shortcuts: the two documents an emergency actually needs. */}
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
+      <Animated.View entering={enterRow(0)} style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
         <PillButton
           label="ER sheet"
           size="sm"
@@ -78,31 +80,36 @@ export function OverviewTab({
           icon={<FileText size={14} color={color.ink} strokeWidth={2} />}
           onPress={() => router.push(`/patient/${patient.id}/onepager` as never)}
         />
-      </View>
+      </Animated.View>
 
-      <SectionHeader label="Latest vitals" meta={vitals.length ? undefined : 'none yet'} />
+      <Animated.View entering={enterRow(1)}>
+        <SectionHeader label="Latest vitals" meta={vitals.length ? undefined : 'none yet'} />
+      </Animated.View>
       {vitals.length === 0 ? (
-        <EmptyState
-          title="No readings yet"
-          detail="Record what you check at home: blood pressure, weight, glucose. Trends live in the Activity tab."
-          action={
-            <PillButton label="Add a reading" onPress={() => router.push(`/patient/${patient.id}/vital/new` as never)} />
-          }
-        />
+        <Animated.View entering={enterRow(2)}>
+          <EmptyState
+            title="No readings yet"
+            detail="Record what you check at home: blood pressure, weight, glucose. Trends live in the Activity tab."
+            action={
+              <PillButton label="Add a reading" onPress={() => router.push(`/patient/${patient.id}/vital/new` as never)} />
+            }
+          />
+        </Animated.View>
       ) : (
         <>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-            {vitals.map((v) => (
-              <StatCard
-                key={v.id}
-                label={VITAL_LABEL[v.kind]}
-                value={fmtVital(v)}
-                unit={v.unit}
-                meta={relDay(v.recordedOn, today)}
-              />
+            {vitals.map((v, i) => (
+              <Animated.View key={v.id} entering={enterRow(2 + i)} style={{ flexBasis: '47%', flexGrow: 1 }}>
+                <StatCard
+                  label={VITAL_LABEL[v.kind]}
+                  value={fmtVital(v)}
+                  unit={v.unit}
+                  meta={relDay(v.recordedOn, today)}
+                />
+              </Animated.View>
             ))}
           </View>
-          <View style={{ marginTop: space.lg, flexDirection: 'row' }}>
+          <Animated.View entering={enterRow(3)} style={{ marginTop: space.lg, flexDirection: 'row' }}>
             <PillButton
               label="Add a reading"
               variant="outline"
@@ -110,30 +117,35 @@ export function OverviewTab({
               icon={<Plus size={14} color={color.ink} strokeWidth={2} />}
               onPress={() => router.push(`/patient/${patient.id}/vital/new` as never)}
             />
-          </View>
+          </Animated.View>
         </>
       )}
 
       {urgentMeds.length > 0 ? (
         <>
-          <SectionHeader label="Needs attention" meta={`${urgentMeds.length}`} />
+          <Animated.View entering={enterRow(3)}>
+            <SectionHeader label="Needs attention" meta={`${urgentMeds.length}`} />
+          </Animated.View>
           {urgentMeds.map((m, i) => (
-            <ListRow
-              key={m.id}
-              title={`${m.name}${m.strength ? ` ${m.strength}` : ''}`}
-              detail={m.runway!.daysRemaining <= 0 ? 'Supply ran out' : `Supply ends in ${m.runway!.daysRemaining} day${m.runway!.daysRemaining === 1 ? '' : 's'}`}
-              onPress={() => router.push(`/patient/${patient.id}/med/${m.id}` as never)}
-              last={i === urgentMeds.length - 1}
-              right={<RunwayBar fraction={m.runway!.fraction} status={statusToColor(m.runway!.status)} />}
-            />
+            <Animated.View key={m.id} entering={enterRow(4 + i)}>
+              <ListRow
+                title={`${m.name}${m.strength ? ` ${m.strength}` : ''}`}
+                detail={m.runway!.daysRemaining <= 0 ? 'Supply ran out' : `Supply ends in ${m.runway!.daysRemaining} day${m.runway!.daysRemaining === 1 ? '' : 's'}`}
+                onPress={() => router.push(`/patient/${patient.id}/med/${m.id}` as never)}
+                last={i === urgentMeds.length - 1}
+                right={<RunwayBar fraction={m.runway!.fraction} status={statusToColor(m.runway!.status)} />}
+              />
+            </Animated.View>
           ))}
         </>
       ) : null}
 
-      <SectionHeader label="Care team" meta={providers.length ? undefined : 'add providers'} />
+      <Animated.View entering={enterRow(4)}>
+        <SectionHeader label="Care team" meta={providers.length ? undefined : 'add providers'} />
+      </Animated.View>
       {providers.map((c, i) => (
+        <Animated.View key={c.id} entering={enterRow(5 + i)}>
         <ListRow
-          key={c.id}
           title={c.name}
           {...(c.relation ? { detail: c.relation } : {})}
           last={i === providers.length - 1}
@@ -152,14 +164,17 @@ export function OverviewTab({
             ) : undefined
           }
         />
+        </Animated.View>
       ))}
 
       {emergency.length > 0 ? (
         <>
-          <SectionHeader label="Emergency contacts" />
+          <Animated.View entering={enterRow(6)}>
+            <SectionHeader label="Emergency contacts" />
+          </Animated.View>
           {emergency.map((c, i) => (
+            <Animated.View key={c.id} entering={enterRow(7 + i)}>
             <ListRow
-              key={c.id}
               title={c.name}
               {...(c.relation ? { detail: c.relation } : {})}
               last={i === emergency.length - 1}
@@ -178,18 +193,19 @@ export function OverviewTab({
                 ) : undefined
               }
             />
+            </Animated.View>
           ))}
         </>
       ) : null}
 
-      <View style={{ marginTop: space.lg }}>
+      <Animated.View entering={enterRow(8)} style={{ marginTop: space.lg }}>
         <PillButton
           label="Add a contact"
           variant="outline"
           size="sm"
           onPress={() => router.push(`/patient/${patient.id}/contact/new` as never)}
         />
-      </View>
+      </Animated.View>
     </View>
   );
 }

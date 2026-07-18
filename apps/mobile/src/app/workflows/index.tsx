@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import {
   Card,
@@ -15,6 +16,7 @@ import {
   space,
   type,
 } from '../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import { getWorkflowStore, listLatestWorkflows } from '../../db/workflowStore';
 import { useData } from '../../lib/useData';
 import { BackLink, WorkflowGlyph, dayOf, runStatusMeta, workflowMetaLine } from '../../features/workflows/ui';
@@ -43,48 +45,59 @@ export default function WorkflowLibrary() {
     >
       <BackLink label="Home" />
 
-      <SectionHeader label="Paperwork, automated" meta={`${data.workflows.length} available`} top={space.md} />
+      <Animated.View entering={enterLead}>
+        <SectionHeader label="Paperwork, automated" meta={`${data.workflows.length} available`} top={space.md} />
+      </Animated.View>
       {/* One column on phones; cards wrap into two columns once the readable
           measure offers room for a pair of 300pt cards (about 680 and up). */}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.md, marginTop: space.md }}>
-        {data.workflows.map((w) => (
-          <Card
+        {data.workflows.map((w, i) => (
+          <Animated.View
             key={w.id}
-            onPress={() => router.push(`/workflows/${w.id}` as never)}
+            entering={enterRow(i + 1)}
             style={{ flexGrow: 1, flexShrink: 1, flexBasis: 300 }}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
-              <Text style={[type.heading, { flex: 1 }]}>{w.name}</Text>
-              <WorkflowGlyph />
-            </View>
-            <Text style={[type.detail, { marginTop: 6 }]}>{w.description}</Text>
-            <Text style={[type.mini, { marginTop: 10 }]}>{workflowMetaLine(w)}</Text>
-          </Card>
+            <Card onPress={() => router.push(`/workflows/${w.id}` as never)} style={{ flex: 1 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+                <Text style={[type.heading, { flex: 1 }]}>{w.name}</Text>
+                <WorkflowGlyph />
+              </View>
+              <Text style={[type.detail, { marginTop: 6 }]}>{w.description}</Text>
+              <Text style={[type.mini, { marginTop: 10 }]}>{workflowMetaLine(w)}</Text>
+            </Card>
+          </Animated.View>
         ))}
       </View>
 
-      <SectionHeader label="Past runs" meta={data.runs.length > 0 ? `newest ${data.runs.length}` : undefined} />
+      <Animated.View entering={enterRow(2)}>
+        <SectionHeader label="Past runs" meta={data.runs.length > 0 ? `newest ${data.runs.length}` : undefined} />
+      </Animated.View>
       {data.runs.length === 0 ? (
-        <Text style={[type.detail, { marginTop: 2 }]}>
-          Runs will appear here after you start one.
-        </Text>
+        <Animated.View entering={enterRow(3)}>
+          <Text style={[type.detail, { marginTop: 2 }]}>
+            Runs will appear here after you start one.
+          </Text>
+        </Animated.View>
       ) : (
         data.runs.map((run, i) => {
           const meta = runStatusMeta(run.status);
           return (
-            <ListRow
-              key={run.id}
-              title={run.workflowName}
-              detail={`${meta.label} · ${dayOf(run.startedAt)}`}
-              left={<StatusDot status={meta.dot} />}
-              onPress={() => router.push(`/workflows/run/${run.id}` as never)}
-              last={i === data.runs.length - 1}
-            />
+            <Animated.View key={run.id} entering={enterRow(i + 3)}>
+              <ListRow
+                title={run.workflowName}
+                detail={`${meta.label} · ${dayOf(run.startedAt)}`}
+                left={<StatusDot status={meta.dot} />}
+                onPress={() => router.push(`/workflows/run/${run.id}` as never)}
+                last={i === data.runs.length - 1}
+              />
+            </Animated.View>
           );
         })
       )}
 
-      <DisclaimerFootnote>{WORKFLOWS_DISCLAIMER}</DisclaimerFootnote>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>{WORKFLOWS_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

@@ -4,6 +4,13 @@
  * an empty screen into an invitation instead of a dead end.
  */
 import React from 'react';
+import Animated, {
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 import Svg, { Circle, Line, Path, Rect } from 'react-native-svg';
 
 const INK = '#1D1D1F';
@@ -36,7 +43,14 @@ const R = {
   fill: 'none',
 } as const;
 
-/** Decorative frame: the art never speaks to screen readers. */
+/** Full float cycle: down 1.6s, back 1.6s. Slow enough to read as stillness. */
+const FLOAT_HALF_MS = 1600;
+const FLOAT_RISE_PX = -3;
+
+/**
+ * Decorative frame: the art never speaks to screen readers. It carries a
+ * barely-there vertical float so empty states feel alive, not abandoned.
+ */
 function Frame({
   size = 72,
   children,
@@ -44,16 +58,29 @@ function Frame({
   size?: number | undefined;
   children: React.ReactNode;
 }): React.ReactElement {
+  const drift = useSharedValue(0);
+  React.useEffect(() => {
+    drift.value = withRepeat(
+      withTiming(FLOAT_RISE_PX, { duration: FLOAT_HALF_MS }),
+      -1,
+      true,
+      undefined,
+      ReduceMotion.System,
+    );
+  }, [drift]);
+  const float = useAnimatedStyle(() => ({ transform: [{ translateY: drift.value }] }));
   return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-    >
-      {children}
-    </Svg>
+    <Animated.View style={float}>
+      <Svg
+        width={size}
+        height={size}
+        viewBox="0 0 64 64"
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        {children}
+      </Svg>
+    </Animated.View>
   );
 }
 

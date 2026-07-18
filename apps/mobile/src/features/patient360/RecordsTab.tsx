@@ -1,9 +1,11 @@
 import React from 'react';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import type { LabResult } from '@hearth/schema';
 import { EmptyState, PillButton, SectionHeader, color, radius, space, type } from '../../ds';
+import { enterRow } from '../../ds/motion';
 
 function fmtDate(on: string): string {
   const d = new Date(`${on}T12:00:00Z`);
@@ -31,16 +33,16 @@ export function RecordsTab({ patientId, labs }: { patientId: string; labs: LabRe
   return (
     <View>
       {labs.length === 0 ? (
-        <View style={{ marginTop: space.lg }}>
+        <Animated.View entering={enterRow(0)} style={{ marginTop: space.lg }}>
           <EmptyState
             title="No lab results yet"
             detail="Type in the handful of numbers that matter from each lab report. Out-of-range values are flagged."
             action={<PillButton label="Add a result" onPress={() => router.push(`/patient/${patientId}/lab/new` as never)} />}
           />
-        </View>
+        </Animated.View>
       ) : (
-        groups.map((g) => (
-          <View key={g.on}>
+        groups.map((g, gi) => (
+          <Animated.View key={g.on} entering={enterRow(gi)}>
             <SectionHeader label={fmtDate(g.on)} {...(g.source ? { meta: g.source } : {})} />
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
               {g.rows.map((l) => (
@@ -79,11 +81,11 @@ export function RecordsTab({ patientId, labs }: { patientId: string; labs: LabRe
                 </View>
               ))}
             </View>
-          </View>
+          </Animated.View>
         ))
       )}
 
-      <View style={{ marginTop: space.lg, flexDirection: 'row' }}>
+      <Animated.View entering={enterRow(groups.length)} style={{ marginTop: space.lg, flexDirection: 'row' }}>
         <PillButton
           label="Add a result"
           variant="outline"
@@ -91,7 +93,7 @@ export function RecordsTab({ patientId, labs }: { patientId: string; labs: LabRe
           icon={<Plus size={14} color={color.ink} strokeWidth={2} />}
           onPress={() => router.push(`/patient/${patientId}/lab/new` as never)}
         />
-      </View>
+      </Animated.View>
     </View>
   );
 }

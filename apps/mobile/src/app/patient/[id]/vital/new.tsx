@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { isValidLocalDate } from '@hearth/core';
 import type { Vital } from '@hearth/schema';
 import { FormField, PillButton, Screen, SectionHeader, Seg, space } from '../../../../ds';
+import { enterLead, enterRow } from '../../../../ds/motion';
 import { addVital, getPatient } from '../../../../db/repo';
 import { nowIso, today } from '../../../../lib/clock';
 
@@ -74,10 +76,12 @@ export default function NewVital() {
 
   return (
     <Screen title="Add a reading" subline={`For ${name}. Recorded readings feed the Activity trends.`}>
-      <SectionHeader label="What did you check" />
-      <Seg options={KINDS.map(({ key, label }) => ({ key, label }))} value={kind} onChange={setKind} scroll />
+      <Animated.View entering={enterLead}>
+        <SectionHeader label="What did you check" />
+        <Seg options={KINDS.map(({ key, label }) => ({ key, label }))} value={kind} onChange={setKind} scroll />
+      </Animated.View>
 
-      <View style={{ marginTop: space.lg, gap: space.md }}>
+      <Animated.View entering={enterRow(1)} style={{ marginTop: space.lg, gap: space.md }}>
         <FormField
           label={kind === 'bp' ? `Top number (systolic), ${active.unit}` : `${active.label}, ${active.unit}`}
           value={value}
@@ -96,12 +100,12 @@ export default function NewVital() {
         ) : null}
         <FormField label="Date checked" value={recordedOn} onChangeText={setRecordedOn} placeholder={today()} />
         <FormField label="Note (optional)" value={note} onChangeText={setNote} placeholder="After breakfast, left arm" />
-      </View>
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+      <Animated.View entering={enterRow(2)} style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
         <PillButton label="Save reading" onPress={save} />
         <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
+      </Animated.View>
     </Screen>
   );
 }

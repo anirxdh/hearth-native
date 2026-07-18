@@ -7,6 +7,7 @@
  */
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Check, GitBranch, Upload } from 'lucide-react-native';
@@ -32,6 +33,7 @@ import {
   type UserInputValue,
 } from '@hearth/workflows';
 import { getWorkflowStore } from '../../../db/workflowStore';
+import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { listPatients } from '../../../db/repo';
 import { FlowArt } from '../../../components/EmptyArt';
 import { useData } from '../../../lib/useData';
@@ -160,18 +162,23 @@ export default function WorkflowPreview() {
     <Screen title={workflow.name} subline={workflow.description}>
       <BackLink label="Workflows" />
 
-      <Text style={type.mini}>{workflowMetaLine(workflow)}</Text>
-      <Pressable
-        onPress={() => router.push(`/workflows/${id}/canvas` as never)}
-        accessibilityRole="button"
-        accessibilityLabel="View the flow"
-        hitSlop={8}
-        style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10, alignSelf: 'flex-start' }}
-      >
-        <GitBranch size={14} color={color.ink2} strokeWidth={1.8} />
-        <Text style={[type.mini, { fontWeight: '600', textDecorationLine: 'underline' }]}>View the flow</Text>
-      </Pressable>
+      <Animated.View entering={enterLead}>
+        <Text style={type.mini}>{workflowMetaLine(workflow)}</Text>
+        <Pressable
+          onPress={() => router.push(`/workflows/${id}/canvas` as never)}
+          accessibilityRole="button"
+          accessibilityLabel="View the flow"
+          hitSlop={8}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10, alignSelf: 'flex-start' }}
+        >
+          <GitBranch size={14} color={color.ink2} strokeWidth={1.8} />
+          <Text style={[type.mini, { fontWeight: '600', textDecorationLine: 'underline' }]}>View the flow</Text>
+        </Pressable>
+      </Animated.View>
 
+      {/* Wrapper mounts with the screen; the demo-family flip inside does not
+          re-trigger the entrance. */}
+      <Animated.View entering={enterRow(1)}>
       {needsPatient ? (
         <>
           <SectionHeader label="Who this is for" />
@@ -204,10 +211,13 @@ export default function WorkflowPreview() {
           )}
         </>
       ) : null}
+      </Animated.View>
 
-      <SectionHeader label="What it needs from you" />
-      {groups.map((g) => (
-        <View key={g.nodeId} style={{ marginTop: space.md }}>
+      <Animated.View entering={enterRow(2)}>
+        <SectionHeader label="What it needs from you" />
+      </Animated.View>
+      {groups.map((g, gi) => (
+        <Animated.View key={g.nodeId} entering={enterRow(gi + 3)} style={{ marginTop: space.md }}>
           <Text style={type.detail}>{g.description}</Text>
           {g.inputs.map((p) => {
             const label = p.label ?? p.name;
@@ -282,14 +292,18 @@ export default function WorkflowPreview() {
               </View>
             );
           })}
-        </View>
+        </Animated.View>
       ))}
 
-      <View style={{ marginTop: space.xl, alignSelf: 'flex-start' }} testID="run-workflow">
-        <PillButton label="Run workflow" onPress={() => void run()} disabled={!ready} loading={running} />
-      </View>
+      <Animated.View entering={enterRow(Math.min(groups.length, 5) + 3)}>
+        <View style={{ marginTop: space.xl, alignSelf: 'flex-start' }} testID="run-workflow">
+          <PillButton label="Run workflow" onPress={() => void run()} disabled={!ready} loading={running} />
+        </View>
+      </Animated.View>
 
-      <DisclaimerFootnote>{RUN_DISCLAIMER}</DisclaimerFootnote>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>{RUN_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

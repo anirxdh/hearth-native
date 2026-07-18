@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   Accessibility,
@@ -30,6 +31,7 @@ import {
 } from '../../../ds';
 import { completeVisit, getAppointment, recentMedChanges } from '../../../db/apptRepo';
 import { listContacts, listMedications, listObservations, listVitals } from '../../../db/repo';
+import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { buildPrepSheet } from '../../../lib/prepSheet';
 import { printPrepSheet } from '../../../lib/prepPrint';
 import { infoDialog } from '../../../lib/dialogs';
@@ -157,6 +159,7 @@ export default function AppointmentKit() {
       </Pressable>
 
       {/* Patient-first header: whose visit this is leads the page. */}
+      <Animated.View entering={enterLead}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.lg }}>
         <Avatar name={patient.fullName} size={52} />
         <View style={{ flex: 1, minWidth: 0 }}>
@@ -193,8 +196,10 @@ export default function AppointmentKit() {
           <StatusTag {...whenTag(appt.onDate, todayDate)} />
         )}
       </View>
+      </Animated.View>
 
       {/* THE PREP SHEET: deterministic, computed from the record. */}
+      <Animated.View entering={enterRow(1)}>
       <SectionHeader label="Current medications" meta={sheet.currentMeds.length ? `${sheet.currentMeds.length}` : 'none'} />
       {sheet.currentMeds.length === 0 ? (
         <Text style={type.detail}>No medications on record.</Text>
@@ -215,7 +220,9 @@ export default function AppointmentKit() {
           />
         ))
       )}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(2)}>
       <SectionHeader label="Changes, last 30 days" meta={sheet.medChanges.length ? `${sheet.medChanges.length}` : 'none'} />
       {sheet.medChanges.length === 0 ? (
         <Text style={type.detail}>No medication changes in the last 30 days.</Text>
@@ -226,7 +233,9 @@ export default function AppointmentKit() {
           </Text>
         ))
       )}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(3)}>
       <SectionHeader label="Trends worth mentioning" meta={sheet.trends.length ? undefined : 'none'} />
       {sheet.trends.length === 0 ? (
         <Text style={type.detail}>No notable movement in the tracked vitals.</Text>
@@ -237,7 +246,9 @@ export default function AppointmentKit() {
           </Text>
         ))
       )}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(4)}>
       <SectionHeader label="Recent observations" meta={sheet.observations.length ? `newest ${sheet.observations.length}` : 'none'} />
       {sheet.observations.length === 0 ? (
         <Text style={type.detail}>Nothing noted in the last 30 days.</Text>
@@ -249,7 +260,9 @@ export default function AppointmentKit() {
           </View>
         ))
       )}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(5)}>
       <SectionHeader label="Questions to ask" meta={`${sheet.questions.length}`} />
       {sheet.questions.map((q, i) => (
         <Text
@@ -260,7 +273,9 @@ export default function AppointmentKit() {
           {`${i + 1}. ${q}`}
         </Text>
       ))}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(6)}>
       <SectionHeader label="Bring" />
       {sheet.bring.map((b, i) => (
         <Text key={i} style={[type.detail, { marginTop: i === 0 ? 0 : 6 }]}>
@@ -279,8 +294,10 @@ export default function AppointmentKit() {
           }
         />
       </View>
+      </Animated.View>
 
       {/* Booking call script: everything the front desk asks, in one place. */}
+      <Animated.View entering={enterRow(7)}>
       <Card style={{ marginTop: space.xl }}>
         <Pressable
           onPress={() => setScriptOpen(!scriptOpen)}
@@ -317,8 +334,10 @@ export default function AppointmentKit() {
           </View>
         ) : null}
       </Card>
+      </Animated.View>
 
       {/* After the visit. */}
+      <Animated.View entering={enterRow(8)}>
       {appt.status === 'done' ? (
         <>
           <SectionHeader label="What happened" meta={appt.onDate} />
@@ -345,8 +364,10 @@ export default function AppointmentKit() {
           </Text>
         </>
       )}
+      </Animated.View>
 
       {/* GET THERE: deterministic options, no map, no personal data in links. */}
+      <Animated.View entering={enterRow(8)}>
       <SectionHeader label="Get there" />
       {mapsUrl ? (
         <>
@@ -389,8 +410,10 @@ export default function AppointmentKit() {
           </View>
         </View>
       </Card>
+      </Animated.View>
 
       {/* Escalation: who to call when the ride falls through. */}
+      <Animated.View entering={enterRow(8)}>
       <SectionHeader label="If you cannot get there" />
       {appt.phone ? (
         <ListRow
@@ -437,11 +460,14 @@ export default function AppointmentKit() {
           Add emergency contacts to {displayName}&apos;s record so a backup driver is one tap away.
         </Text>
       ) : null}
+      </Animated.View>
 
+      <Animated.View entering={enterQuiet}>
       <DisclaimerFootnote>
         The prep sheet is drafted from records kept at home. It is not medical advice; bring the
         questions to the clinician and verify details against the bottle and the chart.
       </DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

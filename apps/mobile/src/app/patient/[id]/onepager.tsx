@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft, Printer, Share2 } from 'lucide-react-native';
 import { dailyNeeds } from '@hearth/core';
@@ -14,6 +15,7 @@ import {
   type,
 } from '../../../ds';
 import { getPatient, latestVitals, listContacts, listMedications } from '../../../db/repo';
+import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { useData } from '../../../lib/useData';
 import { outputOnePager } from '../../../lib/print';
 
@@ -78,24 +80,26 @@ export default function OnePager() {
 
   return (
     <Screen>
-      <Pressable
-        onPress={() => router.back()}
-        hitSlop={10}
-        accessibilityRole="button"
-        accessibilityLabel="Back"
-        style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2, minHeight: 32 }}
-      >
-        <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
-        <Text style={type.mini}>Back</Text>
-      </Pressable>
+      <Animated.View entering={enterLead}>
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel="Back"
+          style={{ marginBottom: space.md, flexDirection: 'row', alignItems: 'center', gap: 2, minHeight: 32 }}
+        >
+          <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
+          <Text style={type.mini}>Back</Text>
+        </Pressable>
 
-      <Text style={type.title}>One-pager</Text>
-      <Text style={[type.detail, { marginTop: 4 }]}>
-        Everything about {patient.preferredName ?? patient.fullName} on a single page: conditions, medications,
-        latest readings, contacts, and daily needs.
-      </Text>
+        <Text style={type.title}>One-pager</Text>
+        <Text style={[type.detail, { marginTop: 4 }]}>
+          Everything about {patient.preferredName ?? patient.fullName} on a single page: conditions, medications,
+          latest readings, contacts, and daily needs.
+        </Text>
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
+      <Animated.View entering={enterRow(1)} style={{ flexDirection: 'row', gap: 10, marginTop: space.lg }}>
         <PillButton
           label="Print"
           icon={<Printer size={14} color={color.paper} strokeWidth={2} />}
@@ -109,23 +113,26 @@ export default function OnePager() {
           onPress={() => void run('share')}
           loading={busy === 'share'}
         />
-      </View>
+      </Animated.View>
 
-      <SectionHeader label="Who" />
-      <Text style={type.body}>
-        <Text style={{ fontWeight: '600' }}>{patient.fullName}</Text>
-        {age !== null ? `, ${age}` : ''}
-        {patient.relationship ? ` · ${patient.relationship}` : ''}
-      </Text>
-      {patient.conditions.length > 0 ? (
-        <Text style={[type.detail, { marginTop: 4 }]}>{patient.conditions.join(' · ')}</Text>
-      ) : null}
-      {patient.allergies.length > 0 ? (
-        <Text style={[type.detail, { marginTop: 4, color: color.red, fontWeight: '600' }]}>
-          Allergies: {patient.allergies.map((a) => a.name).join(', ')}
+      <Animated.View entering={enterRow(2)}>
+        <SectionHeader label="Who" />
+        <Text style={type.body}>
+          <Text style={{ fontWeight: '600' }}>{patient.fullName}</Text>
+          {age !== null ? `, ${age}` : ''}
+          {patient.relationship ? ` · ${patient.relationship}` : ''}
         </Text>
-      ) : null}
+        {patient.conditions.length > 0 ? (
+          <Text style={[type.detail, { marginTop: 4 }]}>{patient.conditions.join(' · ')}</Text>
+        ) : null}
+        {patient.allergies.length > 0 ? (
+          <Text style={[type.detail, { marginTop: 4, color: color.red, fontWeight: '600' }]}>
+            Allergies: {patient.allergies.map((a) => a.name).join(', ')}
+          </Text>
+        ) : null}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(3)}>
       <SectionHeader label="Medications" meta={`${meds.length}`} />
       {meds.map((m, i) => (
         <View
@@ -148,9 +155,10 @@ export default function OnePager() {
           </Text>
         </View>
       ))}
+      </Animated.View>
 
       {vitals.length > 0 ? (
-        <>
+        <Animated.View entering={enterRow(4)}>
           <SectionHeader label="Latest readings" />
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
             {vitals.map((v) => (
@@ -163,11 +171,11 @@ export default function OnePager() {
               />
             ))}
           </View>
-        </>
+        </Animated.View>
       ) : null}
 
       {nutrition.length > 0 ? (
-        <>
+        <Animated.View entering={enterRow(5)}>
           <SectionHeader label="Daily needs" meta="general guidance" />
           {nutrition.map((row, i) => (
             <View
@@ -196,22 +204,26 @@ export default function OnePager() {
               : 'No sex on their profile yet, so this is a best guess; set it in Edit to be sure.'}{' '}
             General guidance, not a prescription; their clinician's advice wins.
           </Text>
-        </>
+        </Animated.View>
       ) : null}
 
-      <SectionHeader label="Contacts" />
-      {contacts.map((c) => (
-        <Text key={c.id} style={[type.body, { paddingVertical: 4 }]}>
-          <Text style={{ fontWeight: '600' }}>{c.name}</Text>
-          {c.relation ? ` · ${c.relation}` : ''}
-          {c.phone ? ` · ${c.phone}` : ''}
-        </Text>
-      ))}
+      <Animated.View entering={enterRow(6)}>
+        <SectionHeader label="Contacts" />
+        {contacts.map((c) => (
+          <Text key={c.id} style={[type.body, { paddingVertical: 4 }]}>
+            <Text style={{ fontWeight: '600' }}>{c.name}</Text>
+            {c.relation ? ` · ${c.relation}` : ''}
+            {c.phone ? ` · ${c.phone}` : ''}
+          </Text>
+        ))}
+      </Animated.View>
 
-      <DisclaimerFootnote>
-        Hearth organizes information the caregiver entered. This page is not medical advice and never includes
-        dosing decisions.
-      </DisclaimerFootnote>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>
+          Hearth organizes information the caregiver entered. This page is not medical advice and never includes
+          dosing decisions.
+        </DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

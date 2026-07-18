@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft, PhoneCall, Printer } from 'lucide-react-native';
 import { Linking } from 'react-native';
 import { PillButton, Screen, color, radius, space, type } from '../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import { GUIDES } from '../../content/guides';
 import { outputGuide } from '../../lib/print';
 
@@ -72,30 +74,35 @@ export default function GuideReader() {
         ) : null}
       </View>
 
-      <Text style={[type.title, { marginTop: space.lg }]}>{guide.title}</Text>
-      <Text style={[type.detail, { marginTop: 4 }]}>{guide.oneLiner}</Text>
+      {/* Title, one-liner, and warning arrive as one lead block: the safety
+          text never lags behind the headline. */}
+      <Animated.View entering={enterLead}>
+        <Text style={[type.title, { marginTop: space.lg }]}>{guide.title}</Text>
+        <Text style={[type.detail, { marginTop: 4 }]}>{guide.oneLiner}</Text>
 
-      {guide.warning ? (
-        <View
-          style={{
-            marginTop: space.lg,
-            borderWidth: 1,
-            borderColor: color.red,
-            borderRadius: radius.md,
-            paddingHorizontal: 14,
-            paddingVertical: 10,
-          }}
-        >
-          <Text style={[type.mini, { color: color.red, fontWeight: '600' }]}>{guide.warning}</Text>
-        </View>
-      ) : null}
+        {guide.warning ? (
+          <View
+            style={{
+              marginTop: space.lg,
+              borderWidth: 1,
+              borderColor: color.red,
+              borderRadius: radius.md,
+              paddingHorizontal: 14,
+              paddingVertical: 10,
+            }}
+          >
+            <Text style={[type.mini, { color: color.red, fontWeight: '600' }]}>{guide.warning}</Text>
+          </View>
+        ) : null}
+      </Animated.View>
 
       <View style={{ marginTop: space.lg, gap: 14 }}>
-        {guide.steps.map((s) => {
+        {guide.steps.map((s, i) => {
           const Art = s.Art;
           return (
-            <View
+            <Animated.View
               key={s.n}
+              entering={enterRow(i + 1)}
               accessible
               accessibilityLabel={`Step ${s.n}: ${s.title}. ${s.body}`}
               style={{
@@ -127,12 +134,15 @@ export default function GuideReader() {
                 <Text style={[type.heading]}>{s.title}</Text>
                 <Text style={[type.body, { marginTop: 4, color: color.ink2 }]}>{s.body}</Text>
               </View>
-            </View>
+            </Animated.View>
           );
         })}
       </View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+      <Animated.View
+        entering={enterRow(guide.steps.length + 1)}
+        style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}
+      >
         <PillButton
           label="Print this guide"
           variant="outline"
@@ -140,12 +150,14 @@ export default function GuideReader() {
           onPress={() => void print()}
           loading={busy}
         />
-      </View>
+      </Animated.View>
 
-      <Text style={[type.mini, { marginTop: space.lg }]}>
-        Version {guide.review.version} · {guide.review.reviewer} · reviewed {guide.review.reviewedOn}. General
-        first aid information, not medical advice. When in doubt, call 911.
-      </Text>
+      <Animated.View entering={enterQuiet}>
+        <Text style={[type.mini, { marginTop: space.lg }]}>
+          Version {guide.review.version} · {guide.review.reviewer} · reviewed {guide.review.reviewedOn}. General
+          first aid information, not medical advice. When in doubt, call 911.
+        </Text>
+      </Animated.View>
     </Screen>
   );
 }

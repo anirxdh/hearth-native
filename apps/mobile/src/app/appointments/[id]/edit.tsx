@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { isValidLocalDate } from '@hearth/core';
 import { FormField, Hairline, PillButton, Screen, SectionHeader, Seg, color, space, type } from '../../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { archiveAppointment, getAppointment, updateAppointment } from '../../../db/apptRepo';
 import { listPatients } from '../../../db/repo';
 import { confirmDialog } from '../../../lib/dialogs';
@@ -88,20 +90,25 @@ export default function EditAppointment() {
         <Text style={type.mini}>{appt.provider}</Text>
       </Pressable>
 
-      <Text style={type.title} accessibilityRole="header">
-        Edit appointment
-      </Text>
+      <Animated.View entering={enterLead}>
+        <Text style={type.title} accessibilityRole="header">
+          Edit appointment
+        </Text>
+      </Animated.View>
 
-      <View style={{ marginTop: space.lg }}>
-        <Text style={[type.label, { marginBottom: 8 }]}>For</Text>
-        <Seg
-          options={patients.map((p) => ({ key: p.id, label: p.preferredName ?? p.fullName }))}
-          value={patientId}
-          onChange={setPatientId}
-          scroll
-        />
-      </View>
+      <Animated.View entering={enterRow(1)}>
+        <View style={{ marginTop: space.lg }}>
+          <Text style={[type.label, { marginBottom: 8 }]}>For</Text>
+          <Seg
+            options={patients.map((p) => ({ key: p.id, label: p.preferredName ?? p.fullName }))}
+            value={patientId}
+            onChange={setPatientId}
+            scroll
+          />
+        </View>
+      </Animated.View>
 
+      <Animated.View entering={enterRow(2)}>
       <FormField
         label="Provider"
         value={provider}
@@ -125,7 +132,9 @@ export default function EditAppointment() {
         placeholder="(415) 555-0128"
         keyboardType="phone-pad"
       />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(3)}>
       <SectionHeader label="When" />
       <FormField
         label="Date"
@@ -145,7 +154,9 @@ export default function EditAppointment() {
         autoCapitalize="none"
         {...(errors.atTime ? { error: errors.atTime } : {})}
       />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(4)}>
       <SectionHeader label="Plan" meta="optional" />
       <FormField label="Who drives" value={driver} onChangeText={setDriver} placeholder="Maria" />
       <FormField
@@ -161,18 +172,23 @@ export default function EditAppointment() {
         onChangeText={setPurpose}
         placeholder="Heart rate has been creeping up"
       />
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
-        <PillButton label="Save changes" onPress={save} />
-        <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
-
-      <View style={{ marginTop: space.xxl }}>
-        <Hairline />
-        <View style={{ marginTop: space.lg }}>
-          <PillButton label="Remove appointment" variant="danger" size="sm" onPress={removeAppointment} />
+      <Animated.View entering={enterRow(5)}>
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+          <PillButton label="Save changes" onPress={save} />
+          <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
         </View>
-      </View>
+      </Animated.View>
+
+      <Animated.View entering={enterQuiet}>
+        <View style={{ marginTop: space.xxl }}>
+          <Hairline />
+          <View style={{ marginTop: space.lg }}>
+            <PillButton label="Remove appointment" variant="danger" size="sm" onPress={removeAppointment} />
+          </View>
+        </View>
+      </Animated.View>
     </Screen>
   );
 }

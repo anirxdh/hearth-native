@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import {
   Avatar,
@@ -19,6 +20,7 @@ import {
   space,
   type,
 } from '../ds';
+import { enterLead, enterRow } from '../ds/motion';
 
 /**
  * The living style reference (P2): every component in every state,
@@ -29,6 +31,7 @@ export default function Gallery() {
   const noop = () => {};
   return (
     <Screen title="Design gallery" subline="Ivory Editorial, native. Every component in every state.">
+      <Animated.View entering={enterLead}>
       <SectionHeader label="Type scale" />
       <Text style={type.greet}>Good afternoon, Maria</Text>
       <Text style={[type.title, { marginTop: 8 }]}>Screen title</Text>
@@ -38,7 +41,9 @@ export default function Gallery() {
       <Text style={[type.mini, { marginTop: 8 }]}>Mini text · metadata · 12.5pt</Text>
       <Text style={[type.label, { marginTop: 8 }]}>Section label</Text>
       <Text style={[type.stat, { marginTop: 8 }]}>4 days left</Text>
+      </Animated.View>
 
+      <Animated.View entering={enterRow(1)}>
       <SectionHeader label="Buttons" />
       <View style={{ flexDirection: 'row', gap: 10, flexWrap: 'wrap' }}>
         <PillButton label="Primary dark" onPress={noop} />
@@ -50,7 +55,9 @@ export default function Gallery() {
         <PillButton label="Disabled" disabled onPress={noop} />
         <PillButton label="Loading" loading onPress={noop} />
       </View>
+      </Animated.View>
 
+      <Animated.View entering={enterRow(2)}>
       <SectionHeader label="Status" />
       <View style={{ flexDirection: 'row', gap: 18, alignItems: 'center' }}>
         <StatusTag status="red" label="Act now" />
@@ -63,7 +70,9 @@ export default function Gallery() {
         <RunwayBar fraction={0.4} status="amber" />
         <RunwayBar fraction={0.85} status="green" />
       </View>
+      </Animated.View>
 
+      <Animated.View entering={enterRow(3)}>
       <SectionHeader label="Cards" />
       <Card accent="red">
         <Text style={type.label}>Needs action</Text>
@@ -83,17 +92,23 @@ export default function Gallery() {
           <StatusTag status="amber" label="Worth a look" />
         </View>
       </Card>
+      </Animated.View>
 
+      <Animated.View entering={enterRow(4)}>
       <SectionHeader label="Rows" />
       <ListRow title="Metformin 500 mg" detail="1 tablet, twice daily with meals" right={<Text style={type.mini}>4 days</Text>} onPress={noop} />
       <ListRow title="Apixaban 5 mg · high-alert" detail="2x daily" right={<Text style={type.mini}>12 days</Text>} onPress={noop} last />
       <Hairline />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(5)}>
       <SectionHeader label="Forms" />
       <FormField label="Field label" placeholder="Placeholder" hint="A quiet hint underneath" />
       <FormField label="With an error" placeholder="" error="This needs attention." />
       <CheckRow checked onToggle={noop} label="A confirmed checkbox row with a longer label that wraps to two lines." />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(6)}>
       <SectionHeader label="States" />
       <EmptyState
         title="Nothing here yet"
@@ -106,6 +121,7 @@ export default function Gallery() {
       <View style={{ marginTop: space.xl }}>
         <PillButton label="Back" variant="outline" size="sm" onPress={() => router.back()} />
       </View>
+      </Animated.View>
     </Screen>
   );
 }

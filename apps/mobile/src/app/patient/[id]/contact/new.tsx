@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FormField, PillButton, Screen, space } from '../../../../ds';
+import { enterLead, enterRow } from '../../../../ds/motion';
 import { createContact, getPatient, listContacts } from '../../../../db/repo';
 
 export default function NewContact() {
@@ -46,13 +48,15 @@ export default function NewContact() {
       title="Add a contact"
       subline={`For ${patient.preferredName ?? patient.fullName}: family, doctors, or the pharmacy.`}
     >
-      <FormField label="Name" value={name} onChangeText={setName} placeholder="Maria Alvarez" autoFocus />
-      <FormField label="Role" value={relation} onChangeText={setRelation} placeholder="Daughter, POA · or: Cardiology" />
-      <FormField label="Phone" value={phone} onChangeText={setPhone} placeholder="(415) 555-0182" keyboardType="phone-pad" />
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+      <Animated.View entering={enterLead}>
+        <FormField label="Name" value={name} onChangeText={setName} placeholder="Maria Alvarez" autoFocus />
+        <FormField label="Role" value={relation} onChangeText={setRelation} placeholder="Daughter, POA · or: Cardiology" />
+        <FormField label="Phone" value={phone} onChangeText={setPhone} placeholder="(415) 555-0182" keyboardType="phone-pad" />
+      </Animated.View>
+      <Animated.View entering={enterRow(1)} style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
         <PillButton label="Add contact" onPress={save} />
         <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
+      </Animated.View>
     </Screen>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Pressable, Switch, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import { ChevronLeft } from 'lucide-react-native';
@@ -15,6 +16,7 @@ import {
   space,
   type,
 } from '../ds';
+import { enterLead, enterQuiet, enterRow } from '../ds/motion';
 import { getNotificationPrefs, getSetting, listPatients, setNotificationPrefs, setSetting } from '../db/repo';
 import { destroyAllData, getDb } from '../db/client';
 import { syncNotifications } from '../lib/notifications';
@@ -134,8 +136,11 @@ export default function Settings() {
         <ChevronLeft size={18} color={color.ink2} strokeWidth={1.8} />
         <Text style={type.mini}>Home</Text>
       </Pressable>
-      <Text style={type.title}>Settings</Text>
+      <Animated.View entering={enterLead}>
+        <Text style={type.title}>Settings</Text>
+      </Animated.View>
 
+      <Animated.View entering={enterRow(1)}>
       <SectionHeader label="Refill alerts" meta={pending === null ? undefined : `${pending} scheduled`} />
       <Text style={type.detail}>
         Alerts are computed from each label's fill date and day supply, and pre-scheduled on this phone. Lock-screen
@@ -157,7 +162,9 @@ export default function Settings() {
         keyboardType="number-pad"
         hint="9 means alerts arrive at 9:00 AM"
       />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(2)}>
       {patients.length > 0 ? (
         <>
           <SectionHeader label="Per person" />
@@ -187,7 +194,9 @@ export default function Settings() {
           })}
         </>
       ) : null}
+      </Animated.View>
 
+      <Animated.View entering={enterRow(3)}>
       <SectionHeader label="Privacy" />
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11 }}>
         <View style={{ flex: 1 }}>
@@ -221,20 +230,25 @@ export default function Settings() {
         onPress={doImport}
         last
       />
+      </Animated.View>
 
+      <Animated.View entering={enterRow(4)}>
       <SectionHeader label="Data" />
       <ListRow title="Load the demo family" detail="Three fictional people to explore with" onPress={seed} />
       <ListRow title="Design gallery" detail="Every component in every state" onPress={() => router.push('/gallery' as never)} last />
       <View style={{ marginTop: space.xl }}>
         <PillButton label="Delete everything" variant="danger" size="sm" onPress={wipe} />
       </View>
+      </Animated.View>
 
+      <Animated.View entering={enterQuiet}>
       <SectionHeader label="About" />
       <Text style={type.detail}>
         Hearth {`0.1.0`} · Everything you enter stays on this phone, encrypted with a key that never leaves the iOS
         Keychain. No account, no analytics on health data, no sharing.
       </Text>
       <DisclaimerFootnote>{ONBOARDING_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

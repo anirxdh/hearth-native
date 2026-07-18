@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, TriangleAlert } from 'lucide-react-native';
 import { matchRxNorm, normalizeName } from '@hearth/label-parser';
@@ -20,6 +21,7 @@ import {
   space,
   type,
 } from '../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import { getPatient } from '../../db/repo';
 import { createMedicationFromScan } from '../../db/scanRepo';
 import { bumpDataVersion } from '../../lib/events';
@@ -172,14 +174,18 @@ function ScanField({
   fieldKey,
   source,
   verify,
+  enterIndex,
   children,
 }: {
   fieldKey: ScanFieldKey;
   source: string | undefined;
   verify: boolean;
+  /** Position in the screen's entrance stagger; fires once at mount. */
+  enterIndex: number;
   children: React.ReactNode;
 }) {
   return (
+    <Animated.View entering={enterRow(enterIndex)}>
     <Card style={{ marginTop: space.md }}>
       {verify ? (
         <View testID={`verify-${fieldKey}`} style={{ alignSelf: 'flex-end' }}>
@@ -207,6 +213,7 @@ function ScanField({
       )}
       {children}
     </Card>
+    </Animated.View>
   );
 }
 
@@ -375,14 +382,16 @@ export default function ScanConfirm() {
         <Text style={type.mini}>Scan</Text>
       </Pressable>
 
-      <StepStrip />
+      <Animated.View entering={enterLead}>
+        <StepStrip />
 
-      <Text style={type.title} accessibilityRole="header">
-        Check what was read
-      </Text>
-      <Text style={[type.detail, { marginTop: 6, marginBottom: space.md }]}>
-        {`Each field shows the label text it came from. Correct anything before it joins ${displayName}'s record.`}
-      </Text>
+        <Text style={type.title} accessibilityRole="header">
+          Check what was read
+        </Text>
+        <Text style={[type.detail, { marginTop: 6, marginBottom: space.md }]}>
+          {`Each field shows the label text it came from. Correct anything before it joins ${displayName}'s record.`}
+        </Text>
+      </Animated.View>
 
       {/* Patient-match gate (P22): a wrong-person save is the worst outcome. */}
       {labelName && !mismatch ? (
@@ -418,7 +427,7 @@ export default function ScanConfirm() {
       ) : null}
 
       <SectionHeader label="Medication" top={space.md} />
-      <ScanField fieldKey="name" source={sources.name} verify={verify('name')}>
+      <ScanField fieldKey="name" source={sources.name} verify={verify('name')} enterIndex={1}>
         <FormField label="Drug name" value={name} onChangeText={setName} placeholder="Metformin" />
         <View testID="rxnorm-status" style={{ marginTop: space.sm }}>
           {rxMatch ? (
@@ -431,10 +440,10 @@ export default function ScanConfirm() {
           )}
         </View>
       </ScanField>
-      <ScanField fieldKey="strength" source={sources.strength} verify={verify('strength')}>
+      <ScanField fieldKey="strength" source={sources.strength} verify={verify('strength')} enterIndex={2}>
         <FormField label="Strength" value={strength} onChangeText={setStrength} placeholder="500 mg" />
       </ScanField>
-      <ScanField fieldKey="sig" source={sources.sig} verify={verify('sig')}>
+      <ScanField fieldKey="sig" source={sources.sig} verify={verify('sig')} enterIndex={3}>
         <FormField
           label="Schedule (from the label)"
           value={sig}
@@ -456,7 +465,7 @@ export default function ScanConfirm() {
       </ScanField>
 
       <SectionHeader label="This fill" meta="drives the runway" />
-      <ScanField fieldKey="fillDate" source={sources.fillDate} verify={verify('fillDate')}>
+      <ScanField fieldKey="fillDate" source={sources.fillDate} verify={verify('fillDate')} enterIndex={4}>
         <FormField
           label="Fill date"
           value={fillDate}
@@ -465,7 +474,7 @@ export default function ScanConfirm() {
           autoCapitalize="none"
         />
       </ScanField>
-      <ScanField fieldKey="daySupply" source={sources.daySupply} verify={verify('daySupply')}>
+      <ScanField fieldKey="daySupply" source={sources.daySupply} verify={verify('daySupply')} enterIndex={5}>
         <FormField
           label="Day supply"
           value={daySupply}
@@ -483,10 +492,10 @@ export default function ScanConfirm() {
       </ScanField>
 
       <SectionHeader label="Refills come from" />
-      <ScanField fieldKey="rxNumber" source={sources.rxNumber} verify={verify('rxNumber')}>
+      <ScanField fieldKey="rxNumber" source={sources.rxNumber} verify={verify('rxNumber')} enterIndex={6}>
         <FormField label="Rx number" value={rxNumber} onChangeText={setRxNumber} autoCapitalize="none" />
       </ScanField>
-      <ScanField fieldKey="pharmacy" source={sources.pharmacy} verify={verify('pharmacy')}>
+      <ScanField fieldKey="pharmacy" source={sources.pharmacy} verify={verify('pharmacy')} enterIndex={7}>
         <FormField label="Pharmacy" value={pharmacy} onChangeText={setPharmacy} placeholder="CVS #2213" />
         <FormField
           label="Pharmacy phone"
@@ -496,7 +505,7 @@ export default function ScanConfirm() {
           placeholder="(415) 555-0301"
         />
       </ScanField>
-      <ScanField fieldKey="prescriber" source={sources.prescriber} verify={verify('prescriber')}>
+      <ScanField fieldKey="prescriber" source={sources.prescriber} verify={verify('prescriber')} enterIndex={8}>
         <FormField label="Prescriber" value={prescriber} onChangeText={setPrescriber} placeholder="Dr. S. Chen" />
       </ScanField>
 
@@ -530,6 +539,7 @@ export default function ScanConfirm() {
 
       {/* The link between Scan and Medications (web MVP .scanresult): what
           this save creates, live from the fields above. */}
+      <Animated.View entering={enterRow(8)}>
       <View testID="scan-result-card" style={{ marginTop: space.xl }}>
         <Card style={{ borderColor: color.lineStrong }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -582,6 +592,7 @@ export default function ScanConfirm() {
           </View>
         </Card>
       </View>
+      </Animated.View>
 
       {saveBlocked ? (
         <View
@@ -609,7 +620,9 @@ export default function ScanConfirm() {
         </View>
       )}
 
-      <DisclaimerFootnote>{RUNWAY_DISCLAIMER}</DisclaimerFootnote>
+      <Animated.View entering={enterQuiet}>
+        <DisclaimerFootnote>{RUNWAY_DISCLAIMER}</DisclaimerFootnote>
+      </Animated.View>
     </Screen>
   );
 }

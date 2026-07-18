@@ -8,7 +8,12 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, {
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useRouter } from 'expo-router';
 import { Card, FormField, PillButton, Screen, color, space, type } from '../../ds';
@@ -19,6 +24,8 @@ import { confirmLoadDemoFamily } from '../../lib/demo';
 import { ensureNotificationPermission } from '../../lib/notifications';
 import { setSetting } from '../../db/repo';
 import { BottleArt, ChartArt, FlowArt } from '../../components/EmptyArt';
+import { LiquidGlass, liquidGlassAvailable } from '../../components/LiquidGlass';
+import { PortraitPresence } from '../../components/PortraitPresence';
 import { OnboardingSteps } from './ui';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,6 +43,12 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 
 const SLIDES = [
+  {
+    key: 'presence',
+    Art: PortraitPresence,
+    title: 'Built around a person',
+    line: 'Not charts first. Someone you love, held gently in one place.',
+  },
   {
     key: 'meds',
     Art: BottleArt,
@@ -56,7 +69,32 @@ const SLIDES = [
   },
 ] as const;
 
-const SLIDE_HOLD_MS = 4000;
+const SLIDE_HOLD_MS = 2600;
+
+/** One paging dot; the active dot stretches wide on a quiet spring. */
+function PagerDot({ active }: { active: boolean }) {
+  const width = useSharedValue(active ? 18 : 6);
+  useEffect(() => {
+    width.value = withSpring(active ? 18 : 6, {
+      damping: 24,
+      stiffness: 220,
+      reduceMotion: ReduceMotion.System,
+    });
+  }, [active, width]);
+  const stretch = useAnimatedStyle(() => ({ width: width.value }));
+  return (
+    <Animated.View
+      style={[
+        {
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: active ? color.ink : color.line,
+        },
+        stretch,
+      ]}
+    />
+  );
+}
 
 function HeroCarousel() {
   const [width, setWidth] = useState(0);
@@ -118,22 +156,38 @@ function HeroCarousel() {
           )}
         />
       ) : null}
-      <View
-        style={{ flexDirection: 'row', justifyContent: 'center', gap: 7, marginTop: space.sm }}
-        accessibilityLabel={`Slide ${page + 1} of ${SLIDES.length}`}
-      >
-        {SLIDES.map((s, i) => (
+      {liquidGlassAvailable() ? (
+        // The pager floats as a glass pill; the shimmer answers the finger.
+        <LiquidGlass
+          effect="regular"
+          interactive
+          style={{
+            alignSelf: 'center',
+            marginTop: space.sm,
+            borderRadius: 999,
+            paddingHorizontal: 12,
+            paddingVertical: 7,
+          }}
+        >
           <View
-            key={s.key}
-            style={{
-              width: i === page ? 18 : 6,
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: i === page ? color.ink : color.line,
-            }}
-          />
-        ))}
-      </View>
+            style={{ flexDirection: 'row', justifyContent: 'center', gap: 7 }}
+            accessibilityLabel={`Slide ${page + 1} of ${SLIDES.length}`}
+          >
+            {SLIDES.map((s, i) => (
+              <PagerDot key={s.key} active={i === page} />
+            ))}
+          </View>
+        </LiquidGlass>
+      ) : (
+        <View
+          style={{ flexDirection: 'row', justifyContent: 'center', gap: 7, marginTop: space.sm }}
+          accessibilityLabel={`Slide ${page + 1} of ${SLIDES.length}`}
+        >
+          {SLIDES.map((s, i) => (
+            <PagerDot key={s.key} active={i === page} />
+          ))}
+        </View>
+      )}
     </View>
   );
 }

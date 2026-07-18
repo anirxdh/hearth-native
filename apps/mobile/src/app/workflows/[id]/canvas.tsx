@@ -8,11 +8,13 @@
  */
 import React, { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams } from 'expo-router';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Svg, { Circle, G, Line, Path, Rect, Text as SvgText } from 'react-native-svg';
 import { X } from 'lucide-react-native';
 import { Card, EmptyState, Screen, color, radius, space, statusColor, type } from '../../../ds';
+import { enterLead } from '../../../ds/motion';
 import { valToText, type InterNodeVal, type NodeWithProperties } from '@hearth/workflows';
 import { getWorkflowStore } from '../../../db/workflowStore';
 import { LiquidGlass } from '../../../components/LiquidGlass';
@@ -226,12 +228,16 @@ export default function WorkflowCanvas() {
   return (
     <Screen scroll={false}>
       <BackLink label="Back" />
-      <Text style={type.title} accessibilityRole="header">
-        {workflow.name}
-      </Text>
-      <Text style={[type.mini, { marginTop: 4 }]}>
-        The flow behind this workflow. Drag to move, pinch to zoom.
-      </Text>
+      {/* Entrance on the header and hint only; the gesture surface below
+          stays still so touch targets never move under a finger. */}
+      <Animated.View entering={enterLead}>
+        <Text style={type.title} accessibilityRole="header">
+          {workflow.name}
+        </Text>
+        <Text style={[type.mini, { marginTop: 4 }]}>
+          The flow behind this workflow. Drag to move, pinch to zoom.
+        </Text>
+      </Animated.View>
 
       <GestureHandlerRootView style={{ flex: 1, marginTop: space.md }}>
         <GestureDetector gesture={gestures}>

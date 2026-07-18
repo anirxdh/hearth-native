@@ -3,7 +3,7 @@
  * no screen reaches for raw colors or ad-hoc borders.
  */
 import React from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, ReduceMotion } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withSpring, withTiming, ReduceMotion } from 'react-native-reanimated';
 import { Check } from 'lucide-react-native';
 import {
   ActivityIndicator,
@@ -241,10 +241,37 @@ export function PillButton({
   );
 }
 
-export function StatusDot({ status, size = 7 }: { status: StatusColor; size?: number }) {
+export function StatusDot({
+  status,
+  size = 7,
+  pulse = false,
+}: {
+  status: StatusColor;
+  size?: number;
+  /** A slow heartbeat for genuinely urgent dots. Use sparingly. */
+  pulse?: boolean;
+}) {
+  const v = useSharedValue(1);
+  React.useEffect(() => {
+    if (!pulse) return;
+    v.value = withRepeat(
+      withSequence(
+        withTiming(0.45, { duration: 1200 }),
+        withTiming(1, { duration: 1200 }),
+      ),
+      -1,
+      false,
+      undefined,
+      ReduceMotion.System,
+    );
+  }, [pulse, v]);
+  const style = useAnimatedStyle(() => ({ opacity: pulse ? v.value : 1 }));
   return (
-    <View
-      style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: statusColor(status) }}
+    <Animated.View
+      style={[
+        { width: size, height: size, borderRadius: size / 2, backgroundColor: statusColor(status) },
+        style,
+      ]}
     />
   );
 }

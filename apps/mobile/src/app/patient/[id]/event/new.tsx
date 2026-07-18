@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import type { TimelineEvent } from '@hearth/schema';
 import { FormField, PillButton, Screen, SectionHeader, Seg, space } from '../../../../ds';
+import { enterLead, enterRow } from '../../../../ds/motion';
 import { addTimelineEvent, getPatient } from '../../../../db/repo';
 
 type Kind = Exclude<TimelineEvent['kind'], 'med_change'>;
@@ -59,10 +61,12 @@ export default function NewTimelineEvent() {
       title="Add a history event"
       subline={`${name}'s story, the version a new clinician needs in one glance.`}
     >
-      <SectionHeader label="What kind" />
-      <Seg options={KINDS} value={kind} onChange={setKind} scroll />
+      <Animated.View entering={enterLead}>
+        <SectionHeader label="What kind" />
+        <Seg options={KINDS} value={kind} onChange={setKind} scroll />
+      </Animated.View>
 
-      <View style={{ marginTop: space.lg, gap: space.md }}>
+      <Animated.View entering={enterRow(1)} style={{ marginTop: space.lg, gap: space.md }}>
         <FormField
           label="Title"
           value={title}
@@ -82,12 +86,12 @@ export default function NewTimelineEvent() {
           placeholder="Started apixaban, a blood thinner."
           multiline
         />
-      </View>
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+      <Animated.View entering={enterRow(2)} style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
         <PillButton label="Save event" onPress={save} />
         <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
+      </Animated.View>
     </Screen>
   );
 }

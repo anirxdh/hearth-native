@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import type { Observation } from '@hearth/schema';
 import { FormField, PillButton, Screen, SectionHeader, Seg, space } from '../../../../ds';
+import { enterLead, enterRow } from '../../../../ds/motion';
 import { addObservation, getPatient } from '../../../../db/repo';
 import { nowIso } from '../../../../lib/clock';
 
@@ -56,10 +58,12 @@ export default function NewObservation() {
       title="Log an observation"
       subline={`About ${name}. Two sentences now beat a fuzzy memory at the appointment.`}
     >
-      <SectionHeader label="What kind" />
-      <Seg options={KINDS} value={kind} onChange={setKind} scroll />
+      <Animated.View entering={enterLead}>
+        <SectionHeader label="What kind" />
+        <Seg options={KINDS} value={kind} onChange={setKind} scroll />
+      </Animated.View>
 
-      <View style={{ marginTop: space.lg }}>
+      <Animated.View entering={enterRow(1)} style={{ marginTop: space.lg }}>
         <FormField
           label={PROMPTS[kind]}
           value={text}
@@ -67,12 +71,12 @@ export default function NewObservation() {
           placeholder="Dizzy this morning getting up, passed in a minute..."
           multiline
         />
-      </View>
+      </Animated.View>
 
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+      <Animated.View entering={enterRow(2)} style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
         <PillButton label="Save" onPress={save} />
         <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
+      </Animated.View>
     </Screen>
   );
 }

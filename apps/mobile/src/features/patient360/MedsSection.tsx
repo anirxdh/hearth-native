@@ -1,8 +1,10 @@
 import React from 'react';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import type { RunwayStatus } from '@hearth/core';
 import { EmptyState, ListRow, PillButton, RunwayBar, SectionHeader, color, space, type } from '../../ds';
+import { enterRow } from '../../ds/motion';
 import type { MedWithRunway } from '../../db/repo';
 import { BottleArt } from '../../components/EmptyArt';
 
@@ -20,19 +22,23 @@ export function MedsSection({ patientId, meds }: { patientId: string; meds: MedW
   const router = useRouter();
   return (
     <View>
-      <SectionHeader label="Medications" meta={`${meds.length}`} />
+      <Animated.View entering={enterRow(0)}>
+        <SectionHeader label="Medications" meta={`${meds.length}`} />
+      </Animated.View>
       {meds.length === 0 ? (
-        <EmptyState
-          art={<BottleArt size={72} />}
-          title="No medications yet"
-          detail="Add each medication with its last fill date and day supply; Hearth computes the refill runway from there."
-          action={<PillButton label="Add a medication" onPress={() => router.push(`/patient/${patientId}/med/new` as never)} />}
-        />
+        <Animated.View entering={enterRow(1)}>
+          <EmptyState
+            art={<BottleArt size={72} />}
+            title="No medications yet"
+            detail="Add each medication with its last fill date and day supply; Hearth computes the refill runway from there."
+            action={<PillButton label="Add a medication" onPress={() => router.push(`/patient/${patientId}/med/new` as never)} />}
+          />
+        </Animated.View>
       ) : (
         <>
           {meds.map((m, i) => (
+            <Animated.View key={m.id} entering={enterRow(1 + i)}>
             <ListRow
-              key={m.id}
               title={[m.name, m.strength].filter(Boolean).join(' ') + (m.highAlert ? '  ·  high-alert' : '')}
               {...(m.sig ? { detail: m.sig } : {})}
               onPress={() => router.push(`/patient/${patientId}/med/${m.id}` as never)}
@@ -60,15 +66,16 @@ export function MedsSection({ patientId, meds }: { patientId: string; meds: MedW
                 )
               }
             />
+            </Animated.View>
           ))}
-          <View style={{ marginTop: space.lg }}>
+          <Animated.View entering={enterRow(Math.min(meds.length, 8) + 1)} style={{ marginTop: space.lg }}>
             <PillButton
               label="Add a medication"
               variant="outline"
               size="sm"
               onPress={() => router.push(`/patient/${patientId}/med/new` as never)}
             />
-          </View>
+          </Animated.View>
         </>
       )}
     </View>

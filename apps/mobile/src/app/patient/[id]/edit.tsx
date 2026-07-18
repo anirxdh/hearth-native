@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FormField, PillButton, Screen, SectionHeader, Seg, space, type } from '../../../ds';
+import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { archivePatient, getPatient, updatePatient } from '../../../db/repo';
 import { isValidLocalDate } from '@hearth/core';
 
@@ -77,41 +79,45 @@ export default function EditPatient() {
 
   return (
     <Screen title={`Edit ${patient.preferredName ?? patient.fullName}`}>
-      <FormField label="Full name" value={fullName} onChangeText={setFullName} />
-      <FormField label="What you call them" value={preferredName} onChangeText={setPreferredName} />
-      <FormField label="Relationship" value={relationship} onChangeText={setRelationship} />
-      <FormField label="Date of birth" value={dob} onChangeText={setDob} hint="YYYY-MM-DD" autoCapitalize="none" />
-      <SectionHeader label="Health basics" />
-      <View style={{ marginTop: space.lg }}>
-        <Text style={[type.label, { marginBottom: 6 }]}>Sex</Text>
-        <Seg
-          options={[
-            { key: 'male', label: 'Male', testID: 'patient-sex-male' },
-            { key: 'female', label: 'Female', testID: 'patient-sex-female' },
-            { key: 'unset', label: 'Prefer not to say' },
-          ]}
-          value={sex ?? 'unset'}
-          onChange={(k) => setSex(k === 'unset' ? null : k)}
+      <Animated.View entering={enterLead}>
+        <FormField label="Full name" value={fullName} onChangeText={setFullName} />
+        <FormField label="What you call them" value={preferredName} onChangeText={setPreferredName} />
+        <FormField label="Relationship" value={relationship} onChangeText={setRelationship} />
+        <FormField label="Date of birth" value={dob} onChangeText={setDob} hint="YYYY-MM-DD" autoCapitalize="none" />
+      </Animated.View>
+      <Animated.View entering={enterRow(1)}>
+        <SectionHeader label="Health basics" />
+        <View style={{ marginTop: space.lg }}>
+          <Text style={[type.label, { marginBottom: 6 }]}>Sex</Text>
+          <Seg
+            options={[
+              { key: 'male', label: 'Male', testID: 'patient-sex-male' },
+              { key: 'female', label: 'Female', testID: 'patient-sex-female' },
+              { key: 'unset', label: 'Prefer not to say' },
+            ]}
+            value={sex ?? 'unset'}
+            onChange={(k) => setSex(k === 'unset' ? null : k)}
+          />
+          <Text style={[type.mini, { marginTop: 4 }]}>
+            Only used to pick the right daily-needs table on the one-pager.
+          </Text>
+        </View>
+        <FormField label="Conditions" value={conditions} onChangeText={setConditions} hint="Comma separated" />
+        <FormField
+          label="Allergies"
+          value={allergies}
+          onChangeText={setAllergies}
+          hint="Comma separated; add the reaction in parentheses, e.g. Penicillin (anaphylaxis)"
         />
-        <Text style={[type.mini, { marginTop: 4 }]}>
-          Only used to pick the right daily-needs table on the one-pager.
-        </Text>
-      </View>
-      <FormField label="Conditions" value={conditions} onChangeText={setConditions} hint="Comma separated" />
-      <FormField
-        label="Allergies"
-        value={allergies}
-        onChangeText={setAllergies}
-        hint="Comma separated; add the reaction in parentheses, e.g. Penicillin (anaphylaxis)"
-      />
-      <FormField label="Notes" value={notes} onChangeText={setNotes} multiline />
-      <View style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
+        <FormField label="Notes" value={notes} onChangeText={setNotes} multiline />
+      </Animated.View>
+      <Animated.View entering={enterRow(2)} style={{ flexDirection: 'row', gap: 10, marginTop: space.xl }}>
         <PillButton label="Save" onPress={save} />
         <PillButton label="Cancel" variant="outline" onPress={() => router.back()} />
-      </View>
-      <View style={{ marginTop: space.xxl }}>
+      </Animated.View>
+      <Animated.View entering={enterQuiet} style={{ marginTop: space.xxl }}>
         <PillButton label="Remove from circle" variant="danger" size="sm" onPress={remove} />
-      </View>
+      </Animated.View>
     </Screen>
   );
 }
