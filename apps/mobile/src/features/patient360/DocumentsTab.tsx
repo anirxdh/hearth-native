@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ActionSheetIOS, Alert, Platform, Pressable, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Camera, FileText, Image as ImageIcon, Pencil, Plus, Share2, Trash2 } from 'lucide-react-native';
-import type { DocumentRow } from '@hearth/schema';
+import type { DocumentRow } from '@rua/schema';
 import { Card, EmptyState, FormField, PillButton, SectionHeader, Seg, color, radius, space, type } from '../../ds';
 import { enterQuiet, enterRow } from '../../ds/motion';
 import {
@@ -227,7 +227,7 @@ export function DocumentsTab({
       <Animated.View entering={enterQuiet}>
         <Text style={[type.mini, { marginTop: space.lg }]}>
           Files are protected by this phone's passcode and never leave it unless you share them. You can require Face
-          ID to open Hearth in Settings.
+          ID to open RUA in Settings.
         </Text>
       </Animated.View>
     </View>

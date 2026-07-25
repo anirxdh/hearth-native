@@ -45,7 +45,7 @@ jobs:
       - name: Build for simulator (Release)
         working-directory: apps/mobile/ios
         run: |
-          xcodebuild -workspace Hearth.xcworkspace -scheme Hearth \
+          xcodebuild -workspace RUA.xcworkspace -scheme RUA \
             -configuration Release -sdk iphonesimulator \
             -derivedDataPath build | tail -20
 
@@ -53,7 +53,7 @@ jobs:
         run: |
           UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(dev['udid'] for devs in d.values() for dev in devs if dev['name'].startswith('iPhone')))")
           xcrun simctl boot "$UDID"
-          xcrun simctl install "$UDID" apps/mobile/ios/build/Build/Products/Release-iphonesimulator/Hearth.app
+          xcrun simctl install "$UDID" apps/mobile/ios/build/Build/Products/Release-iphonesimulator/RUA.app
           echo "UDID=$UDID" >> "$GITHUB_ENV"
 
       - name: Install Maestro

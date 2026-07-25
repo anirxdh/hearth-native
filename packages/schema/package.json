@@ -1,5 +1,5 @@
 {
-  "name": "@hearth/schema",
+  "name": "@rua/schema",
   "version": "0.1.0",
   "private": true,
   "main": "src/index.ts",
@@ -10,7 +10,7 @@
     "generate": "drizzle-kit generate && node scripts/embed-migrations.mjs"
   },
   "dependencies": {
-    "@hearth/core": "workspace:*",
+    "@rua/core": "workspace:*",
     "drizzle-orm": "^0.44.2"
   },
   "devDependencies": {

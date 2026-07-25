@@ -13,8 +13,8 @@ import {
   type Appointment,
   type NewAppointment,
   type Patient,
-} from '@hearth/schema';
-import { addDays, uuidv7, type LocalDate } from '@hearth/core';
+} from '@rua/schema';
+import { addDays, uuidv7, type LocalDate } from '@rua/core';
 import { getDb } from './client';
 import { nowIso } from '../lib/clock';
 import { bumpDataVersion } from '../lib/events';

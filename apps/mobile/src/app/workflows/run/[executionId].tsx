@@ -30,7 +30,7 @@ import {
   space,
   type,
 } from '../../../ds';
-import { jsonVal, valToText, type InterNodeVal, type NodeWithProperties } from '@hearth/workflows';
+import { jsonVal, valToText, type InterNodeVal, type NodeWithProperties } from '@rua/workflows';
 import { enterLead, enterRow } from '../../../ds/motion';
 import { getWorkflowStore } from '../../../db/workflowStore';
 import { getPatient } from '../../../db/repo';

@@ -1,5 +1,5 @@
 /**
- * The print pipeline (P14): pure HTML from @hearth/print, rendered to PDF by
+ * The print pipeline (P14): pure HTML from @rua/print, rendered to PDF by
  * expo-print. Two rules, both enforced here and nowhere else:
  *  - every print or share of a care document is a sensitive read -> access log
  *  - PHI PDFs only ever live in the cache, and are deleted after the share
@@ -17,9 +17,9 @@ import {
   type PrintMed,
   type PrintPatient,
   type PrintVital,
-} from '@hearth/print';
-import { dailyNeeds, type NutritionRow } from '@hearth/core';
-import type { Contact, Patient, Vital } from '@hearth/schema';
+} from '@rua/print';
+import { dailyNeeds, type NutritionRow } from '@rua/core';
+import type { Contact, Patient, Vital } from '@rua/schema';
 import type { Guide } from '../content/guides';
 import { listContacts, latestVitals, listMedications, logAccess, type MedWithRunway } from '../db/repo';
 import { today } from '../lib/clock';

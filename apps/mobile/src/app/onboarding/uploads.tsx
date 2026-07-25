@@ -4,7 +4,7 @@ import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
-import type { DocumentRow } from '@hearth/schema';
+import type { DocumentRow } from '@rua/schema';
 import { Card, PillButton, Screen, StatusDot, space, type } from '../../ds';
 import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import { addDocument, getPatient } from '../../db/repo';

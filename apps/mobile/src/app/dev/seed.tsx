@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { seedDemoFamily } from '@hearth/schema';
+import { seedDemoFamily } from '@rua/schema';
 import { getDb } from '../../db/client';
 import { listAllMedications, listPatients } from '../../db/repo';
 import { bumpDataVersion } from '../../lib/events';
@@ -12,7 +12,7 @@ import { Screen, type } from '../../ds';
 /**
  * Dev-only helper for QA and screenshot automation: seeds the demo family
  * (if the circle is empty) and deep-links to a named screen, e.g.
- *   hearth:///dev/seed?go=home | patient | med | settings | gallery
+ *   rua:///dev/seed?go=home | patient | med | settings | gallery
  * Not part of any production flow; guarded by __DEV__.
  */
 export default function DevSeed() {

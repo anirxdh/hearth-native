@@ -7,12 +7,12 @@
  */
 import initSqlJs, { type Database } from 'sql.js';
 import { drizzle } from 'drizzle-orm/sql-js';
-import * as schema from '@hearth/schema';
-import { migrationBundle } from '@hearth/schema';
-import type { HearthDb } from './client';
+import * as schema from '@rua/schema';
+import { migrationBundle } from '@rua/schema';
+import type { RuaDb } from './client';
 import type { WebRaw } from './webdb';
 
-export async function openWebDb(): Promise<{ db: HearthDb; raw: WebRaw }> {
+export async function openWebDb(): Promise<{ db: RuaDb; raw: WebRaw }> {
   const SQL = await initSqlJs({ locateFile: () => '/sql-wasm.wasm' });
   const sqlite: Database = new SQL.Database();
   sqlite.exec('PRAGMA foreign_keys = ON;');
@@ -53,5 +53,5 @@ export async function openWebDb(): Promise<{ db: HearthDb; raw: WebRaw }> {
   };
 
   // Structurally identical query surface; the driver difference is deliberate.
-  return { db: db as unknown as HearthDb, raw };
+  return { db: db as unknown as RuaDb, raw };
 }

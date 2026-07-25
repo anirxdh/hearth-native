@@ -15,7 +15,7 @@ import Svg, { Circle, G, Line, Path, Rect, Text as SvgText } from 'react-native-
 import { X } from 'lucide-react-native';
 import { Card, EmptyState, Screen, color, radius, space, statusColor, type } from '../../../ds';
 import { enterLead } from '../../../ds/motion';
-import { valToText, type InterNodeVal, type NodeWithProperties } from '@hearth/workflows';
+import { valToText, type InterNodeVal, type NodeWithProperties } from '@rua/workflows';
 import { getWorkflowStore } from '../../../db/workflowStore';
 import { LiquidGlass } from '../../../components/LiquidGlass';
 import { useData } from '../../../lib/useData';

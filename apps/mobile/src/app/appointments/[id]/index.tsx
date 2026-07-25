@@ -14,7 +14,7 @@ import {
   Phone,
   Printer,
 } from 'lucide-react-native';
-import { daysBetween } from '@hearth/core';
+import { daysBetween } from '@rua/core';
 import {
   Avatar,
   Card,

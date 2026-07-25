@@ -1,7 +1,7 @@
 /**
  * Runtime polyfills, imported FIRST from the root layout.
  *
- * Hermes ships no global crypto; @hearth/core's uuidv7 needs
+ * Hermes ships no global crypto; @rua/core's uuidv7 needs
  * crypto.getRandomValues, so we back it with expo-crypto's native RNG.
  */
 import { getRandomValues } from 'expo-crypto';

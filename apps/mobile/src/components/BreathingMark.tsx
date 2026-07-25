@@ -7,7 +7,7 @@ import { color } from '../ds';
  * The brand mark as a pulse: a small dotted sphere that breathes while the
  * app thinks (boot, long saves). Same Fibonacci geometry as the threshold,
  * no interaction, gentle enough to live inside any layout. It never spins
- * fast and never blinks; waiting in Hearth should feel like company.
+ * fast and never blinks; waiting in RUA should feel like company.
  */
 
 const DOTS = 90;
@@ -55,7 +55,7 @@ export function BreathingMark({ size = 56 }: { size?: number }) {
   const sin = Math.sin(angle);
 
   return (
-    <View accessibilityLabel="Hearth is working" accessibilityRole="progressbar">
+    <View accessibilityLabel="RUA is working" accessibilityRole="progressbar">
       <Svg width={size} height={size}>
         {base.map((p, i) => {
           const rx = p.x * cos + p.z * sin;

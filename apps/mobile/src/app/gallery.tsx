@@ -116,7 +116,7 @@ export default function Gallery() {
         action={<PillButton label="The next step" size="sm" onPress={noop} />}
       />
       <DisclaimerFootnote>
-        Hearth is an organizational tool. It never suggests doses, diagnoses, or treatment.
+        RUA is an organizational tool. It never suggests doses, diagnoses, or treatment.
       </DisclaimerFootnote>
       <View style={{ marginTop: space.xl }}>
         <PillButton label="Back" variant="outline" size="sm" onPress={() => router.back()} />

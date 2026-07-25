@@ -18,7 +18,7 @@ import {
 import { enterLead, enterQuiet, enterRow } from '../../../../ds/motion';
 import { createMedication, getPatient } from '../../../../db/repo';
 import { RUNWAY_DISCLAIMER } from '../../../../lib/copy';
-import { highAlertMatch, isValidLocalDate } from '@hearth/core';
+import { highAlertMatch, isValidLocalDate } from '@rua/core';
 import { today } from '../../../../lib/clock';
 
 export default function NewMedication() {
@@ -106,7 +106,7 @@ export default function NewMedication() {
   return (
     <Screen
       title="Add a medication"
-      subline={`For ${patient.preferredName ?? patient.fullName}. Copy the label; Hearth does the arithmetic.`}
+      subline={`For ${patient.preferredName ?? patient.fullName}. Copy the label; RUA does the arithmetic.`}
     >
       <Animated.View entering={enterLead}>
         <FormField label="Name" value={name} onChangeText={setName} placeholder="Metformin" autoFocus />
@@ -126,7 +126,7 @@ export default function NewMedication() {
           >
             <TriangleAlert size={14} color={color.red} strokeWidth={2} />
             <Text style={[type.mini, { color: color.red, fontWeight: '600', flex: 1 }]}>
-              {alert.label}. Hearth will ask for an extra confirmation.
+              {alert.label}. RUA will ask for an extra confirmation.
             </Text>
           </View>
         ) : null}

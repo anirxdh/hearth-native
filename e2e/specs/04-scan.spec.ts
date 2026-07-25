@@ -5,7 +5,7 @@ import { loadApp } from './helpers';
 // The scan-a-label pipeline (P21-P23): capture -> parse -> verification-first
 // confirm -> scan-to-med save. The web build has no camera or Vision module,
 // so these specs ride the same fixture hook the App Review demo path uses:
-// (globalThis as any).__hearthOcrFixture stands in for the recognized text,
+// (globalThis as any).__ruaOcrFixture stands in for the recognized text,
 // and the 'Use sample label' link (testID scan-sample) feeds it through the
 // exact parse -> confirm -> save pipeline a native capture takes.
 
@@ -129,7 +129,7 @@ test.describe('scan a label', () => {
     // Plant a high-alert label printed for a different household member.
     const filled = usDate(daysAgo(1));
     await page.evaluate((fixture) => {
-      (globalThis as { __hearthOcrFixture?: string }).__hearthOcrFixture = fixture;
+      (globalThis as { __ruaOcrFixture?: string }).__ruaOcrFixture = fixture;
     }, [
       'MISSION PHARMACY',
       '(415) 555-0144',

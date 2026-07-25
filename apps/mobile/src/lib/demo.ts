@@ -1,5 +1,5 @@
 import { confirmDialog, infoDialog } from './dialogs';
-import { seedDemoFamily } from '@hearth/schema';
+import { seedDemoFamily } from '@rua/schema';
 import { getDb } from '../db/client';
 import { bumpDataVersion } from './events';
 import { syncNotifications } from './notifications';
@@ -12,7 +12,7 @@ import { today } from './clock';
 export function confirmLoadDemoFamily(onDone?: () => void): void {
   confirmDialog({
     title: 'Load the demo family?',
-    message: 'Adds three fictional people with realistic medications. For trying Hearth out.',
+    message: 'Adds three fictional people with realistic medications. For trying RUA out.',
     confirmText: 'Load demo',
     onConfirm: () => {
       seedDemoFamily(getDb(), today())

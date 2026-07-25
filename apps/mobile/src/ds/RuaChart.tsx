@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { LayoutChangeEvent, Text, View } from 'react-native';
 import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
-import type { BucketedPoint } from '@hearth/core';
+import type { BucketedPoint } from '@rua/core';
 import { color, type } from './tokens';
 
 /**
- * The one chart component every series in Hearth renders through: a hairline
+ * The one chart component every series in RUA renders through: a hairline
  * editorial line chart. Ink line, quiet grid, first/last axis labels only,
  * an optional reference band (e.g. BP target). Pure presentation; all
- * bucketing happens in @hearth/core so what you see is what the data says.
+ * bucketing happens in @rua/core so what you see is what the data says.
  *
  * An optional second series (BP diastolic) draws as a dashed ink3 line on
  * the same scale, with a one-line legend when both series are named. The
@@ -18,7 +18,7 @@ import { color, type } from './tokens';
  * it, so it works at phone, iPad, and the 720 readable column on web alike.
  * Passing `width` still pins it for callers that manage their own layout.
  */
-export function HearthChart({
+export function RuaChart({
   data,
   data2,
   height = 160,
@@ -122,7 +122,7 @@ export function HearthChart({
       {!ready ? (
         <View style={{ height: h }} />
       ) : (
-      <Svg width={w} height={h} testID="hearth-chart-svg">
+      <Svg width={w} height={h} testID="rua-chart-svg">
         {refLow !== undefined && refHigh !== undefined ? (
           <Path
             d={`M ${padX} ${y(refHigh)} H ${w - padX} V ${y(refLow)} H ${padX} Z`}

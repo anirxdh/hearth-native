@@ -4,7 +4,7 @@
  * All arithmetic goes through Date.UTC so a fill date never gains or loses a
  * day across DST transitions or timezones. "Today" is always supplied by the
  * caller (the app layer resolves the caregiver's wall clock); nothing in
- * @hearth/core reads the system clock.
+ * @rua/core reads the system clock.
  */
 
 export type LocalDate = string; // 'YYYY-MM-DD'

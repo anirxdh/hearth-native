@@ -24,7 +24,7 @@ export function Shields({ children }: { children: React.ReactNode }) {
     authInFlight.current = true;
     try {
       const res = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Unlock Hearth',
+        promptMessage: 'Unlock RUA',
       });
       if (res.success) setLocked(false);
     } finally {
@@ -66,7 +66,7 @@ export function Shields({ children }: { children: React.ReactNode }) {
           <Lock size={28} color={color.ink3} strokeWidth={1.6} />
           {locked && !covered ? (
             <>
-              <Text style={type.detail}>Hearth is locked.</Text>
+              <Text style={type.detail}>RUA is locked.</Text>
               <PillButton label="Unlock with Face ID" onPress={() => void tryUnlock()} />
             </>
           ) : null}
@@ -102,7 +102,7 @@ export class ErrorBoundary extends React.Component<
         >
           <Text style={type.title}>Something went wrong</Text>
           <Text style={[type.detail, { textAlign: 'center' }]}>
-            Your data is safe on this phone. Try again; if this keeps happening, force-quit Hearth and reopen it.
+            Your data is safe on this phone. Try again; if this keeps happening, force-quit RUA and reopen it.
           </Text>
           <View style={{ marginTop: space.md }}>
             <PillButton label="Try again" onPress={() => this.setState({ error: null })} />

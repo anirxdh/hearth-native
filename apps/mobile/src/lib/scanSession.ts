@@ -9,7 +9,7 @@
 import {
   parseDate,
   type ParsedLabel,
-} from '@hearth/label-parser';
+} from '@rua/label-parser';
 
 /** Field keys the confirm screen renders cards for. */
 export type ScanFieldKey =

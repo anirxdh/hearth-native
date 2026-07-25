@@ -8,7 +8,7 @@ import { Platform, Pressable, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import Svg, { Circle, Line } from 'react-native-svg';
-import type { ExecutionStatus } from '@hearth/workflows';
+import type { ExecutionStatus } from '@rua/workflows';
 import { color, type, space, type StatusColor } from '../../ds';
 
 /** Back button following the app-wide pattern; falls back to home on deep entry. */

@@ -100,7 +100,7 @@ describe('planNotifications trigger sets', () => {
     const plan = planNotifications([med('mOD', 'p1', '2026-07-10')], prefs(), TODAY);
     expect(plan.map((n) => n.key)).toEqual(['med:mOD:overdue:2026-07-13']);
     expect(plan[0]!.fireDate).toBe(addDays(TODAY, 1));
-    expect(plan[0]!.body).toBe('A medication is past its supply. Open Hearth to resolve it.');
+    expect(plan[0]!.body).toBe('A medication is past its supply. Open RUA to resolve it.');
     assertPhiFree(plan);
   });
 

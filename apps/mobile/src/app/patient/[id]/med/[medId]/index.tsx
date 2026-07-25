@@ -24,7 +24,7 @@ import { enterLead, enterQuiet, enterRow } from '../../../../../ds/motion';
 import { syncNotifications } from '../../../../../lib/notifications';
 import { useData } from '../../../../../lib/useData';
 import { RUNWAY_DISCLAIMER } from '../../../../../lib/copy';
-import { isValidLocalDate, type RunwayStatus } from '@hearth/core';
+import { isValidLocalDate, type RunwayStatus } from '@rua/core';
 import { today } from '../../../../../lib/clock';
 
 const statusToColor = (s: RunwayStatus): 'red' | 'amber' | 'green' =>

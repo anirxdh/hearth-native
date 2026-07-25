@@ -18,23 +18,25 @@ import * as SecureStore from 'expo-secure-store';
 import { openDatabaseSync, type SQLiteDatabase } from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { migrate } from 'drizzle-orm/expo-sqlite/migrator';
-import * as schema from '@hearth/schema';
-import { migrationBundle } from '@hearth/schema';
+import * as schema from '@rua/schema';
+import { migrationBundle } from '@rua/schema';
 
-const DB_NAME = 'hearth.db';
-const KEY_NAME = 'hearth.db.key.v1';
+// Renamed in the RUA rebrand: existing installs get a fresh database under
+// the new name; the simulator is the only install base.
+const DB_NAME = 'rua.db';
+const KEY_NAME = 'rua.db.key.v1';
 
 export type BootState =
-  | { kind: 'ready'; db: HearthDb }
+  | { kind: 'ready'; db: RuaDb }
   | { kind: 'key-without-db' } // keychain survived, file gone (restore/new device)
   | { kind: 'db-without-key' } // file present, key lost: data unrecoverable by design
   | { kind: 'migration-failed'; error: string }
   | { kind: 'boot-error'; error: string }; // unexpected failure (keychain, filesystem)
 
-export type HearthDb = ReturnType<typeof drizzle<typeof schema>>;
+export type RuaDb = ReturnType<typeof drizzle<typeof schema>>;
 
 type RawHandle = Pick<SQLiteDatabase, 'execSync' | 'getAllSync' | 'closeSync'>;
-let cached: { db: HearthDb; raw: RawHandle } | null = null;
+let cached: { db: RuaDb; raw: RawHandle } | null = null;
 
 function dbPath(): string {
   return `${FileSystem.documentDirectory}SQLite/${DB_NAME}`;
@@ -59,7 +61,7 @@ async function getOrCreateKey(createIfMissing: boolean): Promise<string | null> 
   return hex;
 }
 
-function openEncrypted(key: string): { db: HearthDb; raw: SQLiteDatabase } {
+function openEncrypted(key: string): { db: RuaDb; raw: SQLiteDatabase } {
   const raw = openDatabaseSync(DB_NAME);
   // Must be the first statement against the connection.
   raw.execSync(`PRAGMA key = "x'${key}'";`);
@@ -70,7 +72,7 @@ function openEncrypted(key: string): { db: HearthDb; raw: SQLiteDatabase } {
 }
 
 /** Copy-protected migration: snapshot, migrate, restore snapshot on failure. */
-async function migrateSafely(db: HearthDb, raw: SQLiteDatabase): Promise<void> {
+async function migrateSafely(db: RuaDb, raw: SQLiteDatabase): Promise<void> {
   const path = dbPath();
   const backup = `${path}.premigrate`;
   const exists = await dbFileExists();
@@ -135,7 +137,7 @@ export async function bootDatabase(): Promise<BootState> {
   return { kind: 'ready', db: opened.db };
 }
 
-export function getDb(): HearthDb {
+export function getDb(): RuaDb {
   if (!cached) throw new Error('Database accessed before bootDatabase() completed');
   return cached.db;
 }

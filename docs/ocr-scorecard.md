@@ -1,7 +1,7 @@
 # Label OCR Spike Scorecard (Phase 3)
 
 Date: 2026-07-12
-Pipeline: headless-Chrome-rendered label corpus -> Apple Vision `VNRecognizeTextRequest` (accurate mode, language correction off) via a compiled Swift CLI -> deterministic `@hearth/label-parser` -> normalized exact-match scoring against ground truth.
+Pipeline: headless-Chrome-rendered label corpus -> Apple Vision `VNRecognizeTextRequest` (accurate mode, language correction off) via a compiled Swift CLI -> deterministic `@rua/label-parser` -> normalized exact-match scoring against ground truth.
 
 Everything below was produced by an actual end-to-end run. Reproduce with:
 

@@ -1,5 +1,5 @@
 /**
- * Minimal reanimated stub for jest, covering exactly Hearth's motion
+ * Minimal reanimated stub for jest, covering exactly RUA's motion
  * surface: Animated.View/Text, chainable entering builders, ReduceMotion,
  * and the shared-value hooks. Animations are inert under test; behavior
  * and accessibility are what the suites assert.

@@ -8,9 +8,9 @@
  * the app is seeded. Every insert appends a change_log 'create' row.
  */
 
-import { LocalDate, addDays, isHighAlert, uuidv7 } from '@hearth/core';
+import { LocalDate, addDays, isHighAlert, uuidv7 } from '@rua/core';
 
-import { HearthDatabase, logChange } from './audit';
+import { RuaDatabase, logChange } from './audit';
 import {
   NewContact,
   NewLabResult,
@@ -36,7 +36,7 @@ export interface SeedResult {
   medicationIds: Record<string, string>;
 }
 
-export async function seedDemoFamily(db: HearthDatabase, today: LocalDate): Promise<SeedResult> {
+export async function seedDemoFamily(db: RuaDatabase, today: LocalDate): Promise<SeedResult> {
   const now = `${today}T12:00:00.000Z`;
   const nowMs = Date.parse(now);
   let seq = 0;

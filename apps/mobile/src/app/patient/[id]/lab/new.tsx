@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { isValidLocalDate } from '@hearth/core';
+import { isValidLocalDate } from '@rua/core';
 import { CheckRow, FormField, PillButton, Screen, space } from '../../../../ds';
 import { enterLead, enterRow } from '../../../../ds/motion';
 import { addLab, getPatient } from '../../../../db/repo';

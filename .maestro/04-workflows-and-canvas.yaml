@@ -1,7 +1,7 @@
 # E2E: the paperwork engine surfaces - library, preview, canvas - render
 # on the phone. Running a workflow end-to-end (gates, outputs) is covered
 # by the Playwright suite; this flow proves the native screens.
-appId: com.anirudh.hearth
+appId: com.anirudh.rua
 ---
 - launchApp:
     permissions:
@@ -15,7 +15,7 @@ appId: com.anirudh.hearth
     when:
       visible: 'Press and hold to begin'
     commands:
-      - openLink: 'hearth:///welcome?enter=1'
+      - openLink: 'rua:///welcome?enter=1'
       - waitForAnimationToEnd:
           timeout: 2500
       - tapOn:
@@ -34,7 +34,7 @@ appId: com.anirudh.hearth
             - tapOn: 'Cancel'
 
 # The library: six letters, one card each.
-- openLink: 'hearth:///workflows'
+- openLink: 'rua:///workflows'
 - assertVisible:
     text: '.*appeal.*'
 - takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-04-library

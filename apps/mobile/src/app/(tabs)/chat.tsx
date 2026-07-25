@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
-import { daysBetween } from '@hearth/core';
+import { daysBetween } from '@rua/core';
 import { PillButton, Screen, color, radius, space, type } from '../../ds';
 import { enterQuiet } from '../../ds/motion';
 import { listAllMedications, listPatients } from '../../db/repo';
@@ -22,7 +22,7 @@ import { useData } from '../../lib/useData';
 import { answerFor, type CompanionAction, type CompanionCtx } from '../../lib/companion';
 
 /**
- * The Companion tab: a calm chat over what is already in Hearth. All the
+ * The Companion tab: a calm chat over what is already in RUA. All the
  * answering lives in lib/companion.ts (pure, local, honest); this screen
  * only assembles the context snapshot and renders the conversation.
  *
@@ -40,7 +40,7 @@ type Msg = {
 const CHIPS = ['Refills due', 'Next visit and rides', 'Emergency guides', 'Scan a label'];
 
 const GREETING =
-  'I can look things up in what you have already put into Hearth: refills, the next visit and rides, paperwork, and the emergency guides.';
+  'I can look things up in what you have already put into RUA: refills, the next visit and rides, paperwork, and the emergency guides.';
 
 function visitWhen(days: number, onDate: string): string {
   if (days <= 0) return 'today';
@@ -192,7 +192,7 @@ export default function CompanionTab() {
 
         <Animated.View entering={enterQuiet}>
           <Text style={[type.mini, { marginTop: space.sm, lineHeight: 17 }]}>
-            Organizational help with what is already in Hearth. Not medical advice. In an
+            Organizational help with what is already in RUA. Not medical advice. In an
             emergency, call 911.
           </Text>
         </Animated.View>

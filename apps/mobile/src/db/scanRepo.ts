@@ -7,9 +7,9 @@
  * consistent with every other write in the app; nothing here touches
  * tables directly.
  */
-import type { NewMedication } from '@hearth/schema';
-import type { LocalDate } from '@hearth/core';
-import { normalizeDrugName, normalizeStrength } from '@hearth/label-parser';
+import type { NewMedication } from '@rua/schema';
+import type { LocalDate } from '@rua/core';
+import { normalizeDrugName, normalizeStrength } from '@rua/label-parser';
 import { addFill, createMedication, listMedications, updateMedication } from './repo';
 
 export interface ConfirmedScan {

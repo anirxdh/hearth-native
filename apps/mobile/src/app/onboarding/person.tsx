@@ -3,7 +3,7 @@ import { Image, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { isValidLocalDate } from '@hearth/core';
+import { isValidLocalDate } from '@rua/core';
 import {
   CheckRow,
   DisclaimerFootnote,

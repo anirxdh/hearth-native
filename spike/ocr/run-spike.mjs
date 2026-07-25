@@ -2,7 +2,7 @@
  * OCR spike runner: Vision OCR -> deterministic parser -> ground truth.
  *
  * For every corpus image: run the compiled visionocr CLI, feed its lines to
- * @hearth/label-parser, normalize both sides, and score per-field exact
+ * @rua/label-parser, normalize both sides, and score per-field exact
  * matches. Writes results.json and prints the scorecard summary.
  *
  * Usage: node --import tsx run-spike.mjs   (or: pnpm spike)
@@ -13,7 +13,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// @hearth/label-parser is a CommonJS package (same shape as @hearth/core),
+// @rua/label-parser is a CommonJS package (same shape as @rua/core),
 // so under tsx its named exports arrive on the default binding.
 import labelParser from '../../packages/label-parser/src/index.ts';
 

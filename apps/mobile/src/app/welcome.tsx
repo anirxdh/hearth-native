@@ -9,7 +9,7 @@ import { duration, enterQuiet } from '../ds/motion';
 
 /**
  * The threshold. One object, one gesture: hold the sphere for three
- * seconds and Hearth opens. No buttons, no links - the ritual IS the
+ * seconds and RUA opens. No buttons, no links - the ritual IS the
  * door. It compacts under the finger, pulses build, the ring fills,
  * and it blooms open into the guided setup (or straight to the circle
  * for returning account holders).
@@ -30,7 +30,7 @@ export default function Welcome() {
   }
 
   // Dev-only automation hook: local Maestro flows cannot express a 3s hold,
-  // so hearth:///welcome?enter=1 walks through in dev builds. Inert in prod.
+  // so rua:///welcome?enter=1 walks through in dev builds. Inert in prod.
   useEffect(() => {
     if (__DEV__ && enterParam === '1') enter();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +42,7 @@ export default function Welcome() {
         entering={enterQuiet}
         style={[type.label, { letterSpacing: 4.5, marginTop: topPad, color: color.ink2 }]}
       >
-        HEARTH
+        RUA
       </Animated.Text>
 
       {/* No entering animation around the sphere: the Liquid Glass disc it

@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
-import type { TimelineEvent } from '@hearth/schema';
+import type { TimelineEvent } from '@rua/schema';
 import { EmptyState, PillButton, SectionHeader, Seg, color, space, type } from '../../ds';
 import { enterRow } from '../../ds/motion';
 

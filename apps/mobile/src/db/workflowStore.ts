@@ -6,7 +6,7 @@ import {
   wfNodeProperties,
   wfNodes,
   wfWorkflows,
-} from '@hearth/schema';
+} from '@rua/schema';
 import {
   ALL_TEMPLATES,
   isNodeType,
@@ -19,9 +19,9 @@ import {
   type WfWorkflow,
   type WorkflowStore,
   validateGateBeforeSink,
-} from '@hearth/workflows';
-import { uuidv7 } from '@hearth/core';
-import { getDb, type HearthDb } from './client';
+} from '@rua/workflows';
+import { uuidv7 } from '@rua/core';
+import { getDb, type RuaDb } from './client';
 import { nowIso } from '../lib/clock';
 
 /**
@@ -30,7 +30,7 @@ import { nowIso } from '../lib/clock';
  * same storage every other record uses.
  */
 export class DrizzleWorkflowStore implements WorkflowStore {
-  constructor(private db: HearthDb) {}
+  constructor(private db: RuaDb) {}
 
   getWorkflow(id: string): FullWorkflow | undefined {
     const w = this.db.select().from(wfWorkflows).where(eq(wfWorkflows.id, id)).get();

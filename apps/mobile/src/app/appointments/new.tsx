@@ -3,7 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
-import { isValidLocalDate } from '@hearth/core';
+import { isValidLocalDate } from '@rua/core';
 import { FormField, PillButton, Screen, SectionHeader, Seg, color, space, type } from '../../ds';
 import { enterLead, enterRow } from '../../ds/motion';
 import { createAppointment } from '../../db/apptRepo';
@@ -85,7 +85,7 @@ export default function NewAppointment() {
           Add appointment
         </Text>
         <Text style={[type.detail, { marginTop: 6, marginBottom: space.lg }]}>
-          Hearth drafts the prep sheet from the record as the visit gets close.
+          RUA drafts the prep sheet from the record as the visit gets close.
         </Text>
       </Animated.View>
 

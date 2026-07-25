@@ -29,7 +29,7 @@ function Recovery({ state, onReset }: { state: BootState; onReset: () => void })
       ? {
           title: 'This data can no longer be unlocked',
           detail:
-            'Hearth found a database on this device but its encryption key is gone from the Keychain. By design, the data cannot be read without the key. You can start fresh; a future encrypted backup will cover device moves.',
+            'RUA found a database on this device but its encryption key is gone from the Keychain. By design, the data cannot be read without the key. You can start fresh; a future encrypted backup will cover device moves.',
           action: 'Start fresh',
         }
       : state.kind === 'key-without-db'
@@ -41,7 +41,7 @@ function Recovery({ state, onReset }: { state: BootState; onReset: () => void })
           }
         : state.kind === 'boot-error'
           ? {
-              title: 'Hearth could not start',
+              title: 'RUA could not start',
               detail: `Something on this device blocked startup (often a Keychain or storage issue). Your data was not touched. Restart the app; if this repeats, restart the phone. (${state.error})`,
               action: 'Try again',
             }
@@ -107,7 +107,7 @@ export default function RootLayout() {
         ensureFreshSession()
           .then((state) => {
             if (state.kind === 'locked') {
-              infoDialog('Locked', 'Face ID did not match. Hearth stays locked until it does.');
+              infoDialog('Locked', 'Face ID did not match. RUA stays locked until it does.');
             }
           })
           .catch(() => {});

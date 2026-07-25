@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import type { TimelineEvent } from '@hearth/schema';
+import type { TimelineEvent } from '@rua/schema';
 import { FormField, PillButton, Screen, SectionHeader, Seg, space } from '../../../../ds';
 import { enterLead, enterRow } from '../../../../ds/motion';
 import { addTimelineEvent, getPatient } from '../../../../db/repo';

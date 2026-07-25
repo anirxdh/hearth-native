@@ -194,7 +194,7 @@ export default function ErSheet() {
 
       <Animated.View entering={enterQuiet}>
         <DisclaimerFootnote>
-          Hearth organizes information the caregiver entered. Verify medications against the bottles. This sheet is
+          RUA organizes information the caregiver entered. Verify medications against the bottles. This sheet is
           not medical advice.
         </DisclaimerFootnote>
       </Animated.View>

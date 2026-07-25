@@ -2,7 +2,7 @@
 # tells the story. Runs on the iOS simulator via Maestro, locally with
 # scripts/e2e-local.sh (the 3s orb hold itself is covered by Playwright;
 # dev builds accept the automation hook).
-appId: com.anirudh.hearth
+appId: com.anirudh.rua
 ---
 - launchApp:
     clearState: true
@@ -23,10 +23,10 @@ appId: com.anirudh.hearth
 - extendedWaitUntil:
     visible: 'Press and hold to begin'
     timeout: 30000
-- openLink: 'hearth:///welcome?enter=1'
+- openLink: 'rua:///welcome?enter=1'
 
 # The landing: carousel + account card + the just-looking path.
-- assertVisible: 'Welcome to Hearth'
+- assertVisible: 'Welcome to RUA'
 - takeScreenshot: /private/tmp/claude-501/-Users-anirudh-Desktop-ACL-challenge/fb05be2e-6ab1-44de-bcde-2f6aff46958b/scratchpad/ios-01-landing
 # Let the entrance choreography finish before touching the link (a tap on a
 # still-translating element can land off-target); retry once if the confirm

@@ -38,12 +38,12 @@ async function fillByLabel(page: Page, label: string, value: string): Promise<vo
 
 /**
  * Install the on-device OCR fixture (the app's extractText hook reads
- * window.__hearthOcrFixture), then satisfy the file input with the built-in
+ * window.__ruaOcrFixture), then satisfy the file input with the built-in
  * sample document link.
  */
 async function useSampleDocument(page: Page): Promise<void> {
   await page.evaluate((fixture) => {
-    (window as { __hearthOcrFixture?: string }).__hearthOcrFixture = fixture;
+    (window as { __ruaOcrFixture?: string }).__ruaOcrFixture = fixture;
   }, OCR_FIXTURE);
   await page.getByTestId(/^sample-doc-/).click();
 }

@@ -3,8 +3,8 @@ import { Text } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { EmptyState, PillButton, StatCard, StatusDot } from '../components';
 import { Seg } from '../Seg';
-import { HearthChart } from '../HearthChart';
-import type { BucketedPoint } from '@hearth/core';
+import { RuaChart } from '../RuaChart';
+import type { BucketedPoint } from '@rua/core';
 
 describe('PillButton', () => {
   test('renders label, fires onPress, exposes button role', async () => {
@@ -82,19 +82,19 @@ describe('EmptyState', () => {
   });
 });
 
-describe('HearthChart', () => {
+describe('RuaChart', () => {
   const data: BucketedPoint[] = [
     { label: 'Jul 1', value: 182, start: '2026-07-01' },
     { label: 'Jul 13', value: 183, start: '2026-07-13' },
   ];
 
   test('empty data renders the quiet empty state, not a broken chart', async () => {
-    await render(<HearthChart data={[]} />);
+    await render(<RuaChart data={[]} />);
     expect(screen.getByText('No readings in this range yet.')).toBeTruthy();
   });
 
   test('with data, exposes an accessibility summary with the latest value', async () => {
-    await render(<HearthChart data={data} unit="lb" />);
+    await render(<RuaChart data={data} unit="lb" />);
     expect(screen.getByLabelText('Chart, latest 183 lb, 2 readings')).toBeTruthy();
   });
 
@@ -108,7 +108,7 @@ describe('HearthChart', () => {
       { label: 'Jul 13', value: 88, start: '2026-07-13' },
     ];
     await render(
-      <HearthChart
+      <RuaChart
         data={systolic}
         data2={diastolic}
         unit="mmHg"
@@ -123,21 +123,21 @@ describe('HearthChart', () => {
   });
 
   test('an empty second series keeps the single-series summary', async () => {
-    await render(<HearthChart data={data} data2={[]} unit="lb" />);
+    await render(<RuaChart data={data} data2={[]} unit="lb" />);
     expect(screen.getByLabelText('Chart, latest 183 lb, 2 readings')).toBeTruthy();
   });
 
   test('an explicit width prop still pins the drawing width', async () => {
-    await render(<HearthChart data={data} unit="lb" width={280} />);
-    expect(screen.getByTestId('hearth-chart-svg').props.width).toBe(280);
+    await render(<RuaChart data={data} unit="lb" width={280} />);
+    expect(screen.getByTestId('rua-chart-svg').props.width).toBe(280);
   });
 
   test('without a width prop, the chart measures its container and fills it', async () => {
-    await render(<HearthChart data={data} unit="lb" />);
+    await render(<RuaChart data={data} unit="lb" />);
     const container = screen.getByLabelText('Chart, latest 183 lb, 2 readings');
     // Before layout reports, the chart holds space instead of guessing a width.
-    expect(screen.queryByTestId('hearth-chart-svg')).toBeNull();
+    expect(screen.queryByTestId('rua-chart-svg')).toBeNull();
     await fireEvent(container, 'layout', { nativeEvent: { layout: { width: 672, height: 160 } } });
-    expect(screen.getByTestId('hearth-chart-svg').props.width).toBe(672);
+    expect(screen.getByTestId('rua-chart-svg').props.width).toBe(672);
   });
 });

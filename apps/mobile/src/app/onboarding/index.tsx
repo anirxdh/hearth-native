@@ -30,7 +30,7 @@ import { OnboardingSteps } from './ui';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
- * Step 1: the landing. A quietly auto-advancing carousel says what Hearth
+ * Step 1: the landing. A quietly auto-advancing carousel says what RUA
  * is in three swipes, the account card opens the door, and the demo path
  * lives here for the just-looking visitor. Face ID and notifications are
  * asked for right after the account exists, as native iOS sheets, never
@@ -196,11 +196,11 @@ async function offerNativeProtections(): Promise<void> {
     await new Promise<void>((resolve) => {
       confirmDialog({
         title: 'Protect with Face ID?',
-        message: 'Hearth will ask for Face ID to open, and to sign you back in quietly.',
+        message: 'RUA will ask for Face ID to open, and to sign you back in quietly.',
         confirmText: 'Protect',
         cancelText: 'Not now',
         onConfirm: () => {
-          LocalAuthentication.authenticateAsync({ promptMessage: 'Enable Face ID for Hearth' })
+          LocalAuthentication.authenticateAsync({ promptMessage: 'Enable Face ID for RUA' })
             .then((r) => {
               if (r.success) setSetting('appLock', true);
             })
@@ -247,7 +247,7 @@ export default function OnboardingWelcome() {
   }
 
   return (
-    <Screen title="Welcome to Hearth">
+    <Screen title="Welcome to RUA">
       <OnboardingSteps step={1} />
 
       {existing ? (

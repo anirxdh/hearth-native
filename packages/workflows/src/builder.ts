@@ -1,4 +1,4 @@
-import { uuidv7 } from '@hearth/core';
+import { uuidv7 } from '@rua/core';
 import { nodeDefinition, type NodeType } from './definition';
 import type { FullWorkflow, NodeWithProperties, WfNodeProperty, WfWorkflow } from './model';
 import type { InterNodeVal } from './values';

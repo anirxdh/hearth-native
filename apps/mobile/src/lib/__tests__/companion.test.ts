@@ -99,7 +99,7 @@ describe('answerFor: other routes', () => {
 describe('answerFor: the default orientation', () => {
   it('offers a warm orientation with no action and no pretending', () => {
     const a = answerFor('hello there', ctx());
-    expect(a.text).toContain('I can find what is already in Hearth');
+    expect(a.text).toContain('I can find what is already in RUA');
     expect(a.action).toBeUndefined();
     expect(a.text.toLowerCase()).not.toContain('doctor');
     expect(a.text.toLowerCase()).not.toContain('diagnos');

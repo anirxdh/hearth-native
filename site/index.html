@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hearth Native — The Build, Explained</title>
-<meta name="description" content="How the Hearth caregiver app was built: phases 1-8, explained with sketches.">
+<title>RUA Native — The Build, Explained</title>
+<meta name="description" content="How the RUA caregiver app was built: phases 1-8, explained with sketches.">
 <style>
   :root{
     --paper:#FFFFFF; --ink:#1D1D1F; --ink2:#6E6E73; --ink3:#98989D;
@@ -89,9 +89,9 @@
 <div class="wrap">
 
 <header>
-  <div class="kicker">Hearth Native · Build log · Phases 1–28 of 32</div>
+  <div class="kicker">RUA Native · Build log · Phases 1–28 of 32</div>
   <h1>The real app, built phase by phase.</h1>
-  <p class="sub">Hearth is becoming a native iPhone app. This page explains the build in plain English, with sketches: the encrypted foundation, the lovable core, the full patient record with its paper layer, the hardening pass, and now Stages 5 and 6 — the scan-a-label pipeline, the appointment kit, and the admin-workflow engine (a node-and-edge automation system where every document passes a human confirmation gate). Every push runs 290 unit tests plus 14 browser end-to-end journeys in CI.</p>
+  <p class="sub">RUA is becoming a native iPhone app. This page explains the build in plain English, with sketches: the encrypted foundation, the lovable core, the full patient record with its paper layer, the hardening pass, and now Stages 5 and 6 — the scan-a-label pipeline, the appointment kit, and the admin-workflow engine (a node-and-edge automation system where every document passes a human confirmation gate). Every push runs 290 unit tests plus 14 browser end-to-end journeys in CI.</p>
   <div class="stats">
     <div class="stat"><b>28</b><span>phases coded (of 32; device steps deferred)</span></div>
     <div class="stat green"><b>290</b><span>unit tests, all passing</span></div>
@@ -107,7 +107,7 @@
 <!-- ================= BIG PICTURE ================= -->
 <div class="sec" id="map"><span class="l">The big picture</span><span class="rule"></span><span class="m">one diagram</span></div>
 <h2>How a bottle becomes a calm morning</h2>
-<p class="lede">Everything in Hearth flows from two facts printed on every prescription label: the fill date and the day supply. A human verifies them once; deterministic code does everything else. No AI touches a number, and nothing leaves the phone.</p>
+<p class="lede">Everything in RUA flows from two facts printed on every prescription label: the fill date and the day supply. A human verifies them once; deterministic code does everything else. No AI touches a number, and nothing leaves the phone.</p>
 
 <div class="sketch">
 <svg viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
@@ -217,7 +217,7 @@
             <ellipse cx="70" cy="16" rx="66" ry="14" fill="url(#hach)"/>
             <path d="M4 16 L5 86 Q6 102 70 103 Q134 102 135 86 L136 16" fill="url(#hach)"/>
             <ellipse cx="70" cy="16" rx="66" ry="14" fill="#fff"/>
-            <text x="34" y="21" font-size="12">hearth.db</text>
+            <text x="34" y="21" font-size="12">rua.db</text>
             <text x="26" y="66" font-size="11" fill="#6E6E73">encrypted at rest</text>
           </g>
           <!-- backup loop -->
@@ -308,7 +308,7 @@
 <!-- P4 -->
 <div class="phase" id="p4">
   <div class="phead"><span class="pnum">Phase 4 · spike</span><h3>Whose data is it? The consent framework</h3><span class="pdays">2 days · committed</span></div>
-  <p class="pwhat">Hearth holds health information about someone other than the phone's owner. Before building anything that stores it, this phase fixed the legal posture and wrote the exact words the app ships: the caregiver-authority attestation, the disclaimer set, and the intended-use line every future feature is checked against.</p>
+  <p class="pwhat">RUA holds health information about someone other than the phone's owner. Before building anything that stores it, this phase fixed the legal posture and wrote the exact words the app ships: the caregiver-authority attestation, the disclaimer set, and the intended-use line every future feature is checked against.</p>
   <div class="cols">
     <div>
       <ul class="built">
@@ -381,7 +381,7 @@
 <!-- P6 -->
 <div class="phase" id="p6">
   <div class="phead"><span class="pnum">Phase 6</span><h3>The runway engine — the deterministic heart</h3><span class="pdays">2 days · committed</span></div>
-  <p class="pwhat">One sum, done perfectly: the label says <i>filled June 15, 30-day supply</i>, so the supply ends July 15 — full stop. No AI, no adherence guessing, no clock tricks. If there's no fill on record, Hearth says so instead of inventing a number.</p>
+  <p class="pwhat">One sum, done perfectly: the label says <i>filled June 15, 30-day supply</i>, so the supply ends July 15 — full stop. No AI, no adherence guessing, no clock tricks. If there's no fill on record, RUA says so instead of inventing a number.</p>
   <div class="cols">
     <div>
       <ul class="built">
@@ -426,7 +426,7 @@
 <!-- P7 -->
 <div class="phase" id="p7">
   <div class="phead"><span class="pnum">Phase 7</span><h3>Today's Digest — one answer per morning</h3><span class="pdays">3 days · committed</span></div>
-  <p class="pwhat">Opening Hearth answers a single question: <i>what is the one thing that needs me today?</i> A ranking — not a feed — funnels every signal across every person into one lead action, with the calm shown quietly underneath. The ranking is code, so "why is this first?" always has an answer.</p>
+  <p class="pwhat">Opening RUA answers a single question: <i>what is the one thing that needs me today?</i> A ranking — not a feed — funnels every signal across every person into one lead action, with the calm shown quietly underneath. The ranking is code, so "why is this first?" always has an answer.</p>
   <div class="cols rev">
     <div class="phshot"><img src="img/home-digest.png" alt="The home digest on the simulator"></div>
     <div>
@@ -444,7 +444,7 @@
 <!-- P8 -->
 <div class="phase" id="p8">
   <div class="phead"><span class="pnum">Phase 8</span><h3>Refill alerts that survive a closed app</h3><span class="pdays">3 days · committed</span></div>
-  <p class="pwhat">Because the runway is arithmetic, every future reminder is knowable the moment a fill is saved — so Hearth schedules them all with iOS immediately instead of hoping a background task runs someday. iOS background execution is famously unreliable; Hearth simply doesn't depend on it.</p>
+  <p class="pwhat">Because the runway is arithmetic, every future reminder is knowable the moment a fill is saved — so RUA schedules them all with iOS immediately instead of hoping a background task runs someday. iOS background execution is famously unreliable; RUA simply doesn't depend on it.</p>
   <div class="cols">
     <div>
       <ul class="built">
@@ -538,7 +538,7 @@
 
 <div class="phase" id="p17-19">
   <div class="phead"><span class="pnum">Phases 17–19</span><h3>Shields, backup, and the access log</h3><span class="pdays">10 days · committed</span></div>
-  <p class="pwhat">A privacy shield covers the screen with plain paper the instant Hearth leaves the foreground, so the iOS app switcher never shows a medication list. An opt-in Face ID lock guards opening. Backup is the canonical SQLCipher move — the whole record re-keyed to a passphrase you choose, one file, restorable on a new phone — which also answers the deliberate "key loss means data loss" design with an escape hatch you control. And the access log turns a promise into a screen: every print, share, and export, timestamped, append-only.</p>
+  <p class="pwhat">A privacy shield covers the screen with plain paper the instant RUA leaves the foreground, so the iOS app switcher never shows a medication list. An opt-in Face ID lock guards opening. Backup is the canonical SQLCipher move — the whole record re-keyed to a passphrase you choose, one file, restorable on a new phone — which also answers the deliberate "key loss means data loss" design with an escape hatch you control. And the access log turns a promise into a screen: every print, share, and export, timestamped, append-only.</p>
   <ul class="built">
     <li>Error boundary: no crash ever strands a caregiver on a white screen; data stays put, one tap retries</li>
     <li>Accessibility: roles and labels on every interactive element, 44pt targets, chart alt text; the manual VoiceOver run is on the physical-device list</li>
@@ -580,7 +580,7 @@
 <div class="sec"><span class="l">What's next</span><span class="rule"></span><span class="m">stage 3 begins</span></div>
 <h2>The road ahead</h2>
 <div class="next">
-  <span class="nx">P9 · Internal TestFlight — Hearth on your actual iPhone</span>
+  <span class="nx">P9 · Internal TestFlight — RUA on your actual iPhone</span>
   <span class="nx">P10–P16 · Patient 360 tabs, charts, documents vault, print engine, ER sheet, emergency guides</span>
   <span class="nx">P17–P20 · Accessibility, hardening, external beta, App Store 1.0</span>
   <span class="nx">P21–P24 · Scan-a-label goes live on the P3 scorecard</span>
@@ -589,7 +589,7 @@
 </div>
 
 <footer>
-  Hearth · build log for phases 1–8 of 32 · React Native (Expo SDK 57) · 186 tests passing · every person, record, and number shown is fictional demo data.
+  RUA · build log for phases 1–8 of 32 · React Native (Expo SDK 57) · 186 tests passing · every person, record, and number shown is fictional demo data.
 </footer>
 
 </div>

@@ -1,7 +1,7 @@
 # E2E: the tab shell and the Companion. Seed the demo family, ask the
 # Companion for a ride, follow the answer, then walk Home -> Settings on
 # the tab bar. Owns its state like every other flow (random order safe).
-appId: com.anirudh.hearth
+appId: com.anirudh.rua
 ---
 - launchApp:
     clearState: true
@@ -23,8 +23,8 @@ appId: com.anirudh.hearth
 - extendedWaitUntil:
     visible: 'Press and hold to begin'
     timeout: 30000
-- openLink: 'hearth:///welcome?enter=1'
-- assertVisible: 'Welcome to Hearth'
+- openLink: 'rua:///welcome?enter=1'
+- assertVisible: 'Welcome to RUA'
 # Let the entrance choreography finish before touching the link (a tap on a
 # still-translating element can land off-target); retry once if the confirm
 # dialog did not open, and clear a stray second dialog if both taps landed.

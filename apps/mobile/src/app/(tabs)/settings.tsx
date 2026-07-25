@@ -22,7 +22,7 @@ import { requestAppReboot } from '../../lib/reboot';
 import { syncNotifications } from '../../lib/notifications';
 import { useData } from '../../lib/useData';
 import { ONBOARDING_DISCLAIMER } from '../../lib/copy';
-import { seedDemoFamily } from '@hearth/schema';
+import { seedDemoFamily } from '@rua/schema';
 import { exportBackup, importBackup, validPassphrase } from '../../lib/backup';
 import { infoDialog, promptDialog } from '../../lib/dialogs';
 import { confirmLoadDemoFamily } from '../../lib/demo';
@@ -109,7 +109,7 @@ export default function Settings() {
   function doImport() {
     Alert.alert(
       'Restore from a backup?',
-      'This REPLACES everything currently in Hearth on this phone with the backup contents.',
+      'This REPLACES everything currently in RUA on this phone with the backup contents.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -198,7 +198,7 @@ export default function Settings() {
       <SectionHeader label="Privacy" />
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11 }}>
         <View style={{ flex: 1 }}>
-          <Text style={type.body}>Require Face ID to open Hearth</Text>
+          <Text style={type.body}>Require Face ID to open RUA</Text>
           <Text style={[type.mini, { marginTop: 2 }]}>Also asks after the app has been in the background</Text>
         </View>
         <Switch
@@ -242,7 +242,7 @@ export default function Settings() {
       <Animated.View entering={enterQuiet}>
       <SectionHeader label="About" />
       <Text style={type.detail}>
-        Hearth {`0.1.0`} · Everything you enter stays on this phone, encrypted with a key that never leaves the iOS
+        RUA {`0.1.0`} · Everything you enter stays on this phone, encrypted with a key that never leaves the iOS
         Keychain. No account, no analytics on health data, no sharing.
       </Text>
       <DisclaimerFootnote>{ONBOARDING_DISCLAIMER}</DisclaimerFootnote>

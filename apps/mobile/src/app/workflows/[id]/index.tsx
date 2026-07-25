@@ -31,7 +31,7 @@ import {
   userInputTemplate,
   type UserInputTemplate,
   type UserInputValue,
-} from '@hearth/workflows';
+} from '@rua/workflows';
 import { getWorkflowStore } from '../../../db/workflowStore';
 import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { listPatients } from '../../../db/repo';

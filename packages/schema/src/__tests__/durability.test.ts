@@ -30,9 +30,9 @@ describe('migration safety (copy-restore)', () => {
   let seededCounts: ReturnType<typeof counts>;
 
   beforeAll(async () => {
-    dir = mkdtempSync(join(tmpdir(), 'hearth-durability-'));
-    dbPath = join(dir, 'hearth.db');
-    backupPath = join(dir, 'hearth.backup.db');
+    dir = mkdtempSync(join(tmpdir(), 'rua-durability-'));
+    dbPath = join(dir, 'rua.db');
+    backupPath = join(dir, 'rua.backup.db');
 
     const { sqlite, db } = openMigratedDb(dbPath);
     await seedDemoFamily(db, TODAY);

@@ -3,8 +3,8 @@ import { Platform, Pressable, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, TriangleAlert } from 'lucide-react-native';
-import { matchRxNorm, normalizeName } from '@hearth/label-parser';
-import { computeRunway, highAlertMatch, isValidLocalDate, type RunwayStatus } from '@hearth/core';
+import { matchRxNorm, normalizeName } from '@rua/label-parser';
+import { computeRunway, highAlertMatch, isValidLocalDate, type RunwayStatus } from '@rua/core';
 import {
   Card,
   CheckRow,

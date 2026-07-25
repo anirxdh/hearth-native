@@ -20,7 +20,7 @@ const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const HTML_DIR = join(ROOT, 'corpus-html');
 const OUT_DIR = join(ROOT, 'corpus');
-const PROFILE = join(tmpdir(), `hearth-ocr-chrome-${process.pid}`);
+const PROFILE = join(tmpdir(), `rua-ocr-chrome-${process.pid}`);
 
 const PATIENTS = {
   robert: {

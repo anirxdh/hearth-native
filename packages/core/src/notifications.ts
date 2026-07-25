@@ -103,14 +103,14 @@ export function planNotifications(
     const urgent = addDays(m.runway.runOutDate, -3);
     const runout = m.runway.runOutDate;
 
-    triggers.push({ tag: 'lead', date: lead, body: 'A refill is coming up. Open Hearth to see the runway.' });
+    triggers.push({ tag: 'lead', date: lead, body: 'A refill is coming up. Open RUA to see the runway.' });
     triggers.push({ tag: 'urgent', date: urgent, body: 'A refill is needed in the next few days.' });
-    triggers.push({ tag: 'runout', date: runout, body: 'A medication runs out today. Open Hearth to act.' });
+    triggers.push({ tag: 'runout', date: runout, body: 'A medication runs out today. Open RUA to act.' });
     if (compareLocalDates(runout, today) < 0) {
       triggers.push({
         tag: 'overdue',
         date: addDays(today, 1),
-        body: 'A medication is past its supply. Open Hearth to resolve it.',
+        body: 'A medication is past its supply. Open RUA to resolve it.',
       });
     }
 

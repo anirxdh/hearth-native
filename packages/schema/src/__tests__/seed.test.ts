@@ -4,7 +4,7 @@
  * and the fill inputs the runway engine depends on.
  */
 
-import { addDays, computeRunway, daysBetween } from '@hearth/core';
+import { addDays, computeRunway, daysBetween } from '@rua/core';
 import { eq } from 'drizzle-orm';
 
 import { seedDemoFamily } from '../seed';

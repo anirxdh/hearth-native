@@ -3,7 +3,7 @@
  * prescription bottle with a white pharmacy label, a scanning beam that
  * sweeps down the label, and detected-field tags that pop in one by one as
  * the beam passes them. Pure illustration: the real parse pipeline runs
- * beside it, this just tells the caregiver what Hearth is doing.
+ * beside it, this just tells the caregiver what RUA is doing.
  */
 import React, { useEffect, useState } from 'react';
 import { AccessibilityInfo, DimensionValue, Platform, Text, View } from 'react-native';

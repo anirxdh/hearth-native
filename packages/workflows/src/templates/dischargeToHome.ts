@@ -25,7 +25,7 @@ Discharged from: {Discharging facility}
 MEDICATION RECONCILIATION
 Compare the two lists below line by line. If a medication appears in one list but not the other, or a dose differs, call the discharging facility or the primary clinician before giving the next dose.
 
-Medications on record in Hearth:
+Medications on record in RUA:
 {medsList}
 
 Medications as stated in the discharge summary:
@@ -48,7 +48,7 @@ Call the clinician or the discharging facility right away if any of these appear
 
 If it feels like an emergency, call 911 first.
 
-This sheet was assembled from the discharge paperwork and the Hearth record. Every value above was reviewed and confirmed by the caregiver before printing.`;
+This sheet was assembled from the discharge paperwork and the RUA record. Every value above was reviewed and confirmed by the caregiver before printing.`;
 
 export function dischargeToHome(now: string) {
   const b = new WorkflowBuilder({

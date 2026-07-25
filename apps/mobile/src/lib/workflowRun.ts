@@ -20,7 +20,7 @@ import {
   type RunnerEnv,
   type RunResult,
   type UserInputValue,
-} from '@hearth/workflows';
+} from '@rua/workflows';
 import { addDocument, createContact, getPatient, listMedications, logAccess, updatePatient } from '../db/repo';
 import { getWorkflowStore } from '../db/workflowStore';
 import { nowIso } from './clock';
@@ -122,7 +122,7 @@ const records: RecordAccess = { pullPatientFields, writePatientData };
 
 /**
  * On-device text extraction: delegates to lib/ocr (iOS Vision native module
- * when present, the __hearthOcrFixture hook on web/test), and returns null
+ * when present, the __ruaOcrFixture hook on web/test), and returns null
  * so the Manual Text property drives the extract node otherwise; the run
  * screen surfaces MANUAL_TEXT_COPY in that case.
  */
@@ -268,7 +268,7 @@ function generatedAtLine(): string {
 }
 
 /**
- * Minimal standalone document template in the @hearth/print editorial
+ * Minimal standalone document template in the @rua/print editorial
  * language (that package has no generic-document export yet): US Letter,
  * hairline rules, ink on paper, escaped interpolation.
  */
@@ -321,7 +321,7 @@ export function workflowDocumentHtml(title: string, body: string, generatedAt: s
 </style>
 </head>
 <body>
-  <div class="kicker">Hearth workflow document</div>
+  <div class="kicker">RUA workflow document</div>
   <h1>${esc(title)}</h1>
   <pre>${esc(body)}</pre>
   <div class="footer">Generated ${esc(generatedAt)}. Every value was reviewed and confirmed by the caregiver before this document was produced.</div>

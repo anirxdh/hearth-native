@@ -3,7 +3,7 @@ import { jsonVal, textVal } from '../values';
 
 /**
  * New Patient Intake - collects the basics for a freshly created (shell)
- * patient and saves them into the Hearth record. The sink is Record Write,
+ * patient and saves them into the RUA record. The sink is Record Write,
  * not Document Render: nothing is printed, the record itself is updated.
  * Graph shape (each arrow is an inputNodeId wire):
  *
@@ -60,7 +60,7 @@ export function newPatientIntake(now: string) {
     'Save to the record',
     { x: 900, y: 190 },
     {
-      Prompt: [textVal('Saves the confirmed name, date of birth, conditions, allergies, and primary pharmacy to this person\'s Hearth record.')],
+      Prompt: [textVal('Saves the confirmed name, date of birth, conditions, allergies, and primary pharmacy to this person\'s RUA record.')],
     },
   );
 

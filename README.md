@@ -1,4 +1,4 @@
-# Hearth (native)
+# RUA (native)
 
 A caregiver-first command center for coordinating care across multiple older adults.
 React Native (Expo) iOS app, built phase by phase; see ROADMAP.md.
@@ -19,7 +19,7 @@ Daily use (the app is already built on the simulator):
     cd apps/mobile
     npx expo start
 
-Then press `i` in that terminal: the iPhone simulator boots, Hearth opens,
+Then press `i` in that terminal: the iPhone simulator boots, RUA opens,
 and connects to the dev server. Press `r` to reload, Ctrl-C to stop.
 
 First time on a machine, or after adding a NATIVE dependency:

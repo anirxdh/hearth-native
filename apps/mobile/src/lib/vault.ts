@@ -8,7 +8,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Sharing from 'expo-sharing';
-import type { DocumentRow } from '@hearth/schema';
+import type { DocumentRow } from '@rua/schema';
 import { addDocument, archiveDocument, logAccess } from '../db/repo';
 
 const VAULT_DIR = `${FileSystem.documentDirectory}vault/`;

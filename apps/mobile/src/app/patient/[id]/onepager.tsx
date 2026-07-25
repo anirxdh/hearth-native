@@ -3,7 +3,7 @@ import { Alert, Pressable, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft, Printer, Share2 } from 'lucide-react-native';
-import { dailyNeeds } from '@hearth/core';
+import { dailyNeeds } from '@rua/core';
 import {
   DisclaimerFootnote,
   PillButton,
@@ -220,7 +220,7 @@ export default function OnePager() {
 
       <Animated.View entering={enterQuiet}>
         <DisclaimerFootnote>
-          Hearth organizes information the caregiver entered. This page is not medical advice and never includes
+          RUA organizes information the caregiver entered. This page is not medical advice and never includes
           dosing decisions.
         </DisclaimerFootnote>
       </Animated.View>

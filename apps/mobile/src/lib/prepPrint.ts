@@ -4,7 +4,7 @@
  *  - the HTML is pure (lib/prepSheet.ts); this module only feeds expo-print
  */
 import * as Print from 'expo-print';
-import type { Appointment, Patient } from '@hearth/schema';
+import type { Appointment, Patient } from '@rua/schema';
 import { logAccess } from '../db/repo';
 import { prepSheetHtml, type PrepSheetData } from './prepSheet';
 

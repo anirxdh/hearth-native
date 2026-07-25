@@ -1,5 +1,5 @@
 {
-  "name": "@hearth/workflows",
+  "name": "@rua/workflows",
   "version": "0.1.0",
   "private": true,
   "main": "src/index.ts",
@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@hearth/core": "workspace:*",
+    "@rua/core": "workspace:*",
     "zod": "^3.24.1"
   },
   "devDependencies": {

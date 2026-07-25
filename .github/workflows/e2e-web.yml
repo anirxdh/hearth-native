@@ -39,7 +39,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright specs
-        run: pnpm --filter @hearth/e2e e2e
+        run: pnpm --filter @rua/e2e e2e
 
       - name: Upload Playwright report
         if: always()

@@ -123,7 +123,7 @@ test.describe('first-time onboarding', () => {
     await expect(page.getByText('2 in the vault')).toBeVisible();
     await expect(page.getByText(/\d+ readings/).filter({ visible: true }).first()).toBeVisible();
 
-    await page.getByTestId('ob-open-hearth').getByRole('button').click();
+    await page.getByTestId('ob-open-rua').getByRole('button').click();
 
     // Home is no longer empty: the digest leads and Robert has a card.
     await expect(

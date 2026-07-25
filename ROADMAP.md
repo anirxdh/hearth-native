@@ -1,4 +1,4 @@
-# Hearth Native — Phased Build Roadmap (React Native / iOS)
+# RUA Native — Phased Build Roadmap (React Native / iOS)
 
 32 phases · 7 stages · ~105 solo-dev days. Every phase is shippable and has its own verification gate.
 
@@ -10,7 +10,7 @@
 - Database — expo-sqlite with SQLCipher (256-bit key in Keychain via expo-secure-store) + Drizzle ORM with migrations and useLiveQuery; the only relational stack maintained in lockstep with each Expo SDK, with PHI encrypted at rest by construction.
 - State — Drizzle live queries are the only domain-data layer (the DB row is the single truth, never mirrored into a JS store), Zustand + MMKV for non-PHI UI/session state, TanStack Query added later for network state (RxNorm, sync, LLM proxy).
 - OCR — still-photo Apple Vision via a ~150-line Swift Expo Module + deterministic TS parser + RxNorm normalization; on-device means zero-retention by construction, free, and best-in-class for printed pharmacy labels.
-- Charts — victory-native (Skia rewrite) behind one HearthChart wrapper; GPU-rendered with gestures on the UI thread, its unstyled defaults fit the hairline editorial aesthetic, and Skia/Reanimated are already peer deps of the workflow canvas.
+- Charts — victory-native (Skia rewrite) behind one RuaChart wrapper; GPU-rendered with gestures on the UI thread, its unstyled defaults fit the hairline editorial aesthetic, and Skia/Reanimated are already peer deps of the workflow canvas.
 - PDFs — expo-print HTML-to-PDF (WKWebView, fully offline) + expo-sharing, templates living in a shared packages/print; the web MVP's one-pager HTML ports almost verbatim, and generated PHI PDFs live in cache and are deleted after share.
 - Notifications — write-time pre-scheduled local notifications: the runway is pure arithmetic so every future alert is knowable now; recompute and reconcile on every med write and foreground, nearest-first within iOS's 64-pending cap; background tasks are opportunistic freshness only, never load-bearing.
 - Backend & repo — Supabase (Postgres + RLS keyed to care-circle membership, Sign in with Apple, BAA path) + PowerSync so the phase-1 local SQLite schema becomes the synced schema; pnpm monorepo with a pure-TS packages/core that never imports React Native keeps the safety-critical math testable in milliseconds and portable to server/Android.
@@ -79,9 +79,9 @@
 
 ### Phase 4: SPIKE: consent & compliance framework for other-person health data  (2 days)
 
-**Delivers:** A decision document defining Hearth's legal posture and the consent framework that phases 5, 19, and 31 implement.
+**Delivers:** A decision document defining RUA's legal posture and the consent framework that phases 5, 19, and 31 implement.
 
-- Document the posture: not a HIPAA covered entity (and never claim compliance), FTC Health Breach Notification Rule applies, WA MHMD applies at the first WA tester, CA CMIA 56.06 makes Hearth a 'provider of health care'
+- Document the posture: not a HIPAA covered entity (and never claim compliance), FTC Health Breach Notification Rule applies, WA MHMD applies at the first WA tester, CA CMIA 56.06 makes RUA a 'provider of health care'
 - Design the consent framework: caregiver-authority attestation copy for add-patient, per-category consent scopes, access-log schema, respite-mode time-boxing rules
 - Draft the medical disclaimer set and a one-page intended-use statement (organizational tool; no dosing, diagnosis, or triage) that every future feature and all store metadata is checked against
 - Draft the standalone consumer-health privacy policy and a written incident-response plan (60-day clock)
@@ -180,7 +180,7 @@
 
 **Delivers:** Vitals trends over selectable time ranges plus a caregiver observation log.
 
-- One HearthChart wrapper over victory-native (Skia) styled to the hairline editorial spec, reused for every chart in the app
+- One RuaChart wrapper over victory-native (Skia) styled to the hairline editorial spec, reused for every chart in the app
 - Per-vital time series with 7d/30d/90d/1y range switching
 - Observation entries: mood, appetite, sleep, incidents, free notes with timestamps
 - Sparse-data and empty chart states
@@ -251,7 +251,7 @@
 
 ## Stage 4 — Hardening & App Store 1.0
 
-*Make the offline core accessible, resilient, and provably compliant, run a real-caregiver external beta as the compliance dress rehearsal, and put Hearth 1.0 on the App Store at phase 20 of 32 (62.5% through the plan).*
+*Make the offline core accessible, resilient, and provably compliant, run a real-caregiver external beta as the compliance dress rehearsal, and put RUA 1.0 on the App Store at phase 20 of 32 (62.5% through the plan).*
 
 ### Phase 17: Accessibility pass  (3 days)
 *Depends on: P15, P16*
@@ -285,7 +285,7 @@
 
 - Disclaimers surfaced in context (onboarding, runway, guides) via the design-system component; local access log surfaced in settings; full local data wipe ('delete everything')
 - Privacy nutrition labels honestly declaring 'Data Not Collected'; standalone consumer-health privacy policy live at a public URL (MHMD requirement)
-- App Review notes drafted: what Hearth is, organization-not-medical-advice posture, demo-family seed instructions
+- App Review notes drafted: what RUA is, organization-not-medical-advice posture, demo-family seed instructions
 - External TestFlight group of 8-15 real caregivers through Beta App Review, with structured feedback capture
 - Bug bash and triage: fix release blockers, backlog the rest; Guideline 5.1.3 self-audit against the phase-4 checklist
 
@@ -294,7 +294,7 @@
 ### Phase 20: v1.0 App Store submission  (3 days)
 *Depends on: P19*
 
-**Delivers:** Hearth live on the App Store; everything after this ships as staged updates.
+**Delivers:** RUA live on the App Store; everything after this ships as staged updates.
 
 - Listing led by the multi-elder care-circle differentiation (June 2026 guideline 4.3 crackdown) with medical-claim-free copy checked against the intended-use statement
 - Screenshots in the design language, keywords, final age rating

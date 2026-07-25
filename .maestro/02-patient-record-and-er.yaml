@@ -2,7 +2,7 @@
 # Owns its state: flows run in RANDOM order, and this one needs the demo
 # family's Robert (penicillin allergy), not whichever Robert a previous
 # flow left behind - so it always starts clean and seeds the demo.
-appId: com.anirudh.hearth
+appId: com.anirudh.rua
 ---
 - launchApp:
     clearState: true
@@ -25,7 +25,7 @@ appId: com.anirudh.hearth
     when:
       visible: 'Press and hold to begin'
     commands:
-      - openLink: 'hearth:///welcome?enter=1'
+      - openLink: 'rua:///welcome?enter=1'
       - waitForAnimationToEnd:
           timeout: 2500
       - tapOn:
@@ -93,7 +93,7 @@ appId: com.anirudh.hearth
     text: '.*Apixaban.*'
 
 # The guides: offline book, 911-first banner (deep link; confirm if asked).
-- openLink: hearth:///guides
+- openLink: rua:///guides
 - runFlow:
     when:
       visible: 'Open'

@@ -5,7 +5,7 @@
  * Workflows are DATA interpreted by these shipped types - never downloaded
  * code (App Review guideline 2.5.2 safe).
  *
- * Hearth's types are deterministic and local: no cloud AI executor exists in
+ * RUA's types are deterministic and local: no cloud AI executor exists in
  * v1. The one probabilistic step a caregiver workflow ever needs (reading a
  * denial letter) is on-device OCR surfaced through a Human Confirm gate.
  */
@@ -53,13 +53,13 @@ export const nodeDefinition = {
     'Input',
   ),
 
-  /** Pulls named fields from a patient's Hearth record, deterministically. */
+  /** Pulls named fields from a patient's RUA record, deterministically. */
   'Patient Record Pull': defineNode(
     {
       Patient: { text: 'one' },
       Fields: { text: 'one', hidden: true },
     },
-    "Fills in details from the person's Hearth record, like name, date of birth, medications, and allergies.",
+    "Fills in details from the person's RUA record, like name, date of birth, medications, and allergies.",
     'Record',
   ),
 
@@ -132,7 +132,7 @@ export const nodeDefinition = {
       Data: { jsonv: 'one' },
       Prompt: { text: 'one', hidden: true },
     },
-    "Saves confirmed details into the person's Hearth record.",
+    "Saves confirmed details into the person's RUA record.",
     'Output',
   ),
 } as const;

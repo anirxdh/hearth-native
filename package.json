@@ -1,5 +1,5 @@
 {
-  "name": "hearth-native",
+  "name": "rua-native",
   "private": true,
   "scripts": {
     "typecheck": "pnpm -r --if-present typecheck",

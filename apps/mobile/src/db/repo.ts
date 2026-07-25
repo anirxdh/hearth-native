@@ -34,7 +34,7 @@ import {
   type Patient,
   type TimelineEvent,
   type Vital,
-} from '@hearth/schema';
+} from '@rua/schema';
 import {
   DEFAULT_PREFS,
   isHighAlert,
@@ -44,7 +44,7 @@ import {
   type NotificationPrefs,
   type Runway,
   type LocalDate,
-} from '@hearth/core';
+} from '@rua/core';
 import { getDb } from './client';
 import { nowIso, today } from '../lib/clock';
 import { bumpDataVersion } from '../lib/events';

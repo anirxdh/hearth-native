@@ -1,5 +1,5 @@
 /**
- * Notification wiring (P8): the pure plan from @hearth/core reconciled
+ * Notification wiring (P8): the pure plan from @rua/core reconciled
  * against what iOS actually has pending. Called after every med write and
  * on every app foreground; background execution is never load-bearing.
  */
@@ -10,7 +10,7 @@ import {
   reconcile,
   type DesiredNotification,
   type PlanMedInput,
-} from '@hearth/core';
+} from '@rua/core';
 import { getNotificationPrefs, listAllMedications } from '../db/repo';
 import { today } from './clock';
 

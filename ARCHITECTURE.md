@@ -1,4 +1,4 @@
-# Hearth Native — Architecture and Decision Records
+# RUA Native — Architecture and Decision Records
 
 This document records the load-bearing decisions behind phases P1–P8, why each was made, what it cost, and where it pays off later. File paths are real; every decision here is implemented and tested in this repo.
 
@@ -13,7 +13,7 @@ label facts (fill date + day supply)
         │  entered once, verified by a human
         ▼
 ┌─────────────────────────┐     ┌──────────────────────────┐
-│ SQLCipher-encrypted     │────▶│ @hearth/core (pure TS)   │
+│ SQLCipher-encrypted     │────▶│ @rua/core (pure TS)   │
 │ SQLite  (the truth)     │     │ runway → digest → alerts │
 └─────────────────────────┘     └──────────────────────────┘
         ▲                                   │
@@ -100,7 +100,7 @@ label facts (fill date + day supply)
 
 
 ### ADR-16 · Charts are custom SVG, not a chart library
-**Decision.** `HearthChart` renders through `react-native-svg` (already present for Lucide icons): hairline grid, ink line, first/last labels, optional reference band. All bucketing lives in `packages/core/src/series.ts` (7d/30d daily, 90d weekly means, 1y monthly means; same-day readings averaged first), pinned by 9 tests.
+**Decision.** `RuaChart` renders through `react-native-svg` (already present for Lucide icons): hairline grid, ink line, first/last labels, optional reference band. All bucketing lives in `packages/core/src/series.ts` (7d/30d daily, 90d weekly means, 1y monthly means; same-day readings averaged first), pinned by 9 tests.
 **Why.** The roadmap suggested victory-native (Skia), but vitals trends need exactly one mark type (a line), and Skia would add a heavyweight dependency purely for styling we would then fight to make editorial. Deviation recorded here on purpose: Skia enters in P27 for the workflow canvas, which genuinely needs gestures and a scene graph; if charts ever need pan/scrub, they can ride that dependency then.
 **The invariant that matters.** What you see is what the data says: rendering is pure presentation and every transformation is a tested pure function.
 
@@ -122,7 +122,7 @@ label facts (fill date + day supply)
 
 ### ADR-16 · The admin-workflow engine is a literal port of the nonlinear reference
 **Decision.** `packages/workflows` ports the architecture of the reference product (SpectAI/nonlinear): workflows own nodes; nodes own properties; a property either holds typed `InterNodeVal[]` literals or points at another node via `inputNodeId`, and that pointer IS the edge. A typed `nodeDefinition` registry declares each node type's property specs; one executor per type; single-brace mustache interpolation; the single sink node's unfilled visible properties form the run card's inputs.
-**Hearth deltas.** Node types are deterministic and local (no cloud-AI executor exists in v1); the reference's ApprovalError became `ConfirmPause`, persisting the pause in SQLite so a run survives force-quit; Human Confirm bundles every named upstream fact into one reviewable json payload so names survive the pause and caregiver edits win downstream; `validateGateBeforeSink()` structurally rejects any template that could reach a document without a human gate.
+**RUA deltas.** Node types are deterministic and local (no cloud-AI executor exists in v1); the reference's ApprovalError became `ConfirmPause`, persisting the pause in SQLite so a run survives force-quit; Human Confirm bundles every named upstream fact into one reviewable json payload so names survive the pause and caregiver edits win downstream; `validateGateBeforeSink()` structurally rejects any template that could reach a document without a human gate.
 **Why a port, not a fresh design.** The reference shape is proven in production and the user asked for it literally; the property-level edge model also renders naturally on the canvas.
 **Deliberate deviations from the roadmap draft.** (1) No LLM node type exists, not even dormant: the roadmap sketched a hard-gated slot, but an executor that cannot run until P29's server proxy is untestable dead code, and the gate rule it would need (validateGateBeforeSink) already guards ANY future node type structurally. It arrives with the proxy. (2) No manual run-next-node control: the runner auto-resolves to the next Human Confirm gate, because the pause points are the decision points; single-stepping deterministic transforms adds taps without adding safety. The stepper and canvas both show per-node results after the fact. (3) Runs are cancelable (idempotent on terminal states); canceled runs keep their persisted node outputs for the audit trail but can never be confirmed into a document. (4) A run stranded in 'running' by a force-quit auto-resumes when its screen opens, re-walking persisted outputs to the gate, the document, or the failure - never a spinner that waits forever.
 
@@ -158,7 +158,7 @@ label facts (fill date + day supply)
 
 - **No account, no server, no network calls.** The privacy label is honestly "Data Not Collected" until P29.
 - **No AI.** The first LLM feature (assistant) arrives at P32, behind a server proxy, after consent UX exists. OCR (P21) is on-device Vision — not a cloud model.
-- **No adherence tracking.** Hearth never claims to know whether a dose was swallowed; it knows supply. That honesty is a feature.
+- **No adherence tracking.** RUA never claims to know whether a dose was swallowed; it knows supply. That honesty is a feature.
 - **No dose logic of any kind.** Runway copy is inventory framing; the intended-use statement (P4) is checked against every screen.
 
 ## 5. The path from here (how P1–P8 pre-paid for it)

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import type { Observation } from '@hearth/schema';
+import type { Observation } from '@rua/schema';
 import { FormField, PillButton, Screen, SectionHeader, Seg, space } from '../../../../ds';
 import { enterLead, enterRow } from '../../../../ds/motion';
 import { addObservation, getPatient } from '../../../../db/repo';

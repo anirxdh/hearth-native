@@ -155,9 +155,9 @@ export function ThresholdSphere({
     <Pressable
       testID={testID}
       accessibilityRole="button"
-      accessibilityLabel="Hold to enter Hearth"
+      accessibilityLabel="Hold to enter RUA"
       accessibilityHint="Press and keep holding for three seconds, or double tap with VoiceOver"
-      accessibilityActions={[{ name: 'activate', label: 'Enter Hearth' }]}
+      accessibilityActions={[{ name: 'activate', label: 'Enter RUA' }]}
       onAccessibilityAction={(e) => {
         if (e.nativeEvent.actionName === 'activate' && !entered.current) {
           entered.current = true;

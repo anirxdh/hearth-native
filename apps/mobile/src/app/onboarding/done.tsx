@@ -25,7 +25,7 @@ export default function OnboardingDone() {
   });
 
   return (
-    <Screen title="You are set up." subline="Here is what lives in Hearth now. All of it stays on this phone.">
+    <Screen title="You are set up." subline="Here is what lives in RUA now. All of it stays on this phone.">
       <Animated.View entering={enterLead}>
         <SectionHeader label="Your setup" top={space.md} />
       </Animated.View>
@@ -56,8 +56,8 @@ export default function OnboardingDone() {
         />
       </Animated.View>
       <Animated.View entering={enterRow(5)}>
-        <View style={{ marginTop: space.xl }} testID="ob-open-hearth">
-          <PillButton label="Open Hearth" onPress={() => router.replace('/' as never)} />
+        <View style={{ marginTop: space.xl }} testID="ob-open-rua">
+          <PillButton label="Open RUA" onPress={() => router.replace('/' as never)} />
         </View>
       </Animated.View>
     </Screen>

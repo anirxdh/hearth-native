@@ -10,8 +10,8 @@ import Animated, {
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, Check, ChevronLeft, Images } from 'lucide-react-native';
-import { parseLabel } from '@hearth/label-parser';
-import { addDays } from '@hearth/core';
+import { parseLabel } from '@rua/label-parser';
+import { addDays } from '@rua/core';
 import {
   Avatar,
   DisclaimerFootnote,
@@ -224,9 +224,9 @@ export default function ScanCapture() {
     // bundled sample is the default. Either way the same text flows through
     // the pipeline a native camera read would use. Unlike a real photo, the
     // sample gets the illustrated scanning moment before confirm opens.
-    const g = globalThis as { __hearthOcrFixture?: unknown };
-    const text = typeof g.__hearthOcrFixture === 'string' ? g.__hearthOcrFixture : sampleLabelText();
-    g.__hearthOcrFixture = text;
+    const g = globalThis as { __ruaOcrFixture?: unknown };
+    const text = typeof g.__ruaOcrFixture === 'string' ? g.__ruaOcrFixture : sampleLabelText();
+    g.__ruaOcrFixture = text;
     if (!selected) return;
     setScanText(text);
     if (scanTimer.current != null) clearTimeout(scanTimer.current);
@@ -348,7 +348,7 @@ export default function ScanCapture() {
 
       <Animated.View entering={enterQuiet}>
         <DisclaimerFootnote>
-          Hearth reads the printed text on the label and shows you every field to confirm before
+          RUA reads the printed text on the label and shows you every field to confirm before
           anything is saved. Nothing is saved, and nothing leaves this phone, until you approve it.
         </DisclaimerFootnote>
       </Animated.View>

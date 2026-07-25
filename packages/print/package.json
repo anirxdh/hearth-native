@@ -1,5 +1,5 @@
 {
-  "name": "@hearth/print",
+  "name": "@rua/print",
   "version": "0.1.0",
   "private": true,
   "main": "src/index.ts",

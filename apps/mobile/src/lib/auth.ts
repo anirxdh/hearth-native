@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
 import * as LocalAuthentication from 'expo-local-authentication';
-import { uuidv7 } from '@hearth/core';
+import { uuidv7 } from '@rua/core';
 import { getSetting, setSetting } from '../db/repo';
 import { nowIso } from './clock';
 
@@ -41,7 +41,7 @@ export interface AuthProvider {
 /** Session tokens live this long before a silent refresh is required. */
 export const TOKEN_TTL_MINUTES = 30;
 
-const TOKEN_KEY = 'hearth.auth.token.v1';
+const TOKEN_KEY = 'rua.auth.token.v1';
 
 /* ---------- token storage: Keychain on device, localStorage on web ---------- */
 
@@ -160,7 +160,7 @@ async function biometricGate(): Promise<boolean> {
     (await LocalAuthentication.isEnrolledAsync());
   if (!enrolled) return true; // no Face ID on device: do not lock the user out
   const res = await LocalAuthentication.authenticateAsync({
-    promptMessage: 'Unlock Hearth',
+    promptMessage: 'Unlock RUA',
     cancelLabel: 'Cancel',
   });
   return res.success;

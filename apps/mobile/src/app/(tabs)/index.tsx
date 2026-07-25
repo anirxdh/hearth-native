@@ -12,7 +12,7 @@ import {
   type DigestItem,
   type DigestMedInput,
   type RunwayStatus,
-} from '@hearth/core';
+} from '@rua/core';
 import {
   Avatar,
   Card,
@@ -116,7 +116,7 @@ export default function Home() {
 
   const hour = new Date().getHours();
 
-  // The threshold rule: nobody gets greeted before Hearth knows someone.
+  // The threshold rule: nobody gets greeted before RUA knows someone.
   // Brand-new visitors (no account, no people) meet the sphere instead.
   if (!hasAccount() && data.patients.length === 0) {
     return <Redirect href={'/welcome' as never} />;
@@ -128,7 +128,7 @@ export default function Home() {
         <View>
           <Text style={type.greet}>{greetingFor(hour, currentUser()?.name.split(' ')[0] ?? null)}</Text>
           <Text style={[type.detail, { marginTop: 6 }]}>
-            Hearth is a calm command center for everyone you care for.
+            RUA is a calm command center for everyone you care for.
           </Text>
         </View>
         <EmptyState
@@ -136,7 +136,7 @@ export default function Home() {
           detail="Add the first person you care for. You stay in control of every detail; nothing is shared with anyone."
           action={
             <View style={{ alignItems: 'center', gap: 14 }}>
-              <PillButton label="Set up Hearth" onPress={() => router.push('/onboarding' as never)} />
+              <PillButton label="Set up RUA" onPress={() => router.push('/onboarding' as never)} />
               <PillButton label="Add a person" variant="outline" onPress={() => router.push('/patient/new')} />
               <Pressable
                 onPress={() => confirmLoadDemoFamily()}

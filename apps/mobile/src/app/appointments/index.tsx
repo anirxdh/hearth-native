@@ -3,7 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { CalendarDays, ChevronLeft, Plus } from 'lucide-react-native';
-import { daysBetween } from '@hearth/core';
+import { daysBetween } from '@rua/core';
 import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import {
   EmptyState,
@@ -169,7 +169,7 @@ export default function Appointments() {
               <EmptyState
                 art={<CalendarArt size={72} />}
                 title="No upcoming appointments"
-                detail="Add the next visit and Hearth drafts the prep sheet from the record."
+                detail="Add the next visit and RUA drafts the prep sheet from the record."
               />
             </Animated.View>
           ) : (

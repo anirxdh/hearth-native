@@ -3,7 +3,7 @@ import { Linking, Pressable, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { FileText, Phone, Plus, ShieldAlert } from 'lucide-react-native';
-import type { Contact, Patient, Vital } from '@hearth/schema';
+import type { Contact, Patient, Vital } from '@rua/schema';
 import { enterRow } from '../../ds/motion';
 import {
   EmptyState,

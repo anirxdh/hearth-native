@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
-import type { RunwayStatus } from '@hearth/core';
+import type { RunwayStatus } from '@rua/core';
 import { EmptyState, ListRow, PillButton, RunwayBar, SectionHeader, color, space, type } from '../../ds';
 import { enterRow } from '../../ds/motion';
 import type { MedWithRunway } from '../../db/repo';
@@ -30,7 +30,7 @@ export function MedsSection({ patientId, meds }: { patientId: string; meds: MedW
           <EmptyState
             art={<BottleArt size={72} />}
             title="No medications yet"
-            detail="Add each medication with its last fill date and day supply; Hearth computes the refill runway from there."
+            detail="Add each medication with its last fill date and day supply; RUA computes the refill runway from there."
             action={<PillButton label="Add a medication" onPress={() => router.push(`/patient/${patientId}/med/new` as never)} />}
           />
         </Animated.View>

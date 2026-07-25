@@ -1,9 +1,9 @@
 /**
- * The only place the app reads the wall clock. @hearth/core is clock-free
+ * The only place the app reads the wall clock. @rua/core is clock-free
  * by design; screens and the repo get "today" from here so tests can stub
  * one module and the digest recomputes correctly on day boundaries.
  */
-import { localDateForInstant, type LocalDate } from '@hearth/core';
+import { localDateForInstant, type LocalDate } from '@rua/core';
 
 export function nowIso(): string {
   return new Date().toISOString();

@@ -9,11 +9,11 @@ import {
   type ChartRange,
   type LocalDate,
   type SeriesPoint,
-} from '@hearth/core';
-import type { Observation, Vital } from '@hearth/schema';
+} from '@rua/core';
+import type { Observation, Vital } from '@rua/schema';
 import {
   EmptyState,
-  HearthChart,
+  RuaChart,
   PillButton,
   SectionHeader,
   Seg,
@@ -118,7 +118,7 @@ export function ActivityTab({
             ) : null}
           </Animated.View>
           <Animated.View entering={enterRow(2)} style={{ marginTop: space.lg }}>
-            <HearthChart
+            <RuaChart
               data={bucketed}
               unit={activeKind.unit}
               {...(bucketedDiastolic.length > 0

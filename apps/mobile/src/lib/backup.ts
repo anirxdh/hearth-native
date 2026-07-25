@@ -33,7 +33,7 @@ export async function exportBackup(passphrase: string): Promise<void> {
   logAccess('backup.export', null);
 
   const raw = getRawDb();
-  const dest = `${FileSystem.cacheDirectory}Hearth-backup-${today()}.hearthbackup`;
+  const dest = `${FileSystem.cacheDirectory}RUA-backup-${today()}.ruabackup`;
   await FileSystem.deleteAsync(dest, { idempotent: true });
 
   raw.execSync('PRAGMA wal_checkpoint(TRUNCATE);');
@@ -51,7 +51,7 @@ export async function exportBackup(passphrase: string): Promise<void> {
 }
 
 /**
- * Pick a .hearthbackup file, verify the passphrase, and REPLACE the live
+ * Pick a .ruabackup file, verify the passphrase, and REPLACE the live
  * database with its contents. Destructive by definition; the settings UI
  * double-confirms before calling this.
  */

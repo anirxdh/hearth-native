@@ -2,7 +2,7 @@
 
 A release gate, not a metaphor. A caregiver's worst moments happen in places
 with no signal: a hospital basement, a parking garage, a rural highway. Every
-release of Hearth must pass this checklist **in airplane mode** on a physical
+release of RUA must pass this checklist **in airplane mode** on a physical
 device before it ships. No exceptions, no "it should be fine."
 
 ## Setup

@@ -1,10 +1,10 @@
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
 
 /**
- * Hearth schema, phase 1 baseline.
+ * RUA schema, phase 1 baseline.
  *
  * Conventions (locked in P1, relied on by sync in P30):
- * - ids are UUIDv7 strings (time-ordered, generated in @hearth/core)
+ * - ids are UUIDv7 strings (time-ordered, generated in @rua/core)
  * - instants are ISO-8601 UTC strings in *At columns; the wall-clock zone
  *   they were recorded in travels separately in *Tz columns where it matters
  * - calendar dates with no time component (fill dates, DOB) are 'YYYY-MM-DD'

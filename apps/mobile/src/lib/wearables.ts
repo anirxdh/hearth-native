@@ -1,5 +1,5 @@
 import { requireOptionalNativeModule } from 'expo-modules-core';
-import { addDays, daysBetween, type LocalDate } from '@hearth/core';
+import { addDays, daysBetween, type LocalDate } from '@rua/core';
 import { addVital, getSetting, listPatients, setSetting } from '../db/repo';
 import { bumpDataVersion } from './events';
 import { today } from './clock';
@@ -11,10 +11,10 @@ import { today } from './clock';
  *
  * How band data is actually obtainable (researched, honest):
  * - HealthKit (free, on-device): DEVICE-OWNER ONLY. It works when the
- *   patient's own iPhone/Watch runs Hearth; iOS offers no API to read
+ *   patient's own iPhone/Watch runs RUA; iOS offers no API to read
  *   another person's Health data remotely. The adapter below calls an
- *   optional native module ('HearthHealthKit'); packaging that Swift module
- *   into the dev client is a TODO item alongside HearthVision.
+ *   optional native module ('RuaHealthKit'); packaging that Swift module
+ *   into the dev client is a TODO item alongside RuaVision.
  * - Vendor cloud APIs (Fitbit, Withings, Oura): the real cross-person path.
  *   The patient consents once via OAuth and the caregiver's app reads from
  *   the vendor cloud. Needs the P29 backend for token custody; documented
@@ -77,7 +77,7 @@ type HealthKitModule = {
 
 /** Device-owner HealthKit, when the native module ships (TODO: packaging). */
 function healthKit(): HealthKitModule | null {
-  return requireOptionalNativeModule<HealthKitModule>('HearthHealthKit');
+  return requireOptionalNativeModule<HealthKitModule>('RuaHealthKit');
 }
 
 async function fetchSummaries(

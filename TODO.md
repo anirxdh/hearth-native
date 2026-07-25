@@ -1,4 +1,4 @@
-# Hearth Native — What Remains (and who holds it)
+# RUA Native — What Remains (and who holds it)
 
 Phases P1-P28's **code** is complete: 290 unit/component tests plus 14 Playwright E2E specs, all green and CI-enforced on every push, all screens working on
 the simulator. This file is the honest list of what is deliberately NOT done,
@@ -12,7 +12,7 @@ split by who has to do it. Check items off as they land.
 - [ ] Required-to-merge checks (branch protection) need GitHub Pro on private repos, or a public repo. When either happens, run: gh api -X PUT repos/anirxdh/hearth-native/branches/main/protection with contexts ["test", "core-safety", "e2e"]. Until then both workflows already run on every PR and push; a red check is loudly visible on the PR page, just not merge-blocking.
 
 ### Apple / distribution
-- [ ] Enroll in the Apple Developer Program ($99/yr) and register the bundle id `com.anirudh.hearth`
+- [ ] Enroll in the Apple Developer Program ($99/yr) and register the bundle id `com.anirudh.rua`
 - [ ] Create the App Store Connect app record; answer the age-rating questionnaire honestly (medical/wellness topics)
 - [ ] `eas build --profile production` + `eas submit` for the first **internal TestFlight** (P9); install on your own iPhone
 - [ ] Recruit 3-5 family/friend caregivers for internal TestFlight; watch them onboard unassisted
@@ -24,7 +24,7 @@ split by who has to do it. Check items off as they land.
 - [ ] Note for flaky finds: on this Xcode 26.3 simulator, below-the-fold elements are sometimes missing from the accessibility snapshot (kAXError -25218); flows are written to assert above-the-fold content on an iPhone 17 Pro Max.
 
 ### Physical-device verification (cannot be simulated)
-- [ ] **Package the Vision OCR Expo Module** (P21 finishing item): the spike proved Apple Vision reads labels (docs/ocr-scorecard.md); lib/ocr.ts already calls requireOptionalNativeModule('HearthVision').recognizeText(uri) when present. Wrap the spike's ~150-line Swift into an Expo Module, rebuild the dev client, and rerun the corpus scorecard on device. Until then the scan flow works via the sample-label path and manual entry.
+- [ ] **Package the Vision OCR Expo Module** (P21 finishing item): the spike proved Apple Vision reads labels (docs/ocr-scorecard.md); lib/ocr.ts already calls requireOptionalNativeModule('RuaVision').recognizeText(uri) when present. Wrap the spike's ~150-line Swift into an Expo Module, rebuild the dev client, and rerun the corpus scorecard on device. Until then the scan flow works via the sample-label path and manual entry.
 - [ ] **3-day notification soak** (P8 gate): two physical iPhones, app force-quit, verify every refill alert lands on time
 - [ ] **Real-bottle OCR corpus** (P3/P21 gate): photograph 30-50 of your family's actual Rx bottles across pharmacies; rerun `spike/ocr/run.sh`; compare the scorecard before building P21 scanning
 - [ ] **Hospital basement gate** (`HOSPITAL_BASEMENT.md`): full airplane-mode checklist on a physical device before any release
@@ -48,7 +48,7 @@ split by who has to do it. Check items off as they land.
 - [ ] apps/mobile/src/lib/companion.ts is the single seam the Companion tab consumes: answerFor(text, ctx) is pure, local, and returns { text, action }, knowing nothing about the UI. To swap in a real model later: keep answerFor as the offline fallback, add a provider that sends the same ctx snapshot to a clinician-reviewed LLM with a user-supplied API key (Keychain-stored, never bundled, no key of ours to leak), and map replies back into the same { text, action } shape. The 911-first rule and dose-question refusals stay enforced locally on both sides of any model call, by design.
 
 ### Wearables (band data: how it actually works)
-- [ ] Package the HearthHealthKit Expo Module (Swift: HKStatisticsQuery daily resting HR, steps, sleep) next to HearthVision; lib/wearables.ts already calls it optionally. HealthKit is DEVICE-OWNER ONLY: valid when the patient's own iPhone/Watch runs Hearth. Requires the HealthKit entitlement + purpose strings + a dev-client rebuild.
+- [ ] Package the RuaHealthKit Expo Module (Swift: HKStatisticsQuery daily resting HR, steps, sleep) next to RuaVision; lib/wearables.ts already calls it optionally. HealthKit is DEVICE-OWNER ONLY: valid when the patient's own iPhone/Watch runs RUA. Requires the HealthKit entitlement + purpose strings + a dev-client rebuild.
 - [ ] Cross-person band data (caregiver views patient's numbers): Fitbit / Withings / Oura cloud APIs with patient-consented OAuth; needs the P29 backend for token custody. Slots into lib/wearables.ts as another adapter. There is no MCP path for this (MCP is a desktop agent protocol, not an on-device health API).
 
 ### Deliberate placeholders (user-approved)
@@ -71,7 +71,7 @@ split by who has to do it. Check items off as they land.
 - [x] Sex field on the patient profile: optional Male/Female/Prefer-not-to-say selector on add + edit; nutrition uses patient.sex when set (pronoun inference stays as the legacy fallback) and the one-pager note says which source was used
 - [x] Document title editing + category picker in the vault: pencil edit on each row opens an inline title + category editor, saved through updateDocument with the standard audit entry
 - [ ] Document viewer screen (vault items share out today; an in-app viewer with zoom would be better)
-- [x] BP diastolic series on the Activity chart: HearthChart grew an optional second series (dashed, ink3) with a legend and a both-values accessibility summary; other kinds keep the single-series API
+- [x] BP diastolic series on the Activity chart: RuaChart grew an optional second series (dashed, ink3) with a legend and a both-values accessibility summary; other kinds keep the single-series API
 - [ ] Observation kinds could feed the P24 prep sheet automatically (designed for it; wire when P24 lands)
 - [x] `Alert.prompt` passphrase entry is iOS-only: promptDialog in lib/dialogs.ts (native Alert.prompt, web window.prompt) now backs the backup flows; Android still wants a real modal when it comes
 - [x] Migration test harness runs migrations forward only: downgrade.test.ts pins that a database newer than the bundle is a clean no-op (nothing applied, dropped, or deleted); migrateSafely's snapshot/restore covers any future regression to throwing

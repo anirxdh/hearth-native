@@ -25,4 +25,4 @@ http.createServer((req, res) => {
   res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
   res.setHeader('Content-Type', MIME[path.extname(file)] ?? 'application/octet-stream');
   fs.createReadStream(file).pipe(res);
-}).listen(port, () => console.log(`hearth web on http://localhost:${port}`));
+}).listen(port, () => console.log(`RUA web on http://localhost:${port}`));

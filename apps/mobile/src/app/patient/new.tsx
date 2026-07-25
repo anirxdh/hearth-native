@@ -17,7 +17,7 @@ import { enterLead, enterQuiet, enterRow } from '../../ds/motion';
 import { createPatient } from '../../db/repo';
 import { nowIso } from '../../lib/clock';
 import { ATTESTATION_EXPLAINER, ATTESTATION_TEXT, ONBOARDING_DISCLAIMER } from '../../lib/copy';
-import { isValidLocalDate } from '@hearth/core';
+import { isValidLocalDate } from '@rua/core';
 
 export default function NewPatient() {
   const router = useRouter();

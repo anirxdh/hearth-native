@@ -3,7 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
-import { isValidLocalDate } from '@hearth/core';
+import { isValidLocalDate } from '@rua/core';
 import { FormField, Hairline, PillButton, Screen, SectionHeader, Seg, color, space, type } from '../../../ds';
 import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { archiveAppointment, getAppointment, updateAppointment } from '../../../db/apptRepo';

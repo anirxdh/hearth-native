@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "Hearth",
-    "slug": "hearth",
+    "name": "RUA",
+    "slug": "rua",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "hearth",
+    "scheme": "rua",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
-      "bundleIdentifier": "com.anirudh.hearth",
+      "bundleIdentifier": "com.anirudh.rua",
       "supportsTablet": false,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -19,7 +19,7 @@
       }
     },
     "android": {
-      "package": "com.anirudh.hearth",
+      "package": "com.anirudh.rua",
       "predictiveBackGestureEnabled": false
     },
     "plugins": [
@@ -49,14 +49,14 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Hearth uses the camera to photograph insurance cards, discharge papers, and other care documents you choose to keep in the vault.",
-          "photosPermission": "Hearth lets you import photos of care documents you already have, such as insurance cards or visit summaries."
+          "cameraPermission": "RUA uses the camera to photograph insurance cards, discharge papers, and other care documents you choose to keep in the vault.",
+          "photosPermission": "RUA lets you import photos of care documents you already have, such as insurance cards or visit summaries."
         }
       ],
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "Hearth can require Face ID to open the app so care records stay private."
+          "faceIDPermission": "RUA can require Face ID to open the app so care records stay private."
         }
       ]
     ],

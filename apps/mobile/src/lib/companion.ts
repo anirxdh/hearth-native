@@ -1,8 +1,8 @@
 /**
- * The Hearth Companion brain: a pure, local answer function. No model, no
+ * The RUA Companion brain: a pure, local answer function. No model, no
  * network, no database imports; the chat screen assembles a small context
  * snapshot from the repos and this module turns a question into a calm,
- * honest answer about what is already in Hearth. It never diagnoses,
+ * honest answer about what is already in RUA. It never diagnoses,
  * never doses, and never pretends to be a clinician or an LLM.
  *
  * Safety invariant: any emergency-sounding message answers with the 911
@@ -62,7 +62,7 @@ export function answerFor(text: string, ctx: CompanionCtx): CompanionAnswer {
     if (ctx.worstRunways.length === 0) {
       return {
         text:
-          'No refills are running low right now. When a fill is logged, Hearth counts the days of supply down and lists the tightest ones here.',
+          'No refills are running low right now. When a fill is logged, RUA counts the days of supply down and lists the tightest ones here.',
       };
     }
     const worst = [...ctx.worstRunways].sort((a, b) => a.daysRemaining - b.daysRemaining);
@@ -90,7 +90,7 @@ export function answerFor(text: string, ctx: CompanionCtx): CompanionAnswer {
   if (asks(/scan|label|bottle/)) {
     return {
       text:
-        'Point the camera at a medication bottle and Hearth reads the label: name, strength, and fill details. You confirm every field before anything is saved.',
+        'Point the camera at a medication bottle and RUA reads the label: name, strength, and fill details. You confirm every field before anything is saved.',
       action: { label: 'Open the scanner', route: '/scan' },
     };
   }
@@ -106,7 +106,7 @@ export function answerFor(text: string, ctx: CompanionCtx): CompanionAnswer {
   if (asks(/\bwho\b|circle|people/)) {
     if (ctx.people.length === 0) {
       return {
-        text: 'Nobody is in the circle yet. Add the first person you care for and Hearth starts organizing around them.',
+        text: 'Nobody is in the circle yet. Add the first person you care for and RUA starts organizing around them.',
         action: { label: 'Add a person', route: '/patient/new' },
       };
     }
@@ -119,6 +119,6 @@ export function answerFor(text: string, ctx: CompanionCtx): CompanionAnswer {
   // Default: a warm orientation, honest about what this is and is not.
   return {
     text:
-      'I can find what is already in Hearth: refill runways, the next visit and how to get there, the emergency guides, and the paperwork tools. Ask in plain words, like "what refills are due" or "how do we get to the visit".',
+      'I can find what is already in RUA: refill runways, the next visit and how to get there, the emergency guides, and the paperwork tools. Ask in plain words, like "what refills are due" or "how do we get to the visit".',
   };
 }

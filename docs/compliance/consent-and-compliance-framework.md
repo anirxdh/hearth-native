@@ -1,4 +1,4 @@
-# Hearth Consent and Compliance Framework
+# RUA Consent and Compliance Framework
 
 | | |
 |---|---|
@@ -9,7 +9,7 @@
 | Companion | `docs/compliance/attestation-and-disclaimers.ts-content.md` (verbatim shipped strings) |
 | Review cadence | Re-read at every release gate (P9, P19, P20, P23, P24, P28, P29, P31, P32) and whenever a feature touches health data, sharing, or marketing copy |
 
-This is the decision document for how Hearth handles another person's health information. Hearth's user is a family caregiver; the data subject is usually someone else (a parent, an aunt). That asymmetry is the central legal and ethical fact of the product, and every rule below exists because of it.
+This is the decision document for how RUA handles another person's health information. RUA's user is a family caregiver; the data subject is usually someone else (a parent, an aunt). That asymmetry is the central legal and ethical fact of the product, and every rule below exists because of it.
 
 Nothing in this document is legal advice. It is an engineering-facing compliance posture, written to be conservative, and it should be reviewed by counsel before the first external distribution (Phase 19) and again before the first server feature (Phase 29).
 
@@ -17,67 +17,67 @@ Nothing in this document is legal advice. It is an engineering-facing compliance
 
 ## 1. Legal posture
 
-### 1.1 HIPAA: Hearth is not a covered entity, and we never claim to be
+### 1.1 HIPAA: RUA is not a covered entity, and we never claim to be
 
-HIPAA applies to covered entities (health plans, healthcare clearinghouses, and providers who conduct standard electronic transactions) and to their business associates. Hearth is a direct-to-consumer tool sold to family caregivers. It receives no data from a covered entity on a covered entity's behalf, bills no payer, and signs no business associate agreement in its local-first era. It is therefore typically not regulated by HIPAA at all.
+HIPAA applies to covered entities (health plans, healthcare clearinghouses, and providers who conduct standard electronic transactions) and to their business associates. RUA is a direct-to-consumer tool sold to family caregivers. It receives no data from a covered entity on a covered entity's behalf, bills no payer, and signs no business associate agreement in its local-first era. It is therefore typically not regulated by HIPAA at all.
 
 Two consequences, both binding:
 
 1. We never write "HIPAA compliant" anywhere: not in the app, not in App Store metadata, not on the marketing site, not in investor or prize materials. For a non-covered entity the claim is meaningless, and the FTC has treated compliance-adjacent claims by non-covered entities as deceptive (see 1.5). The permitted phrasing is factual: "your data is encrypted on your device" or "we follow the security practices described in our privacy policy."
-2. Not being HIPAA-regulated does not mean unregulated. The rules that actually bind Hearth are the FTC Health Breach Notification Rule (1.2), Washington's My Health My Data Act (1.3), California's CMIA (1.4), the FTC Act's deception standard (1.5), general state breach-notification statutes, and Apple's App Review Guidelines (Section 9). This posture, "not HIPAA, still heavily obligated," is the frame for every decision below.
+2. Not being HIPAA-regulated does not mean unregulated. The rules that actually bind RUA are the FTC Health Breach Notification Rule (1.2), Washington's My Health My Data Act (1.3), California's CMIA (1.4), the FTC Act's deception standard (1.5), general state breach-notification statutes, and Apple's App Review Guidelines (Section 9). This posture, "not HIPAA, still heavily obligated," is the frame for every decision below.
 
-Exception path: if Hearth ever integrates with a provider or plan on their behalf (for example, an EHR integration operated for a clinic), Hearth becomes a business associate for that data flow and this section must be rewritten before that feature ships. The Phase 32 LLM proxy is planned on an Anthropic zero-data-retention arrangement with a BAA available, which is a defensive posture, not a HIPAA obligation.
+Exception path: if RUA ever integrates with a provider or plan on their behalf (for example, an EHR integration operated for a clinic), RUA becomes a business associate for that data flow and this section must be rewritten before that feature ships. The Phase 32 LLM proxy is planned on an Anthropic zero-data-retention arrangement with a BAA available, which is a defensive posture, not a HIPAA obligation.
 
 ### 1.2 FTC Health Breach Notification Rule (16 CFR Part 318)
 
-The HBNR covers vendors of personal health records that are not HIPAA covered entities. Under the FTC's 2021 policy statement and the amended rule effective July 2024, a consumer health app that maintains identifiable health information drawn from multiple sources (user entry, camera capture of labels and documents, device APIs) is a PHR vendor. Hearth should assume it is covered from its first external tester.
+The HBNR covers vendors of personal health records that are not HIPAA covered entities. Under the FTC's 2021 policy statement and the amended rule effective July 2024, a consumer health app that maintains identifiable health information drawn from multiple sources (user entry, camera capture of labels and documents, device APIs) is a PHR vendor. RUA should assume it is covered from its first external tester.
 
 Key features of the amended rule that shape our plan:
 
-- "Breach of security" is not limited to hacking. It includes any unauthorized acquisition of identifiable health information, including a voluntary but unauthorized disclosure, for example sharing health data with an advertising SDK without authorization. Hearth's no-trackers, no-analytics-on-health-data posture (Section 7) is the primary control.
+- "Breach of security" is not limited to hacking. It includes any unauthorized acquisition of identifiable health information, including a voluntary but unauthorized disclosure, for example sharing health data with an advertising SDK without authorization. RUA's no-trackers, no-analytics-on-health-data posture (Section 7) is the primary control.
 - Individuals must be notified without unreasonable delay and in no case later than 60 calendar days after discovery of a breach. The clock starts on the first day the breach is known or reasonably should have been known.
 - For breaches involving 500 or more individuals, the FTC must be notified at the same time as individuals. For fewer than 500, a log is submitted annually within 60 days after the end of the calendar year. Breaches affecting 500 or more residents of a state also require media notice.
 - Violations are treated as unfair or deceptive acts with civil penalties assessed per violation per day.
 
 The written incident-response plan required by this rule is Section 2 of this document.
 
-Local-first note: while Hearth holds no server copy, the realistic breach surfaces are a lost or stolen device and a compromised user-initiated export. The on-device database is SQLCipher-encrypted with the key in the iOS Keychain (Phase 1), so acquisition of the device or the database file without the key does not expose readable health information. This does not exempt us from the rule; it makes the "was identifiable health information actually acquired?" analysis in Section 2 usually resolve to no.
+Local-first note: while RUA holds no server copy, the realistic breach surfaces are a lost or stolen device and a compromised user-initiated export. The on-device database is SQLCipher-encrypted with the key in the iOS Keychain (Phase 1), so acquisition of the device or the database file without the key does not expose readable health information. This does not exempt us from the rule; it makes the "was identifiable health information actually acquired?" analysis in Section 2 usually resolve to no.
 
 ### 1.3 Washington My Health My Data Act (chapter 19.373 RCW)
 
 MHMD is the strictest consumer-health privacy law in the country, it has a private right of action through Washington's Consumer Protection Act, and it has no meaningful volume threshold. It attaches, practically, at the first Washington tester. TestFlight distribution reaches Washington, so Phase 19 is the deadline, and the controls are cheap to build earlier, so we build them from Phase 1.
 
-What it requires of Hearth:
+What it requires of RUA:
 
 - A standalone Consumer Health Data Privacy Policy, separate and distinct from any general privacy policy, with its own link on the marketing site homepage. It must list the categories of consumer health data collected, purposes, sources, categories shared, and third parties and affiliates receiving data. Section 7 is that policy, drafted for the local-first era. Phase 19 puts it at a public URL.
-- Prior opt-in consent to collect or share consumer health data beyond what is necessary to provide a product or service the consumer requested. In the local-first era, everything Hearth stores is data the caregiver deliberately typed or captured in order to use the product, and nothing is shared, so the requested-service ground covers processing; the policy still says exactly this. Any future purpose (sync, AI) requires new, separate consent before first use (Phases 29 and 32 already plan this).
-- Selling consumer health data requires a separate, signed, time-limited authorization. Hearth's answer is simpler: we never sell consumer health data, stated flatly in the policy.
+- Prior opt-in consent to collect or share consumer health data beyond what is necessary to provide a product or service the consumer requested. In the local-first era, everything RUA stores is data the caregiver deliberately typed or captured in order to use the product, and nothing is shared, so the requested-service ground covers processing; the policy still says exactly this. Any future purpose (sync, AI) requires new, separate consent before first use (Phases 29 and 32 already plan this).
+- Selling consumer health data requires a separate, signed, time-limited authorization. RUA's answer is simpler: we never sell consumer health data, stated flatly in the policy.
 - Consumer rights: confirm and access data (including third parties it was shared with), withdraw consent, and delete, with deletion propagating to affiliates, processors, and third parties, and to archives and backups on their cycle. Locally this is satisfied by in-app edit, the full data wipe (Phase 19), and the fact that no third party ever holds a copy. Once a server exists (Phase 29), deletion must verifiably purge server data and propagate to processors, which is already a Phase 29 exit criterion.
-- No geofencing around health facilities. Hearth requests no location permission in v1 and never geofences; the transport feature (Phase 24) uses deep links with no PII and no location capture.
+- No geofencing around health facilities. RUA requests no location permission in v1 and never geofences; the transport feature (Phase 24) uses deep links with no PII and no location capture.
 
-MHMD nuance specific to Hearth: "consumer health data" here belongs to the person the data describes, usually the elder, not only the caregiver holding the phone. The caregiver-authority attestation (Section 3) is our control for the lawful-basis question of processing a third party's health data at that person's (or their representative's) direction.
+MHMD nuance specific to RUA: "consumer health data" here belongs to the person the data describes, usually the elder, not only the caregiver holding the phone. The caregiver-authority attestation (Section 3) is our control for the lawful-basis question of processing a third party's health data at that person's (or their representative's) direction.
 
-### 1.4 California CMIA section 56.06: Hearth is deemed a provider of health care
+### 1.4 California CMIA section 56.06: RUA is deemed a provider of health care
 
-Civil Code section 56.06(b) provides that any business offering software or hardware to consumers, including a mobile application, designed to maintain medical information in order to make it available to the individual or a provider of health care, for purposes of allowing the user to manage their information or for diagnosis and treatment, is deemed a provider of health care for the purposes of CMIA's confidentiality obligations. Hearth is squarely inside this definition, and this attaches at roughly the first California tester.
+Civil Code section 56.06(b) provides that any business offering software or hardware to consumers, including a mobile application, designed to maintain medical information in order to make it available to the individual or a provider of health care, for purposes of allowing the user to manage their information or for diagnosis and treatment, is deemed a provider of health care for the purposes of CMIA's confidentiality obligations. RUA is squarely inside this definition, and this attaches at roughly the first California tester.
 
 What being a deemed provider means in practice:
 
 - CMIA's confidentiality duties apply: no disclosure of medical information without a valid authorization, and an affirmative duty to preserve confidentiality. CMIA authorizes nominal damages of 1,000 dollars per violation without proof of actual harm, plus actual damages and administrative penalties, so a single sloppy disclosure is expensive.
-- Design consequences Hearth already carries: encryption at rest by construction (Phase 1), no health data in logs, URLs, notification payloads, or crash reports (Phase 8, Phase 9, Phase 18), user-initiated sharing only (Phase 14 print and share flows), per-category scoped sharing with logging when multi-caregiver sharing arrives (Section 5, Phase 31).
-- The caregiver-authority attestation (Section 3) documents that the person entering another adult's medical information affirms permission or authority to do so, which is the honest answer to "who authorized Hearth to maintain this person's medical information?"
+- Design consequences RUA already carries: encryption at rest by construction (Phase 1), no health data in logs, URLs, notification payloads, or crash reports (Phase 8, Phase 9, Phase 18), user-initiated sharing only (Phase 14 print and share flows), per-category scoped sharing with logging when multi-caregiver sharing arrives (Section 5, Phase 31).
+- The caregiver-authority attestation (Section 3) documents that the person entering another adult's medical information affirms permission or authority to do so, which is the honest answer to "who authorized RUA to maintain this person's medical information?"
 
 ### 1.5 FTC Act section 5: the deception standard governs every claim we make
 
-The FTC's health-app enforcement (GoodRx, BetterHelp, Premom, Cerebral) establishes that marketing and privacy-policy claims about health data are strictly held: say "we never share your data" and then use an analytics SDK, and that is a deceptive practice regardless of HIPAA status. Rules Hearth adopts:
+The FTC's health-app enforcement (GoodRx, BetterHelp, Premom, Cerebral) establishes that marketing and privacy-policy claims about health data are strictly held: say "we never share your data" and then use an analytics SDK, and that is a deceptive practice regardless of HIPAA status. Rules RUA adopts:
 
 - Every public claim about data handling must be literally true of the shipped build. The privacy policy, the App Store privacy label, and the actual binary are audited together at every release gate (Phase 18 checklist, Phase 19 audit).
-- Health-benefit claims are out of bounds. Marketing says Hearth "helps you stay organized"; it never says Hearth "prevents medication errors," "improves adherence," or "keeps your parents safe." Anything that sounds like a measurable health outcome requires substantiation we do not have and do not want to imply. The intended-use statement (Section 6.2) is the copy filter.
+- Health-benefit claims are out of bounds. Marketing says RUA "helps you stay organized"; it never says RUA "prevents medication errors," "improves adherence," or "keeps your parents safe." Anything that sounds like a measurable health outcome requires substantiation we do not have and do not want to imply. The intended-use statement (Section 6.2) is the copy filter.
 - No "HIPAA compliant" claims (see 1.1), and no compliance seals or badges we cannot document.
 
 ### 1.6 FDA software-function line, stated once
 
-Hearth is designed to remain outside the FDA device definition under FD&C Act section 520(o) (21st Century Cures Act): it is administrative and organizational software that stores, transfers, and displays health information a user entered, plus general wellness content. The features that would cross the line, and which Hearth therefore never builds without a regulatory strategy, are: computing or recommending doses, interpreting vitals or labs to produce a diagnosis or alarm, triage recommendations, and treatment suggestions. The runway engine is inventory arithmetic (fill date plus day supply, `packages/core/src/runway.ts`); the high-alert badge (`packages/core/src/highAlert.ts`) prompts extra confirmation at data entry and never blocks or directs care; emergency guides are static, clinician-reviewed, general first-aid content. The intended-use statement (Section 6.2) is how this line is enforced feature by feature.
+RUA is designed to remain outside the FDA device definition under FD&C Act section 520(o) (21st Century Cures Act): it is administrative and organizational software that stores, transfers, and displays health information a user entered, plus general wellness content. The features that would cross the line, and which RUA therefore never builds without a regulatory strategy, are: computing or recommending doses, interpreting vitals or labs to produce a diagnosis or alarm, triage recommendations, and treatment suggestions. The runway engine is inventory arithmetic (fill date plus day supply, `packages/core/src/runway.ts`); the high-alert badge (`packages/core/src/highAlert.ts`) prompts extra confirmation at data entry and never blocks or directs care; emergency guides are static, clinician-reviewed, general first-aid content. The intended-use statement (Section 6.2) is how this line is enforced feature by feature.
 
 ---
 
@@ -115,7 +115,7 @@ This is the written plan required by the FTC Health Breach Notification Rule. It
 
 ### 3.1 Why it exists
 
-Hearth's caregiver enters another adult's medical information. CMIA deems us a provider of health care maintaining that information (1.4), MHMD gives the data subject rights over it (1.3), and basic ethics says the elder is a person, not a record. Hearth cannot verify a power of attorney from an app screen, and pretending to would be theater. What we can honestly do is: require an explicit, recorded affirmation of authority or permission at the moment a person is added; explain in plain English why we ask; and keep the affirmation with a timestamp so it is auditable later.
+RUA's caregiver enters another adult's medical information. CMIA deems us a provider of health care maintaining that information (1.4), MHMD gives the data subject rights over it (1.3), and basic ethics says the elder is a person, not a record. RUA cannot verify a power of attorney from an app screen, and pretending to would be theater. What we can honestly do is: require an explicit, recorded affirmation of authority or permission at the moment a person is added; explain in plain English why we ask; and keep the affirmation with a timestamp so it is auditable later.
 
 The attestation is a consent-posture control and an honesty control. It does not create legal authority the caregiver lacks, and this document never claims it does.
 
@@ -125,11 +125,11 @@ These strings are frozen by this document and duplicated verbatim in the compani
 
 Checkbox label (`attestation.checkbox.v1`):
 
-> I confirm that I am a caregiver for this person, and that I have their permission or the legal authority (for example, healthcare power of attorney or guardianship) to record and manage their health information in Hearth.
+> I confirm that I am a caregiver for this person, and that I have their permission or the legal authority (for example, healthcare power of attorney or guardianship) to record and manage their health information in RUA.
 
 Plain-English explainer, shown directly above the checkbox (`attestation.explainer.v1`):
 
-> Hearth keeps health information about the person you care for, such as medications and allergies, on this device. That information is theirs. Before adding it, please confirm they have agreed, or that you have the authority to act for them. If they are able to take part in this decision, talk with them first. You can review or remove everything you add at any time.
+> RUA keeps health information about the person you care for, such as medications and allergies, on this device. That information is theirs. Before adding it, please confirm they have agreed, or that you have the authority to act for them. If they are able to take part in this decision, talk with them first. You can review or remove everything you add at any time.
 
 ### 3.3 Behavior and storage
 
@@ -166,7 +166,7 @@ Rules:
 
 ### 4.2 The access-log commitment
 
-Hearth commits to this, in the privacy policy and in the product: every access to a person's health information by anyone other than the record owner is logged, and the log is reviewable by the owner.
+RUA commits to this, in the privacy policy and in the product: every access to a person's health information by anyone other than the record owner is logged, and the log is reviewable by the owner.
 
 - The `access_log` table (Phase 1 schema: `at`, `actor`, `what`, `patient_id`) is append-only and exists before there is anything to share, capturing sensitive local events first (ER-sheet print, backup export).
 - Phase 19 surfaces the local log in Settings, read-only, newest first, in plain language ("You printed Robert's ER sheet, July 3, 2:14 PM").
@@ -201,7 +201,7 @@ Four disclaimers, one per surface, rendered through the design system's `Disclai
 
 (a) Onboarding, shown on its own screen during first run, before the first patient is created (`disclaimer.onboarding.v1`):
 
-> Hearth helps you organize care. It does not provide medical advice, diagnosis, dosing guidance, or treatment recommendations. Always follow the instructions of the prescribing clinician and the pharmacy label. If you think someone needs urgent medical help, call 911.
+> RUA helps you organize care. It does not provide medical advice, diagnosis, dosing guidance, or treatment recommendations. Always follow the instructions of the prescribing clinician and the pharmacy label. If you think someone needs urgent medical help, call 911.
 
 (b) Runway surfaces, shown as a footnote on medication runway screens and the digest's runway details (`disclaimer.runway.v1`):
 
@@ -213,9 +213,9 @@ Four disclaimers, one per surface, rendered through the design system's `Disclai
 
 (d) Future AI assistant, shown on the consent screen and pinned in the assistant UI (`disclaimer.assistant.v1`):
 
-> This assistant answers only from this person's Hearth records and cites the entry behind each answer. It is not medical advice. It will not answer dosing, diagnosis, or treatment questions; for those, contact the prescribing clinician or pharmacist. In an emergency, call 911.
+> This assistant answers only from this person's RUA records and cites the entry behind each answer. It is not medical advice. It will not answer dosing, diagnosis, or treatment questions; for those, contact the prescribing clinician or pharmacist. In an emergency, call 911.
 
-Placement rules: disclaimers appear in context (App Review Guideline 1.4.1 expects in-context disclosure, not a buried settings page); the onboarding disclaimer is also reachable any time from Settings under "What Hearth is and is not"; printed artifacts (one-pager, ER sheet, guides) carry the relevant disclaimer in their footer via the print templates.
+Placement rules: disclaimers appear in context (App Review Guideline 1.4.1 expects in-context disclosure, not a buried settings page); the onboarding disclaimer is also reachable any time from Settings under "What RUA is and is not"; printed artifacts (one-pager, ER sheet, guides) carry the relevant disclaimer in their footer via the print templates.
 
 ### 6.2 Intended-use statement (one page)
 
@@ -223,21 +223,21 @@ This statement is the product's constitution. Every feature, every App Store met
 
 ---
 
-#### Hearth: Intended Use Statement
+#### RUA: Intended Use Statement
 
 Version 1.0, adopted 2026-07-12.
 
-What Hearth is. Hearth is an organizational tool for family caregivers who coordinate the everyday care of one or more older adults. It stores information the caregiver enters or captures: people, medications as written on their pharmacy labels, vitals readings, notes and observations, documents, contacts, and appointments. It presents that information back in organized, printable, shareable forms, and it performs deterministic arithmetic on it, such as computing the date a medication supply runs out from the label's fill date and day supply.
+What RUA is. RUA is an organizational tool for family caregivers who coordinate the everyday care of one or more older adults. It stores information the caregiver enters or captures: people, medications as written on their pharmacy labels, vitals readings, notes and observations, documents, contacts, and appointments. It presents that information back in organized, printable, shareable forms, and it performs deterministic arithmetic on it, such as computing the date a medication supply runs out from the label's fill date and day supply.
 
-What Hearth is not. Hearth is not a medical device, not a clinical decision-support tool, and not a source of medical advice.
+What RUA is not. RUA is not a medical device, not a clinical decision-support tool, and not a source of medical advice.
 
 Three prohibitions, absolute:
 
-1. No dosing. Hearth never computes, suggests, adjusts, or reminds anyone to take a dose amount. Runway math counts inventory days from label facts; it never expresses when or how much medication to take. The future assistant refuses dose questions with a scripted, deterministic redirect to the prescriber or pharmacist.
-2. No diagnosis. Hearth never interprets symptoms, vitals, labs, or trends into a condition, risk score, or alert of a medical nature. Charts display; they do not conclude.
-3. No triage. Hearth never tells a caregiver what to do in a medical situation beyond the single universal instruction to call 911. Emergency guides are static, clinician-reviewed, general first-aid reference content, not situation-specific direction.
+1. No dosing. RUA never computes, suggests, adjusts, or reminds anyone to take a dose amount. Runway math counts inventory days from label facts; it never expresses when or how much medication to take. The future assistant refuses dose questions with a scripted, deterministic redirect to the prescriber or pharmacist.
+2. No diagnosis. RUA never interprets symptoms, vitals, labs, or trends into a condition, risk score, or alert of a medical nature. Charts display; they do not conclude.
+3. No triage. RUA never tells a caregiver what to do in a medical situation beyond the single universal instruction to call 911. Emergency guides are static, clinician-reviewed, general first-aid reference content, not situation-specific direction.
 
-Corollaries. High-alert medication badges prompt extra confirmation during data entry; they never block or direct care. Refill notifications say a supply is running low; they never say to take or skip medication. All health-related computation in Hearth is deterministic, testable arithmetic over caregiver-entered facts; no statistical or generative model ever writes to a health record (the future assistant proposes; the human confirms; code writes).
+Corollaries. High-alert medication badges prompt extra confirmation during data entry; they never block or direct care. Refill notifications say a supply is running low; they never say to take or skip medication. All health-related computation in RUA is deterministic, testable arithmetic over caregiver-entered facts; no statistical or generative model ever writes to a health record (the future assistant proposes; the human confirms; code writes).
 
 The feature test. Before any feature ships, it must pass all five questions:
 
@@ -253,23 +253,23 @@ Marketing corollary. Approved vocabulary: organize, coordinate, keep track, one 
 
 ## 7. Consumer Health Data Privacy Policy (draft, local-first era)
 
-This is the standalone policy MHMD requires (1.3), drafted for the era in which Hearth has no server, no accounts, and no data collection by the developer. It goes live at a public URL, linked separately from the marketing-site homepage, at Phase 19. It must be revised before Phase 29 (accounts and sync) and Phase 32 (AI) ship, because both change the answers.
+This is the standalone policy MHMD requires (1.3), drafted for the era in which RUA has no server, no accounts, and no data collection by the developer. It goes live at a public URL, linked separately from the marketing-site homepage, at Phase 19. It must be revised before Phase 29 (accounts and sync) and Phase 32 (AI) ship, because both change the answers.
 
 Label-honesty note (binding on release configuration): the App Store privacy label declares "Data Not Collected" only while that is literally true of the shipped binary. Crash reporting (Sentry, Phase 9) therefore ships opt-in and default off during the local-first era, with PII scrubbing and no health data in events; if it is ever enabled by default, the label flips to declare Diagnostics (Crash Data, not linked to identity) and this policy's Section 4 is updated in the same release. Health data is never in scope for crash reports either way.
 
 ---
 
-#### Hearth Consumer Health Data Privacy Policy
+#### RUA Consumer Health Data Privacy Policy
 
-Effective date: [set at Phase 19 publication]. Applies to: the Hearth iOS application, version 1.0 and later, while operating without an account. Contact: [monitored address, set at Phase 19].
+Effective date: [set at Phase 19 publication]. Applies to: the RUA iOS application, version 1.0 and later, while operating without an account. Contact: [monitored address, set at Phase 19].
 
-**1. Summary in plain language.** Your care records stay on your device. We, the developer of Hearth, do not receive, store, sell, or share them. We cannot read them. Everything below is detail on that sentence.
+**1. Summary in plain language.** Your care records stay on your device. We, the developer of RUA, do not receive, store, sell, or share them. We cannot read them. Everything below is detail on that sentence.
 
-**2. Scope.** This policy covers consumer health data handled by the Hearth app: information about the health of the people whose care you manage, and any health information about you that you enter. It is published as a standalone policy to meet the Washington My Health My Data Act and similar laws.
+**2. Scope.** This policy covers consumer health data handled by the RUA app: information about the health of the people whose care you manage, and any health information about you that you enter. It is published as a standalone policy to meet the Washington My Health My Data Act and similar laws.
 
-**3. Consumer health data the app collects.** Hearth stores, on your device only, the information you deliberately enter or capture: names, relationships, dates of birth, and photos of the people you care for; their conditions, allergies, medications and pharmacy-label details, refill dates and supply counts; vitals readings and observations; notes; documents you save; care contacts; and your caregiver-authority attestation with its date. Hearth also keeps local, on-device logs of changes and of sensitive actions such as printing or exporting, so you have an audit trail. None of this is transmitted to us.
+**3. Consumer health data the app collects.** RUA stores, on your device only, the information you deliberately enter or capture: names, relationships, dates of birth, and photos of the people you care for; their conditions, allergies, medications and pharmacy-label details, refill dates and supply counts; vitals readings and observations; notes; documents you save; care contacts; and your caregiver-authority attestation with its date. RUA also keeps local, on-device logs of changes and of sensitive actions such as printing or exporting, so you have an audit trail. None of this is transmitted to us.
 
-**4. What we collect off the device: nothing.** In this version of Hearth, the developer collects no personal data and no consumer health data. There are no analytics or advertising trackers in the app, and no third party receives data from the app. Optional crash reporting, if you turn it on in Settings, sends technical crash details scrubbed of personal and health information; it is off by default.
+**4. What we collect off the device: nothing.** In this version of RUA, the developer collects no personal data and no consumer health data. There are no analytics or advertising trackers in the app, and no third party receives data from the app. Optional crash reporting, if you turn it on in Settings, sends technical crash details scrubbed of personal and health information; it is off by default.
 
 **5. How your information is used.** Solely to provide the features you use, on your device: organizing records, computing refill runways from label facts, scheduling local notifications, and producing documents you choose to print or share. We do not use consumer health data for advertising, marketing, analytics, profiling, or model training. We do not sell consumer health data, and we never will without the separate, signed authorization the law requires, which we do not intend to ask for.
 
@@ -277,13 +277,13 @@ Effective date: [set at Phase 19 publication]. Applies to: the Hearth iOS applic
 
 **7. Storage and security.** All records are stored in an encrypted database on your device (SQLCipher, 256-bit key held in the iOS Keychain), protected by iOS Data Protection. You can additionally require Face ID to open the app. Backups you export are encrypted. No security is perfect, but data that never leaves your device cannot leak from our servers, because there are none.
 
-**8. Your rights.** You can see everything Hearth holds, because it is all in the app. You can edit or delete any record, and Settings provides a full data wipe that permanently erases everything Hearth stores on the device. Because we hold no copy of your data, access, portability, and deletion are fully in your hands and take effect immediately; there is no third party to instruct. Washington residents: you may also exercise rights, ask questions, or appeal a decision by contacting us at the address above; if unsatisfied, you may contact the Washington Attorney General. We will respond to rights requests within 45 days.
+**8. Your rights.** You can see everything RUA holds, because it is all in the app. You can edit or delete any record, and Settings provides a full data wipe that permanently erases everything RUA stores on the device. Because we hold no copy of your data, access, portability, and deletion are fully in your hands and take effect immediately; there is no third party to instruct. Washington residents: you may also exercise rights, ask questions, or appeal a decision by contacting us at the address above; if unsatisfied, you may contact the Washington Attorney General. We will respond to rights requests within 45 days.
 
-**9. Whose data it is.** Hearth is used by caregivers to manage another person's health information. We require the caregiver to affirm they have that person's permission or the legal authority to do so. If you believe someone is managing your information in Hearth without authority, contact us and we will explain the available options; note that because data lives only on the caregiver's device, we cannot remotely read or delete it.
+**9. Whose data it is.** RUA is used by caregivers to manage another person's health information. We require the caregiver to affirm they have that person's permission or the legal authority to do so. If you believe someone is managing your information in RUA without authority, contact us and we will explain the available options; note that because data lives only on the caregiver's device, we cannot remotely read or delete it.
 
-**10. Children.** Hearth is not directed to children under 13 and we do not knowingly handle their data.
+**10. Children.** RUA is not directed to children under 13 and we do not knowingly handle their data.
 
-**11. Changes.** If a future version of Hearth introduces features that change these answers, such as optional accounts, sync, or cloud AI features, we will update this policy first, and those features will ask for your explicit consent before any data leaves your device. Material changes never apply retroactively to data practices you did not agree to.
+**11. Changes.** If a future version of RUA introduces features that change these answers, such as optional accounts, sync, or cloud AI features, we will update this policy first, and those features will ask for your explicit consent before any data leaves your device. Material changes never apply retroactively to data practices you did not agree to.
 
 ---
 
@@ -311,11 +311,11 @@ Completed line by line at Phase 19 and re-checked at every submission. "Answer" 
 |---|---|---|---|
 | 1 | 5.1.3(i): health data may not be used for advertising, marketing, or use-based data mining, and may not be disclosed to third parties for those purposes | No advertising, no marketing use, no data mining: health data never leaves the device in the local-first era, and no ad or analytics SDK is present in the binary | P1, audited P19 |
 | 2 | 5.1.3(i): disclosure to third parties only for improving health management or health research, and only with permission | No third-party disclosure exists. Sharing is user-initiated (print, share sheet, export) or, later, owner-granted scoped invites with logging | P14, P31 |
-| 3 | 5.1.3(ii): may not write false or inaccurate data into health apps (including HealthKit) | Hearth does not integrate with HealthKit. Scanned label data is never saved without field-by-field human confirmation, and RxNorm-unmatched names carry a visible free-text badge | P22 |
+| 3 | 5.1.3(ii): may not write false or inaccurate data into health apps (including HealthKit) | RUA does not integrate with HealthKit. Scanned label data is never saved without field-by-field human confirmation, and RxNorm-unmatched names carry a visible free-text badge | P22 |
 | 4 | 5.1.3(ii): may not store personal health information in iCloud | The encrypted database and documents vault are excluded from iCloud device backup; the supported device-change path is the user-controlled encrypted local export | P1, P18 |
-| 5 | 5.1.3(iii): health-related human-subject research requires informed consent (and IRB where applicable) | Hearth conducts no human-subject research. Beta feedback is product feedback; no health outcomes are studied. If research is ever contemplated, consent and IRB review come first | P19 notes |
+| 5 | 5.1.3(iii): health-related human-subject research requires informed consent (and IRB where applicable) | RUA conducts no human-subject research. Beta feedback is product feedback; no health outcomes are studied. If research is ever contemplated, consent and IRB review come first | P19 notes |
 | 6 | 1.4.1: medical apps that could provide inaccurate data or be used for diagnosis must disclose data and methodology in context | Runway screens disclose the entire methodology in one sentence (fill date plus day supply) with the in-context disclaimer; charts display entered readings without interpretation | P6, P19 |
-| 7 | 1.4.1: drug dosage calculators must come from approved sources | Not applicable by design: Hearth contains no dose calculation of any kind, enforced by the intended-use feature test | All phases |
+| 7 | 1.4.1: drug dosage calculators must come from approved sources | Not applicable by design: RUA contains no dose calculation of any kind, enforced by the intended-use feature test | All phases |
 | 8 | 5.1.1: privacy policy link in metadata; consent for data collection | Standalone consumer-health privacy policy at a public URL, linked in App Store Connect; the app collects nothing off-device, and on-device storage is the requested service itself | P19 |
 | 9 | 5.1.1(v): account deletion in-app if accounts exist | No accounts exist until P29; account creation and in-app deletion with verified server purge ship in the same phase | P29 |
 | 10 | 5.1.1: apps may not require registration for non-account features | The signed-out, local-only app is fully functional forever; accounts are opt-in for sync and sharing only | P1, P29 |

@@ -5,7 +5,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FormField, PillButton, Screen, SectionHeader, Seg, space, type } from '../../../ds';
 import { enterLead, enterQuiet, enterRow } from '../../../ds/motion';
 import { archivePatient, getPatient, updatePatient } from '../../../db/repo';
-import { isValidLocalDate } from '@hearth/core';
+import { isValidLocalDate } from '@rua/core';
 
 export default function EditPatient() {
   const { id } = useLocalSearchParams<{ id: string }>();

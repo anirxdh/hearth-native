@@ -1,4 +1,4 @@
-import { uuidv7 } from '@hearth/core';
+import { uuidv7 } from '@rua/core';
 import { GATE_TYPE, SINK_TYPES, isNodeType, nodeDefinition, type NodeType } from './definition';
 import { ConfirmPause, executors, type ExecContext, type Params, type RecordAccess } from './executors';
 import type {
