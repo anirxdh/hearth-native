@@ -1,0 +1,112 @@
+1
+00:00:00,059 --> 00:00:02,079
+As a caregiver, you run the medications.
+
+2
+00:00:02,419 --> 00:00:03,039
+The paperwork.
+
+3
+00:00:03,500 --> 00:00:04,099
+The rides.
+
+4
+00:00:04,480 --> 00:00:05,359
+The family calendar.
+
+5
+00:00:05,839 --> 00:00:06,819
+The two a.m. calls.
+
+6
+00:00:07,299 --> 00:00:11,359
+And every year there are more people who need care, and fewer of us to give it.
+
+7
+00:00:12,039 --> 00:00:13,199
+This is RUA.
+
+8
+00:00:13,880 --> 00:00:15,239
+Built for caregivers.
+
+9
+00:00:16,059 --> 00:00:18,180
+It opens on the one thing that needs you today.
+
+10
+00:00:19,000 --> 00:00:21,259
+The insurance appeal that eats your whole afternoon?
+
+11
+00:00:22,299 --> 00:00:23,139
+Drop in the letter.
+
+12
+00:00:24,439 --> 00:00:27,199
+RUA assembles the packet, and you confirm every fact.
+
+13
+00:00:27,719 --> 00:00:30,169
+Three and a half hours, down to twelve minutes.
+
+14
+00:00:30,319 --> 00:00:33,369
+Scan a bottle. It knows the medicine, and adds it to their list.
+
+15
+00:00:34,229 --> 00:00:36,070
+An ER sheet that is always current.
+
+16
+00:00:36,869 --> 00:00:39,349
+A handoff pack, so someone can take your place for a weekend.
+
+17
+00:00:40,050 --> 00:00:42,550
+Your family claims the week, turn by turn.
+
+18
+00:00:43,429 --> 00:00:44,869
+Every way to reach her, compared.
+
+19
+00:00:45,590 --> 00:00:47,709
+Offline guides for the moments that matter most.
+
+20
+00:00:48,330 --> 00:00:50,580
+A one-pager to carry into the appointment.
+
+21
+00:00:51,130 --> 00:00:53,380
+Every visit, prepared before you walk in.
+
+22
+00:00:53,930 --> 00:00:58,280
+Heart rate, blood pressure, glucose. Calm trends, never alarms.
+
+23
+00:00:58,830 --> 00:01:01,380
+Every medication counted, so nothing runs out.
+
+24
+00:01:01,930 --> 00:01:05,280
+Ask it anything. It answers only from their own records.
+
+25
+00:01:05,830 --> 00:01:09,380
+One caregiver, three people. RUA holds them all.
+
+26
+00:01:10,189 --> 00:01:13,330
+Sensitive health information, kept private on your own device.
+
+27
+00:01:16,300 --> 00:01:16,579
+RUA.
+
+28
+00:01:17,579 --> 00:01:18,639
+For everyone you care for.
+

@@ -11,3 +11,17 @@ coverage/
 *.tsbuildinfo
 .claude/
 .vscode/
+
+# Local tooling keys (film production). Never commit.
+.env
+.env.local
+.gstack/
+
+# Deliverables that do not belong in a public git repo:
+# films exceed GitHub's 100MB hard limit (v5-v7) and bloat clones (the rest);
+# the zip duplicates acl-image-submission/; the YC docs are a private
+# application in a public repository.
+media/*.mp4
+acl-image-submission.zip
+YC-ANSWERS.md
+YC-ACCOMPLISHMENTS.md
