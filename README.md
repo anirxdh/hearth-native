@@ -1,5 +1,7 @@
 # RUA (native)
 
+> **Write-up:** [Building RUA, an Offline-First Caregiver App With Provable Math](https://anirudhvasudevan.com/blog/rua-caregiver-app-offline-first/), the architecture, decisions and lessons. Built by [Anirudh Vasudevan](https://anirudhvasudevan.com/).
+
 A caregiver-first command center for coordinating care across multiple older adults.
 React Native (Expo) iOS app, built phase by phase; see ROADMAP.md.
 
